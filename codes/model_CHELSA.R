@@ -1,6 +1,7 @@
 ##### Current ENM with CHELSA data 
 # clean up working env
 rm(list = ls(all.names = T))
+gc()
 
 # set seed 
 set.seed(321)
