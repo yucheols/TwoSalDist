@@ -30,7 +30,7 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 # load mask polygon 
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
-## climate == WorldClim (1970-2000)
+## climate == CHELSA (1979-2013)
 clim <- raster::stack(list.files(path = 'data/CHELSA', pattern = '.tif$', full.names = T))
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
@@ -54,6 +54,17 @@ plot(land[[1]])
 ## stack together
 envs <- raster::stack(clim, topo, land)
 print(envs)
+
+## export masked layers == .bil format
+for (i in 1:nlayers(envs)) {
+  layer <- envs[[i]]
+  name <- paste0('data/masked/CHELSA/', names(envs)[i], '.bil')
+  writeRaster(layer, filename = name, overwrite = T)
+}
+
+## create import shortcut
+envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
+plot(envs[[1]])
 
 
 #####  PART 3 ::: background data          ------------------------------------------------------------------------------------------------
@@ -194,6 +205,8 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # extract 50000 random points across the extent
 pts <- dismo::randomPoints(mask = envs[[1]], n = 50000) %>% as.data.frame()
+
+# extract raster values
 vals <- raster::extract(envs, pts)
 
 # vifstep
