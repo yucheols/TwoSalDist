@@ -47,19 +47,20 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
   return(output, models)
 }
 
+### prep inputs
+bg.list <- list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')],
+                bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')])
+
+tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
+                  rm = seq(0.5,5, by = 0.5))
+
 
 ### O. koreanus model testing run
 o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, 
-                        bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')],
-                                       bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]), 
-                        tune.args = list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
-                                         rm = seq(0.5,5, by = 0.5)), partitions = c('user'), user.grp = o.folds)
+                        bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = o.folds)
 
 
 
 ### K. koreana model testing run
 k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, 
-                        bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')],
-                                       bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]), 
-                        tune.args = list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
-                                         rm = seq(0.5,5, by = 0.5)), partitions = c('user'), user.grp = k.folds)
+                        bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = k.folds)
