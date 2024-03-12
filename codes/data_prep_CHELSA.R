@@ -21,7 +21,6 @@ library(blockCV)
 library(sf)
 library(tmap)
 
-
 #####  PART 1 ::: load occurrence points ------------------------------------------------------------------------------------------------
 # these data are already spatially thinned to 1km 
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
