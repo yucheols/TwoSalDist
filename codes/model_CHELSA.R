@@ -21,6 +21,7 @@ head(bg2_5000)
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp) {
   output <- list()
   models <- list()
+  preds <- list()
   
   for (i in 1:length(bg.list)) {
     
@@ -40,12 +41,17 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     
     output[[i]] <- opt.param
     
-    # get optimal model
+    # get optimal model per iteration
     opt.model <- ENMeval::eval.models(eval)[[opt.param$tune.args]]
     models[[i]] <- opt.model
+    
+    # get optimal predictions per iteration
+    opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
+    preds[[i]] <- opt.pred
   }
-  return(output, models)
+  return(output, models, preds)
 }
+
 
 ### prep inputs
 bg.list <- list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')],
@@ -56,11 +62,21 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 
 ### O. koreanus model testing run
+# run
 o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, 
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = o.folds)
 
+# look at results
+
+
+# look at predictions
 
 
 ### K. koreana model testing run
 k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, 
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = k.folds)
+
+# look at results
+
+
+# look at predictions
