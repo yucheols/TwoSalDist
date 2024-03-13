@@ -209,7 +209,7 @@ pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
 write.csv(pts, 'data/bg/envCor.csv')
 
 # extract raster values
-vals <- raster::extract(envs, pts)
+#vals <- raster::extract(envs, pts)
 
 # vifstep
 #usdm::vifstep(vals, th = 10)

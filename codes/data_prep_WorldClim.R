@@ -17,8 +17,9 @@ library(plyr)
 library(dplyr) 
 library(megaSDM)
 library(readr)
-library(usdm)
-
+library(blockCV)
+library(sf)
+library(tmap)
 
 #####  PART 1 ::: load occurrence points ------------------------------------------------------------------------------------------------
 # these data are already spatially thinned to 1km 
@@ -30,7 +31,7 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 # load mask polygon 
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
-## climate == WorldClim (1970-2000)
+## climate == CHELSA (1979-2013)
 clim <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.tif$', full.names = T))
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
@@ -54,6 +55,17 @@ plot(land[[1]])
 ## stack together
 envs <- raster::stack(clim, topo, land)
 print(envs)
+
+## export masked layers == .bil format
+for (i in 1:nlayers(envs)) {
+  layer <- envs[[i]]
+  name <- paste0('data/masked/WorldClim/', names(envs)[i], '.bil')
+  writeRaster(layer, filename = name, overwrite = T)
+}
+
+## create import shortcut
+envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
+plot(envs[[1]])
 
 
 #####  PART 3 ::: background data          ------------------------------------------------------------------------------------------------
@@ -193,11 +205,201 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # extract 50000 random points across the extent
-pts <- dismo::randomPoints(mask = envs[[1]], n = 50000) %>% as.data.frame()
-vals <- raster::extract(envs, pts)
+pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
+write.csv(pts, 'data/bg/envCor.csv')
 
-# vifcor
-vifcor(vals, th = 0.7, maxobservations = 50000)
+# extract raster values
+#vals <- raster::extract(envs, pts)
 
 # vifstep
-vifstep(vals, th = 10, maxobservations = 50000)
+#usdm::vifstep(vals, th = 10)
+
+# use ntbox
+ntbox::run_ntbox()
+
+### Spearman |r| > 0.7 removed ==  bio1 bio12 bio13 bio15 bio2 bio3 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio13', 'bio15', 'forest', 'slope')))
+
+print(envs)
+plot(envs[[1]])
+
+
+#####  PART 5 ::: make cross validation folds      ---------------------------------------------------------------------------------------------
+# make "user-specified" folds
+
+### Step 1 === get block size
+# automate block size calc
+block_size <- function(points, raster, num_sample, crs) {
+  block_size_list <- list()
+  
+  block_prep <- for (i in 1:length(points)) {
+    points[[i]]$occ <- rep(0, nrow(points[[i]]))
+    pts.sf <- sf::st_as_sf(points[[i]], coords = c('long', 'lat'), crs = crs)
+    auto  <- blockCV::cv_spatial_autocor(x = pts.sf, r = raster, num_sample = num_sample, column = 'occ', progress = T)
+    
+    block_size_list[[i]] <- auto$range
+  }
+  return(block_size_list)
+}
+
+# get block size
+get.block.size <- block_size(points = list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000),
+                             raster = envs[[1:6]], num_sample = 5000, crs = 4326)
+
+get.block.size[1:3] # bg set 1
+get.block.size[4:6] # bg set 2
+
+
+### Step 2 === create folds
+# automate fold generation
+fold_maker <- function(occs, bg.list, envs, k, block.size) {
+  
+  # output
+  occ.fold.out <- list()
+  bg.fold.out <- list()
+  
+  # make loop
+  fold.maker <- for (i in 1:length(bg.list)) {
+    
+    # bind occ & bg ::: both datasets should have matching column names
+    occs_bg <- rbind(occs, bg.list[[i]])
+    occs_bg$occ <- c(rep(1, nrow(occs)), rep(0, nrow(bg.list[[i]])))
+    
+    # extract envs values ::: check NA & remove them
+    occs_bg_env <- raster::extract(envs, occs_bg[, c(1,2)]) %>% as.data.frame()
+    occs_bg_env <- cbind(occs_bg_env, occs_bg) %>% na.omit()
+    
+    # select point columns
+    #pts_cols <- occs_bg_env[, c(10:12)]  # deprecated
+    pts_cols <- occs_bg_env[, c('long', 'lat', 'occ')]
+    
+    # convert to simple features
+    pts_sf <- sf::st_as_sf(pts_cols, coords = c('long', 'lat'), crs = 4326)
+    
+    # create spatial folds
+    spat_folds <- blockCV::cv_spatial(x = pts_sf, column = 'occ', r = envs, k = k, hexagon = T, flat_top = F,
+                                      size = block.size[[i]], selection = 'random', iteration = 100, seed = 333, 
+                                      progress = T, plot = F)
+    
+    # segregate into occ & bg folds
+    folds_ids <- as.data.frame(spat_folds$folds_ids)
+    colnames(folds_ids) = 'fold_id'
+    
+    folds <- cbind(pts_cols, folds_ids)
+    
+    occ_folds <- folds %>% dplyr::filter(occ == 1)
+    bg_folds <- folds %>% dplyr::filter(occ == 0)
+    
+    occ.fold.out[[i]] <- occ_folds
+    bg.fold.out[[i]] <- bg_folds
+    
+  }
+  
+  return(list(occ.fold.out, bg.fold.out))
+  
+}
+
+######## make folds per species
+#### O. koreanus
+### O. koreanus -- bg set1 -- 4 fold
+o.folds.bg1 <- fold_maker(occs = o.occs[, c(2,3)], 
+                          bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')]), 
+                          envs = envs[[1:6]], k = 4, block.size = get.block.size[1:3])
+
+# occ folds
+o.occ.folds.bg1 <- o.folds.bg1[[1]]
+
+# bg folds
+o.bg.folds.bg1 <- o.folds.bg1[[2]]
+
+
+### O. koreanus -- bg set2 -- 4 fold
+o.folds.bg2 <- fold_maker(occs = o.occs[, c(2,3)],
+                          bg.list = list(bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]),
+                          envs = envs[[1:6]], k = 4, block.size = get.block.size[4:6])
+
+# occ folds
+o.occ.folds.bg2 <- o.folds.bg2[[1]]
+
+# bg folds
+o.bg.folds.bg2 <- o.folds.bg2[[2]]
+
+
+
+#### K. koreana
+### K. koreana -- bg set1 -- 2 fold
+k.folds.bg1 <- fold_maker(occs = k.occs[, c(2,3)], 
+                          bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')]), 
+                          envs = envs[[1:6]], k = 2, block.size = get.block.size[1:3])
+
+# occ folds
+k.occ.folds.bg1 <- k.folds.bg1[[1]]
+
+# bg folds
+k.bg.folds.bg1 <- k.folds.bg1[[2]]
+
+
+### O. koreanus -- bg set2 -- 4 fold
+k.folds.bg2 <- fold_maker(occs = k.occs[, c(2,3)],
+                          bg.list = list(bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]),
+                          envs = envs[[1:6]], k = 2, block.size = get.block.size[4:6])
+
+# occ folds
+k.occ.folds.bg2 <- k.folds.bg2[[1]]
+
+# bg folds
+k.bg.folds.bg2 <- k.folds.bg2[[2]]
+
+
+
+### Step 3 === compile folds
+# O. koreanus == 4-fold
+o.folds <- list(list(occs.grp = o.occ.folds.bg1[[1]]$fold_id, bg.grp = o.bg.folds.bg1[[1]]$fold_id),
+                list(occs.grp = o.occ.folds.bg1[[2]]$fold_id, bg.grp = o.bg.folds.bg1[[2]]$fold_id),
+                list(occs.grp = o.occ.folds.bg1[[3]]$fold_id, bg.grp = o.bg.folds.bg1[[3]]$fold_id),
+                list(occs.grp = o.occ.folds.bg2[[1]]$fold_id, bg.grp = o.bg.folds.bg2[[1]]$fold_id),
+                list(occs.grp = o.occ.folds.bg2[[2]]$fold_id, bg.grp = o.bg.folds.bg2[[2]]$fold_id),
+                list(occs.grp = o.occ.folds.bg2[[3]]$fold_id, bg.grp = o.bg.folds.bg2[[3]]$fold_id))
+
+print(o.folds)
+
+
+# K. koreana == 2-fold
+k.folds <- list(list(occs.grp = k.occ.folds.bg1[[1]]$fold_id, bg.grp = k.bg.folds.bg1[[1]]$fold_id),
+                list(occs.grp = k.occ.folds.bg1[[2]]$fold_id, bg.grp = k.bg.folds.bg1[[2]]$fold_id),
+                list(occs.grp = k.occ.folds.bg1[[3]]$fold_id, bg.grp = k.bg.folds.bg1[[3]]$fold_id),
+                list(occs.grp = k.occ.folds.bg2[[1]]$fold_id, bg.grp = k.bg.folds.bg2[[1]]$fold_id),
+                list(occs.grp = k.occ.folds.bg2[[2]]$fold_id, bg.grp = k.bg.folds.bg2[[2]]$fold_id),
+                list(occs.grp = k.occ.folds.bg2[[3]]$fold_id, bg.grp = k.bg.folds.bg2[[3]]$fold_id))
+
+print(k.folds)
+
+
+### Step 4 === check fold assignments == the number and assignment of folds should be EXACTLY THE SAME between the occ & bg
+#             otherwise ENMeval will throw the following error == task 1 failed - "cannot evaluate a model without absence and presence data that are not NA
+
+### O. koreanus
+# occs
+for (i in 1:length(o.folds)) {
+  folds <- unique(sort(o.folds[[i]]$occs.grp))
+  print(folds)
+}
+
+# bg
+for (i in 1:length(o.folds)) {
+  folds <- unique(sort(o.folds[[i]]$bg.grp))
+  print(folds)
+}
+
+
+### K. koreana
+for (i in 1:length(k.folds)) {
+  folds <- unique(sort(k.folds[[i]]$occs.grp))
+  print(folds)
+}
+
+# bg
+for (i in 1:length(k.folds)) {
+  folds <- unique(sort(k.folds[[i]]$bg.grp))
+  print(folds)
+}
