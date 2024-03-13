@@ -17,12 +17,6 @@ head(bg2_5000)
 
 
 #####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
-# set output class
-setClass(Class = 'ENMtuning',
-         representation(output = 'list',
-                        models = 'list',
-                        preds = 'list'))
-
 # automate model tuning 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp) {
   output <- list()
@@ -55,7 +49,7 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
     preds[[i]] <- opt.pred
   }
-  return(new('ENMtuning', output = output, models = models, preds = preds))
+  return(list(output = output, models = models, preds = preds))
 }
 
 
