@@ -36,6 +36,9 @@ clim <- raster::stack(list.files(path = 'data/CHELSA', pattern = '.tif$', full.n
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
 
+names(clim) <- gsub('_', '', names(clim)) # remove "_" from clim layer names == only for CHELSA layers
+
+print(clim)
 plot(clim[[1]])
 
 ## topo
@@ -83,7 +86,6 @@ megaSDM::OccurrenceCollection(spplist = spplist$Species,
 targ.pts <- list.files(path = 'data/target_group', pattern = '.csv', full.names = T) %>%
   lapply(read_csv) %>%
   rbind.fill %>%
-  as.data.frame() %>%
   dplyr::select(4,6,5)
 
 colnames(targ.pts) = c('species', 'long', 'lat')
@@ -99,6 +101,7 @@ targ.pts <- rbind(targ.pts, nes_nk)
 
 # thin
 targ.pts <- SDMtune::thinData(coords = targ.pts[, c(2,3)], env = terra::rast(envs[[1]]), x = 'long', y = 'lat', verbose = T, progress = T)
+write.csv(targ.pts, 'data/target_group/thinned/targ.pts.csv')
 
 ###  make density raster for Set 1
 targ.ras1 <- rasterize(targ.pts, envs, 1)
@@ -218,8 +221,7 @@ write.csv(pts, 'data/bg/envCor.csv')
 ntbox::run_ntbox()
 
 ### Spearman |r| > 0.7 removed ==  bio_1 bio_12 bio_15 bio_2 bio_3 forest slope 
-envs <- raster::stack(subset(envs, c('bio_1', 'bio_2', 'bio_3', 'bio_12', 'bio_15', 'forest', 'slope')))
-names(envs) = c('bio1', 'bio2', 'bio3', 'bio12', 'bio15', 'forest', 'slope')
+envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio15', 'forest', 'slope')))
 print(envs)
 plot(envs[[1]])
 
