@@ -41,6 +41,7 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
       dplyr::filter(auc.val.avg == max(auc.val.avg))
     
     output[[i]] <- opt.param
+    metrics <- dplyr::bind_rows(output)
     
     # get optimal model per iteration
     opt.model <- ENMeval::eval.models(eval)[[opt.param$tune.args]]
@@ -49,8 +50,9 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     # get optimal predictions per iteration
     opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
     preds[[i]] <- opt.pred
+    preds.stack <- raster::stack(preds)
   }
-  return(list(output = output, models = models, preds = preds))
+  return(list(metrics = metrics, models = models, preds = preds.stack))
 }
 
 
