@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(321)
+set.seed(123)
 
 # prevent encoding error
 Sys.getlocale()
@@ -120,7 +120,7 @@ plot(bias.layer1)
 
 ### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
 # n = 5000
-bg1_5000 <- xyFromCell(bias.layer1,
+bg1_5000 <- xyFromCell(bias.layer1, 
                        sample(which(!is.na(values(subset(envs, 1)))), 5000,
                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
