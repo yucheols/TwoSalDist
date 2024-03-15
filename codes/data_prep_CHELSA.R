@@ -69,6 +69,7 @@ for (i in 1:nlayers(envs)) {
 ## create import shortcut
 # CAUTION ::: For CHELSA layers.....importing the .bil files through the shortcut below will throw errors at the background sampling step for whatever reason
 # CAUTION ::: For CHELSA data.....use the original .tif import /// use .bil files for layer selection
+
 #envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
 #plot(envs[[1]])
 

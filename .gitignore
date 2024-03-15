@@ -50,4 +50,5 @@ rsconnect/
 
 data/
 output_model_rds/
+plots/
 

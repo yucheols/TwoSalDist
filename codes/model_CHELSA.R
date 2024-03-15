@@ -70,13 +70,11 @@ o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = o.folds)
 
 # look at results
-o.metrics <- dplyr::bind_rows(o.models$output)
-print(o.metrics)
+print(o.models$metrics)
 
 # look at predictions
-o.preds <- raster::stack(o.models$preds)
-names(o.preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
-plot(o.preds)
+names(o.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+plot(o.models$preds)
 
 # save output as .rds for later use
 saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_CHELSA.rds')
@@ -87,13 +85,84 @@ k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs 
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = k.folds)
 
 # look at results
-k.metrics <- dplyr::bind_rows(k.models$output)
-print(k.metrics)
+print(k.models$metrics)
 
 # look at predictions
-k.preds <- raster::stack(k.models$preds)
-names(k.preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
-plot(k.preds)
+names(k.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+plot(k.models$preds)
 
 # save output as .rds for later use
 saveRDS(k.models, 'output_model_rds/K_koreana_model_tuning_CHELSA.rds')
+
+
+#####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
+# calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
+
+# ------------------------------------------------------------------------------------------------------------------------
+sdm_threshold <- function(sdm, occs, type = "mtp", binary = FALSE){
+  occPredVals <- raster::extract(sdm, occs)
+  if(type == "mtp"){
+    thresh <- min(na.omit(occPredVals))
+  } else if(type == "p10"){
+    if(length(occPredVals) < 10){
+      p10 <- floor(length(occPredVals) * 0.9)
+    } else {
+      p10 <- ceiling(length(occPredVals) * 0.9)
+    }
+    thresh <- rev(sort(occPredVals))[p10]
+  }
+  sdm_thresh <- sdm
+  sdm_thresh[sdm_thresh < thresh] <- NA
+  if(binary){
+    sdm_thresh[sdm_thresh >= thresh] <- 1
+  }
+  return(sdm_thresh)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+#### get the list of p10 thresholds
+# O. koreanus
+o.thresh <- list()
+
+for (i in 1:nlayers(o.models$preds)) {
+  thresh <- sdm_threshold(sdm = o.models$preds[[i]], occs = o.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  o.thresh[[i]] <- thresh2
+  print(o.thresh)
+}
+
+
+# K. koreana
+k.thresh <- list()
+
+for (i in 1:nlayers(k.models$preds)) {
+  thresh <- sdm_threshold(sdm = k.models$preds[[i]], occs = k.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  k.thresh[[i]] <- thresh2
+  print(k.thresh)
+}
+
+
+#### automate binary making
+
+# ------------------------------------------------------------------------------------------------------------------------
+bin_maker <- function(preds, th) {
+  binary.maps <- list()
+  
+  for (i in 1:nlayers(preds)) {
+    bin <- ecospat::ecospat.binary.model(Pred = terra::rast(preds[[i]]), Threshold = th[[i]]) %>% raster::raster()
+    binary.maps[[i]] <- bin
+    binary.out <- raster::stack(binary.maps)
+  }
+  return(binary.out)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+#### get binary maps
+# O. koreanus
+o.bin <- bin_maker(preds = o.models$preds, th = o.thresh)
+plot(o.bin)
+
+# K. koreana
+k.bin <- bin_maker(preds = k.models$preds, th = k.thresh)
+plot(k.bin)
