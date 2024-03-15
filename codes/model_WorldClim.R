@@ -1,6 +1,6 @@
-##### Data prep for current ENM with CHELSA data 
+##### Data prep for current ENM with WorldClim data 
 # set seed 
-set.seed(12345)
+set.seed(123)
 
 # load packages
 library(ENMeval)

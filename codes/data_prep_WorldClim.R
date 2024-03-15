@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(12345)
+set.seed(123)
 
 # prevent encoding error
 Sys.getlocale()
@@ -207,12 +207,6 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 # extract 50000 random points across the extent
 pts <- rbind(o.occs[, c(2,3)], k.occs[, c(2,3)])
 write.csv(pts, 'data/bg/envCor.csv')
-
-# extract raster values
-#vals <- raster::extract(envs, pts)
-
-# vifstep
-#usdm::vifstep(vals, th = 10)
 
 # use ntbox
 ntbox::run_ntbox()
