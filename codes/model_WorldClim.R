@@ -70,13 +70,11 @@ o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = o.folds)
 
 # look at results
-o.metrics <- dplyr::bind_rows(o.models$output)
-print(o.metrics)
+print(o.models$metrics)
 
 # look at predictions
-o.preds <- raster::stack(o.models$preds)
-names(o.preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
-plot(o.preds)
+names(o.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+plot(o.models$preds)
 
 # save output as .rds for later use
 saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
@@ -87,13 +85,11 @@ k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs 
                         bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = k.folds)
 
 # look at results
-k.metrics <- dplyr::bind_rows(k.models$output)
-print(k.metrics)
+print(k.models$metrics)
 
 # look at predictions
-k.preds <- raster::stack(k.models$preds)
-names(k.preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
-plot(k.preds)
+names(k.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+plot(k.models$preds)
 
 # save output as .rds for later use
 saveRDS(k.models, 'output_model_rds/K_koreana_model_tuning_WorldClim.rds')
