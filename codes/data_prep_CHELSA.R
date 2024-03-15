@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(123)
+set.seed(12345)
 
 # prevent encoding error
 Sys.getlocale()

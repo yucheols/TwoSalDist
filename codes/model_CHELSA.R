@@ -1,6 +1,6 @@
 ##### Data prep for current ENM with CHELSA data 
 # set seed 
-set.seed(123)
+set.seed(12345)
 
 # load packages
 library(ENMeval)

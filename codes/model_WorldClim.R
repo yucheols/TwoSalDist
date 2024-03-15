@@ -1,6 +1,6 @@
 ##### Data prep for current ENM with CHELSA data 
 # set seed 
-set.seed(123)
+set.seed(12345)
 
 # load packages
 library(ENMeval)
@@ -93,3 +93,76 @@ plot(k.models$preds)
 
 # save output as .rds for later use
 saveRDS(k.models, 'output_model_rds/K_koreana_model_tuning_WorldClim.rds')
+
+
+#####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
+# calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
+
+# ------------------------------------------------------------------------------------------------------------------------
+sdm_threshold <- function(sdm, occs, type = "mtp", binary = FALSE){
+  occPredVals <- raster::extract(sdm, occs)
+  if(type == "mtp"){
+    thresh <- min(na.omit(occPredVals))
+  } else if(type == "p10"){
+    if(length(occPredVals) < 10){
+      p10 <- floor(length(occPredVals) * 0.9)
+    } else {
+      p10 <- ceiling(length(occPredVals) * 0.9)
+    }
+    thresh <- rev(sort(occPredVals))[p10]
+  }
+  sdm_thresh <- sdm
+  sdm_thresh[sdm_thresh < thresh] <- NA
+  if(binary){
+    sdm_thresh[sdm_thresh >= thresh] <- 1
+  }
+  return(sdm_thresh)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+#### get the list of p10 thresholds
+# O. koreanus
+o.thresh <- list()
+
+for (i in 1:nlayers(o.models$preds)) {
+  thresh <- sdm_threshold(sdm = o.models$preds[[i]], occs = o.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  o.thresh[[i]] <- thresh2
+  print(o.thresh)
+}
+
+
+# K. koreana
+k.thresh <- list()
+
+for (i in 1:nlayers(k.models$preds)) {
+  thresh <- sdm_threshold(sdm = k.models$preds[[i]], occs = k.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  k.thresh[[i]] <- thresh2
+  print(k.thresh)
+}
+
+
+#### automate binary making
+
+# ------------------------------------------------------------------------------------------------------------------------
+bin_maker <- function(preds, th) {
+  binary.maps <- list()
+  
+  for (i in 1:nlayers(preds)) {
+    bin <- ecospat::ecospat.binary.model(Pred = terra::rast(preds[[i]]), Threshold = th[[i]]) %>% raster::raster()
+    binary.maps[[i]] <- bin
+    binary.out <- raster::stack(binary.maps)
+  }
+  return(binary.out)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+#### get binary maps
+# O. koreanus
+o.bin <- bin_maker(preds = o.models$preds, th = o.thresh)
+plot(o.bin)
+
+# K. koreana
+k.bin <- bin_maker(preds = k.models$preds, th = k.thresh)
+plot(k.bin)
