@@ -32,13 +32,10 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
 ## climate == CHELSA (1979-2013)
-clim <- raster::stack(list.files(path = 'data/CHELSA', pattern = '.tif$', full.names = T))
+clim <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.tif$', full.names = T))
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
 
-names(clim) <- gsub('_', '', names(clim)) # remove "_" from clim layer names == only for CHELSA layers
-
-print(clim)
 plot(clim[[1]])
 
 ## topo
@@ -62,12 +59,12 @@ print(envs)
 ## export masked layers == .bil format
 for (i in 1:nlayers(envs)) {
   layer <- envs[[i]]
-  name <- paste0('data/masked/CHELSA/', names(envs)[i], '.bil')
+  name <- paste0('data/masked/WorldClim/', names(envs)[i], '.bil')
   writeRaster(layer, filename = name, overwrite = T)
 }
 
 ## create import shortcut
-envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
+envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
 plot(envs[[1]])
 
 
@@ -123,7 +120,7 @@ plot(bias.layer1)
 
 ### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
 # n = 5000
-bg1_5000 <- xyFromCell(bias.layer1, 
+bg1_5000 <- xyFromCell(bias.layer1,
                        sample(which(!is.na(values(subset(envs, 1)))), 5000,
                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
@@ -220,8 +217,9 @@ write.csv(pts, 'data/bg/envCor.csv')
 # use ntbox
 ntbox::run_ntbox()
 
-### Spearman |r| > 0.7 removed ==  bio_1 bio_12 bio_15 bio_2 bio_3 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio15', 'forest', 'slope')))
+### Spearman |r| > 0.7 removed ==  bio1 bio12 bio13 bio15 bio2 bio3 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio13', 'bio15', 'forest', 'slope')))
+
 print(envs)
 plot(envs[[1]])
 
@@ -246,7 +244,7 @@ block_size <- function(points, raster, num_sample, crs) {
 
 # get block size
 get.block.size <- block_size(points = list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000),
-                             raster = envs[[1:5]], num_sample = 5000, crs = 4326)
+                             raster = envs[[1:6]], num_sample = 5000, crs = 4326)
 
 get.block.size[1:3] # bg set 1
 get.block.size[4:6] # bg set 2
@@ -306,7 +304,7 @@ fold_maker <- function(occs, bg.list, envs, k, block.size) {
 ### O. koreanus -- bg set1 -- 4 fold
 o.folds.bg1 <- fold_maker(occs = o.occs[, c(2,3)], 
                           bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')]), 
-                          envs = envs[[1:5]], k = 4, block.size = get.block.size[1:3])
+                          envs = envs[[1:6]], k = 4, block.size = get.block.size[1:3])
 
 # occ folds
 o.occ.folds.bg1 <- o.folds.bg1[[1]]
@@ -318,7 +316,7 @@ o.bg.folds.bg1 <- o.folds.bg1[[2]]
 ### O. koreanus -- bg set2 -- 4 fold
 o.folds.bg2 <- fold_maker(occs = o.occs[, c(2,3)],
                           bg.list = list(bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]),
-                          envs = envs[[1:5]], k = 4, block.size = get.block.size[4:6])
+                          envs = envs[[1:6]], k = 4, block.size = get.block.size[4:6])
 
 # occ folds
 o.occ.folds.bg2 <- o.folds.bg2[[1]]
@@ -332,7 +330,7 @@ o.bg.folds.bg2 <- o.folds.bg2[[2]]
 ### K. koreana -- bg set1 -- 2 fold
 k.folds.bg1 <- fold_maker(occs = k.occs[, c(2,3)], 
                           bg.list = list(bg1_5000[, c('long', 'lat')], bg1_10000[, c('long', 'lat')], bg1_15000[, c('long', 'lat')]), 
-                          envs = envs[[1:5]], k = 2, block.size = get.block.size[1:3])
+                          envs = envs[[1:6]], k = 2, block.size = get.block.size[1:3])
 
 # occ folds
 k.occ.folds.bg1 <- k.folds.bg1[[1]]
@@ -344,7 +342,7 @@ k.bg.folds.bg1 <- k.folds.bg1[[2]]
 ### O. koreanus -- bg set2 -- 4 fold
 k.folds.bg2 <- fold_maker(occs = k.occs[, c(2,3)],
                           bg.list = list(bg2_5000[, c('long', 'lat')], bg2_10000[, c('long', 'lat')], bg2_15000[, c('long', 'lat')]),
-                          envs = envs[[1:5]], k = 2, block.size = get.block.size[4:6])
+                          envs = envs[[1:6]], k = 2, block.size = get.block.size[4:6])
 
 # occ folds
 k.occ.folds.bg2 <- k.folds.bg2[[1]]
