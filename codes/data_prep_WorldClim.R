@@ -31,7 +31,7 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 # load mask polygon 
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
-## climate == CHELSA (1979-2013)
+## climate == WorldClim (1970-2000)
 clim <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.tif$', full.names = T))
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)

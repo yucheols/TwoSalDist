@@ -32,11 +32,14 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
 ## climate == CHELSA (1979-2013)
-clim <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.tif$', full.names = T))
+clim <- raster::stack(list.files(path = 'data/CHELSA/30sec', pattern = '.tif$', full.names = T))
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
 
 plot(clim[[1]])
+
+names(clim) = gsub('_', '', names(clim))
+print(clim)
 
 ## topo
 topo <- raster::stack(list.files(path = 'data/topo', pattern = '.tif$', full.names = T))
@@ -59,13 +62,15 @@ print(envs)
 ## export masked layers == .bil format
 for (i in 1:nlayers(envs)) {
   layer <- envs[[i]]
-  name <- paste0('data/masked/WorldClim/', names(envs)[i], '.bil')
+  name <- paste0('data/masked/CHELSA/', names(envs)[i], '.bil')
   writeRaster(layer, filename = name, overwrite = T)
 }
 
 ## create import shortcut
-envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
-plot(envs[[1]])
+# CAUTION ::: For CHELSA layers.....importing the .bil files through the shortcut below will throw errors at the background sampling step for whatever reason
+# CAUTION ::: For CHELSA data.....use the original .tif import 
+#envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
+#plot(envs[[1]])
 
 
 #####  PART 3 ::: background data          ------------------------------------------------------------------------------------------------
@@ -87,7 +92,6 @@ targ.pts <- list.files(path = 'data/target_group', pattern = '.csv', full.names 
 
 colnames(targ.pts) = c('species', 'long', 'lat')
 head(targ.pts)
-
 
 # add on occurrence points based on 4th NES amphibian datatpoints and Borzee et al. 2021
 nes_nk <- read.csv('data/target_group/baseline/target_group_NES_NK_SK.csv') 
