@@ -6,6 +6,8 @@ set.seed(12345)
 library(ENMeval)
 library(dplyr)
 library(raster)
+library(rasterVis)
+library(ggplot2)
 
 # check data
 print(envs)
