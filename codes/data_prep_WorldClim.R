@@ -205,7 +205,7 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # extract 50000 random points across the extent
-pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
+pts <- rbind(o.occs[, c(2,3)], k.occs[, c(2,3)])
 write.csv(pts, 'data/bg/envCor.csv')
 
 # extract raster values

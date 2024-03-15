@@ -68,7 +68,7 @@ for (i in 1:nlayers(envs)) {
 
 ## create import shortcut
 # CAUTION ::: For CHELSA layers.....importing the .bil files through the shortcut below will throw errors at the background sampling step for whatever reason
-# CAUTION ::: For CHELSA data.....use the original .tif import 
+# CAUTION ::: For CHELSA data.....use the original .tif import /// use .bil files for layer selection
 #envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
 #plot(envs[[1]])
 
@@ -208,8 +208,8 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
-# extract 50000 random points across the extent
-pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
+# bind occurrences of the two species
+pts <- rbind(o.occs[, c(2,3)], k.occs[, c(2,3)])
 write.csv(pts, 'data/bg/envCor.csv')
 
 # extract raster values
@@ -221,8 +221,8 @@ write.csv(pts, 'data/bg/envCor.csv')
 # use ntbox
 ntbox::run_ntbox()
 
-### Spearman |r| > 0.7 removed ==  bio1 bio12 bio13 bio15 bio2 bio3 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio13', 'bio15', 'forest', 'slope')))
+### Pearson |r| > 0.7 removed ==  bio1 bio2 bio4 bio12 bio14 bio15 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio4', 'bio12', 'bio14', 'bio15', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
