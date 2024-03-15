@@ -217,8 +217,8 @@ write.csv(pts, 'data/bg/envCor.csv')
 # use ntbox
 ntbox::run_ntbox()
 
-### Spearman |r| > 0.7 removed ==  bio1 bio12 bio13 bio15 bio2 bio3 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio12', 'bio13', 'bio15', 'forest', 'slope')))
+### Pearson |r| > 0.7 removed ==  bio1 bio2 bio3 bio4 bio12 bio13 bio14 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio4', 'bio12', 'bio13', 'bio14', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
