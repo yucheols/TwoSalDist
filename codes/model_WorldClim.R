@@ -168,3 +168,145 @@ plot(o.bin)
 # K. koreana
 k.bin <- bin_maker(preds = k.models$preds, th = k.thresh)
 plot(k.bin)
+
+
+#####  Part 8 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
+
+### O. koreanus continuous
+# plot
+gplot(o.models$preds) +  
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low', 'High')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() + 
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/O.koreanus_WorldClim_cont.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+
+### O. koreanus binary
+# plot
+gplot(o.bin) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = rev(terrain.colors(1000)),
+                       na.value = NA,
+                       name = 'Suitability') +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/O.koreanus_WorldClim_bin.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+### K. koreana continuous
+# plot
+gplot(k.models$preds) +  
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low', 'High')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() + 
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/K.koreana_WorldClim_cont.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+
+### K. koreana binary
+# plot
+gplot(k.bin) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = rev(terrain.colors(1000)),
+                       na.value = NA,
+                       name = 'Suitability') +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/K.koreana_WorldClim_bin.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+##### export model metrics and prediction layers
+### metrics
+print(o.models$metrics)
+print(k.models$metrics)
+
+write.csv(o.models$metrics, 'tuning_experiments/metrics/O.koreanus_WorldClim_metrics.csv')
+write.csv(k.models$metrics, 'tuning_experiments/metrics/K.koreana_WorldClim_metrics.csv')
+
+### prediction layers
+# O. koreanus cont
+for (i in 1:nlayers(o.models$preds)) {
+  r <- o.models$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/WorldClim/cont/', names(o.models$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# O. koreanus bin
+for (i in 1:nlayers(o.bin)) {
+  r <- o.bin[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/WorldClim/bin/', names(o.bin)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# K. koreana cont
+for (i in 1:nlayers(k.models$preds)) {
+  r <- k.models$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/WorldClim/cont/', names(k.models$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# K. koreana bin
+for (i in 1:nlayers(k.bin)) {
+  r <- k.bin[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/WorldClim/bin/', names(k.bin)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}

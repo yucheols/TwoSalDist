@@ -271,3 +271,43 @@ gplot(k.bin) +
 ggsave('plots/CHELSA tuning/K.koreana_CHELSA_bin.png', width = 30, height = 22, dpi = 800, units = 'cm')
 
 #-----------------------------------------------------------------------------------------------------------------------------
+
+##### export model metrics and prediction layers
+### metrics
+print(o.models$metrics)
+print(k.models$metrics)
+
+write.csv(o.models$metrics, 'tuning_experiments/metrics/O.koreanus_CHELSA_metrics.csv')
+write.csv(k.models$metrics, 'tuning_experiments/metrics/K.koreana_CHELSA_metrics.csv')
+
+### prediction layers
+# O. koreanus cont
+for (i in 1:nlayers(o.models$preds)) {
+  r <- o.models$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/CHELSA/cont/', names(o.models$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# O. koreanus bin
+for (i in 1:nlayers(o.bin)) {
+  r <- o.bin[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/CHELSA/bin/', names(o.bin)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# K. koreana cont
+for (i in 1:nlayers(k.models$preds)) {
+  r <- k.models$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/CHELSA/cont/', names(k.models$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# K. koreana bin
+for (i in 1:nlayers(k.bin)) {
+  r <- k.bin[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/CHELSA/bin/', names(k.bin)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
