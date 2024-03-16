@@ -79,4 +79,8 @@ trimmed.run.mx <- humboldt.doitall(inname = 'trimmed_run_mx', env1 = env.data, e
                                    p.overlap = T, p.boxplot = T, p.scatter = T, run.silent = F, ncores = 'all')
 
 
+## Save outputs
+#dir.create('E-space/output')
 
+#saveRDS(full.run.mx, 'E-space/output/full_run_mx.rds')
+#saveRDS(trimmed.run.mx, 'E-space/output/trimmed_run_mx.rds')
