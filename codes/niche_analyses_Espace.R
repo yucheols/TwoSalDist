@@ -1,4 +1,4 @@
-##### Niche analyses using humboldt
+##### Niche analyses in E-space using humboldt
 # setwd
 setwd('niche_analyses')
 
