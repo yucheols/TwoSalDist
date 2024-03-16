@@ -62,10 +62,21 @@ head(occs.sp2)
 full.run.mx <- humboldt.doitall(inname = 'full_run_mx', env1 = env.data, env2 = env.data, sp1 = occs.sp1, sp2 = occs.sp2,
                                 rarefy.dist = 1, rarefy.units = 'km', env.reso = 0.0083333333, reduce.env = 0,
                                 non.analogous.environments = 'YES', correct.env = T, env.trim = T, env.trim.type = 'RADIUS',
-                                trim.buffer.sp1 = 100, trim.buffer.sp2 = 100, pcx = 1, pcy = 2, col.env = e.var, e.var = c(3:ncol(env.data)),
+                                trim.buffer.sp1 = 100, trim.buffer.sp2 = 100, color.ramp = 5,
+                                pcx = 1, pcy = 2, col.env = e.var, e.var = c(3:ncol(env.data)),
                                 R = 100, kern.smooth = 1, e.reps = 1000, b.reps = 1000, nae = 'YES', thresh.espace.z = 0.001,
                                 p.overlap = T, p.boxplot = T, p.scatter = T, run.silent = F, ncores = 'all')
 
+
+## run it a second time with a trimmed, shared-espace. Here the equivalence statistic tests for niche evolution or niche divergence. 
+## For comparing results, change only the following model parameters: reduce.env, non.analogous.environmental, env.trim, nae
+trimmed.run.mx <- humboldt.doitall(inname = 'trimmed_run_mx', env1 = env.data, env2 = env.data, sp1 = occs.sp1, sp2 = occs.sp2,
+                                   rarefy.dist = 1, rarefy.units = 'km', env.reso = 0.0083333333, reduce.env = 2, reductype = 'PCA',
+                                   non.analogous.environments = 'NO', correct.env = T, env.trim = T, env.trim.type = 'RADIUS',
+                                   trim.buffer.sp1 = 100, trim.buffer.sp2 = 100, color.ramp = 5,
+                                   pcx = 1, pcy = 2, col.env = e.var, e.var = c(3:ncol(env.data)),
+                                   R = 100, kern.smooth = 1, e.reps = 1000, b.reps = 1000, nae = 'NO', thresh.espace.z = 0.001,
+                                   p.overlap = T, p.boxplot = T, p.scatter = T, run.silent = F, ncores = 'all')
 
 
 
