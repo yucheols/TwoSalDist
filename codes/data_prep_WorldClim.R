@@ -397,3 +397,8 @@ for (i in 1:length(k.folds)) {
   folds <- unique(sort(k.folds[[i]]$bg.grp))
   print(folds)
 }
+
+
+### save folds
+#saveRDS(o.folds, 'data/folds/O.koreanus_folds.rds')
+#saveRDS(k.folds, 'data/folds/K.koreana_folds.rds')
