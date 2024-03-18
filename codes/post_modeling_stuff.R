@@ -14,7 +14,7 @@ library(ENMeval)
 
 #####  Part 10 ::: get variable importance for each sp. ---------------------------------------------------------------------------------------------
 # O. koreanus
-
-
+print(o.models$contrib[[2]])
 
 # K. koreana
+print(k.models$contrib[[1]])

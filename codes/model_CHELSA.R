@@ -21,40 +21,82 @@ head(bg2_5000)
 
 #####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
-test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp) {
+# type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
+test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp, type) {
   output <- list()
   models <- list()
   preds <- list()
+  contrib <- list()
   
-  for (i in 1:length(bg.list)) {
-    
-    # make models
-    eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
-                                 bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
-                                 user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
-                                 parallelType = 'doSNOW')
-    
-    # get results
-    eval.res <- ENMeval::eval.results(eval)
-    
-    # get optimal parameter combinations
-    opt.param <- eval.res %>% dplyr::filter(or.10p.avg == min(or.10p.avg)) %>%
-      dplyr::filter(auc.diff.avg == min(auc.diff.avg)) %>%
-      dplyr::filter(auc.val.avg == max(auc.val.avg))
-    
-    output[[i]] <- opt.param
-    metrics <- dplyr::bind_rows(output)
-    
-    # get optimal model per iteration
-    opt.model <- ENMeval::eval.models(eval)[[opt.param$tune.args]]
-    models[[i]] <- opt.model
-    
-    # get optimal predictions per iteration
-    opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
-    preds[[i]] <- opt.pred
-    preds.stack <- raster::stack(preds)
+  if (type == 'type1') {
+    for (i in 1:length(bg.list)) {
+      
+      # make models
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
+                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
+                                   parallelType = 'doSNOW')
+      
+      # get results
+      eval.res <- ENMeval::eval.results(eval)
+      
+      # get optimal parameter combinations
+      opt.param <- eval.res %>% dplyr::filter(or.10p.avg == min(or.10p.avg)) %>%
+        dplyr::filter(auc.diff.avg == min(auc.diff.avg)) %>%
+        dplyr::filter(auc.val.avg == max(auc.val.avg))
+      
+      output[[i]] <- opt.param
+      metrics <- dplyr::bind_rows(output)
+      
+      # get optimal model per iteration
+      opt.model <- ENMeval::eval.models(eval)[[opt.param$tune.args]]
+      models[[i]] <- opt.model
+      
+      # get variable importance for each best model
+      var.imp <- ENMeval::eval.variable.importance(eval)[[opt.param$tune.args]]
+      contrib[[i]] <- var.imp
+      
+      # get optimal predictions per iteration
+      opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
+      preds[[i]] <- opt.pred
+      preds.stack <- raster::stack(preds)
+    }
   }
-  return(list(metrics = metrics, models = models, preds = preds.stack))
+  else if (type == 'type2') {
+    for (i in 1:length(bg.list)) {
+      
+      # make models
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
+                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
+                                   parallelType = 'doSNOW')
+      
+      # get results
+      eval.res <- ENMeval::eval.results(eval)
+      
+      # get optimal parameter combinations
+      opt.param <- eval.res %>% dplyr::filter(delta.AICc <= 2) %>%
+        dplyr::filter(or.10p.avg == min(or.10p.avg)) %>%
+        dplyr::filter(auc.val.avg == max(auc.val.avg))
+      
+      output[[i]] <- opt.param
+      metrics <- dplyr::bind_rows(output)
+      
+      # get optimal model per iteration
+      opt.model <- ENMeval::eval.models(eval)[[opt.param$tune.args]]
+      models[[i]] <- opt.model
+      
+      # get variable importance for each best model
+      var.imp <- ENMeval::eval.variable.importance(eval)[[opt.param$tune.args]]
+      contrib[[i]] <- var.imp
+      
+      # get optimal predictions per iteration
+      opt.pred <- ENMeval::eval.predictions(eval)[[opt.param$tune.args]]
+      preds[[i]] <- opt.pred
+      preds.stack <- raster::stack(preds)
+    }
+  }
+  return(list(metrics = metrics, models = models, preds = preds.stack, contrib = contrib))
 }
 
 
@@ -68,8 +110,8 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 ### O. koreanus model testing run
 # run
-o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, 
-                        bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = o.folds)
+o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, bg.list = bg.list, 
+                        tune.args = tune.args, partitions = c('user'), user.grp = o.folds, type = 'type1')
 
 # look at results
 print(o.models$metrics)
@@ -83,8 +125,8 @@ saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_CHELSA.rds')
 
 
 ### K. koreana model testing run
-k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, 
-                        bg.list = bg.list, tune.args = tune.args, partitions = c('user'), user.grp = k.folds)
+k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, bg.list = bg.list, 
+                        tune.args = tune.args, partitions = c('user'), user.grp = k.folds, type = 'type1')
 
 # look at results
 print(k.models$metrics)
