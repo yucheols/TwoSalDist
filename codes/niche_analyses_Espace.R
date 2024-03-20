@@ -14,7 +14,7 @@ library(raster)
 # use WorldClim 1km layers
 # use the selected subset of variables used for modeling
 e.data <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.bil$', full.names = T))
-e.data <- raster::stack(subset(e.data, c('bio1', 'bio2', 'bio3', 'bio4', 'bio12', 'bio13', 'bio14', 'forest', 'slope')))
+e.data <- raster::stack(subset(e.data, c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope')))
 plot(e.data[[1]])
 
 ####  Convert input rasters to 'humboldt' format for use as an environment file

@@ -1,6 +1,6 @@
 ##### Data prep for current ENM with WorldClim data 
 # set seed 
-set.seed(123)
+set.seed(111)
 
 # load packages
 library(ENMeval)
@@ -18,6 +18,8 @@ head(k.occs)
 head(bg1_5000)
 head(bg2_5000)
 
+glimpse(o.folds)
+glimpse(k.folds)
 
 #####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
@@ -352,3 +354,4 @@ for (i in 1:nlayers(k.bin)) {
   file.name <- paste0('tuning_experiments/preds/K.koreana/WorldClim/bin/', names(k.bin)[i], '.tif')
   writeRaster(r, file.name, overwrite = T)
 }
+

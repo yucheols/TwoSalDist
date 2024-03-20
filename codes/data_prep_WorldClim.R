@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(123)
+set.seed(111)
 
 # prevent encoding error
 Sys.getlocale()
@@ -211,8 +211,8 @@ write.csv(pts, 'data/bg/envCor.csv')
 # use ntbox
 ntbox::run_ntbox()
 
-### Pearson |r| > 0.7 removed ==  bio1 bio2 bio3 bio4 bio12 bio13 bio14 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio4', 'bio12', 'bio13', 'bio14', 'forest', 'slope')))
+### Pearson |r| > 0.7 removed ==  bio1 bio3 bio4 bio12 bio14 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
@@ -400,5 +400,5 @@ for (i in 1:length(k.folds)) {
 
 
 ### save folds
-#saveRDS(o.folds, 'data/folds/O.koreanus_folds.rds')
-#saveRDS(k.folds, 'data/folds/K.koreana_folds.rds')
+#saveRDS(o.folds, 'data/folds/WorldClim/O.koreanus_folds.rds')
+#saveRDS(k.folds, 'data/folds/WorldClim/K.koreana_folds.rds')

@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(12345)
+set.seed(111)
 
 # prevent encoding error
 Sys.getlocale()
@@ -402,3 +402,8 @@ for (i in 1:length(k.folds)) {
   folds <- unique(sort(k.folds[[i]]$bg.grp))
   print(folds)
 }
+
+
+### save folds
+#saveRDS(o.folds, 'data/folds/CHELSA/O.koreanus_folds.rds')
+#saveRDS(k.folds, 'data/folds/CHELSA/K.koreana_folds.rds')

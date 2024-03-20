@@ -28,7 +28,7 @@ bg.sp2 <- read.csv('bg/set1/bg1_5000.csv')
 
 ### envs data
 envs <- raster::stack(list.files(path = 'masked/WorldClim', pattern = '.bil$', full.names = T))
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio3', 'bio4', 'bio12', 'bio13', 'bio14', 'forest', 'slope')))
+envs <- raster::stack(subset(envs, c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
