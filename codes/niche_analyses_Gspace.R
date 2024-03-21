@@ -24,7 +24,7 @@ head(occs.sp2)
 
 ### background data 
 bg.sp1 <- read.csv('bg/set1/bg1_10000.csv')
-bg.sp2 <- read.csv('bg/set1/bg1_5000.csv')
+bg.sp2 <- read.csv('bg/set1/bg1_10000.csv')
 
 ### envs data
 envs <- raster::stack(list.files(path = 'masked/WorldClim', pattern = '.bil$', full.names = T))
@@ -68,8 +68,6 @@ bg.test2 <- background.test(species.1 = sp2, species.2 = sp1, env = envs, type =
 
 
 ## Save outputs
-#dir.create('output')
-
 #saveRDS(id.test, 'output/id_test.rds')
 #saveRDS(bg.test1, 'output/bg_test1.rds')
 #saveRDS(bg.test2, 'output/bg_test2.rds')

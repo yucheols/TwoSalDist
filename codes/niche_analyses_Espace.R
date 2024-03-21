@@ -1,6 +1,6 @@
 ##### Niche analyses in E-space using humboldt
 # setwd
-setwd('niche_analyses')
+setwd('niche_analyses/E-space')
 
 # clean up working env
 rm(list = ls(all.names = T))
@@ -37,7 +37,7 @@ head(env.data)
 env.data <- humboldt.scrub.env(env.data)
 
 ## save the file as '.csv' for future analyses 
-write.csv(env.data, 'data/niche_analyses/env_data_wc_subset.csv')
+write.csv(env.data, 'output/env_data_wc_subset.csv')
 
 
 #####  Step 2 ::: load occs data and format it for analysis in humboldt  ---------------------------------------------------------------------------------
@@ -80,7 +80,5 @@ trimmed.run.mx <- humboldt.doitall(inname = 'trimmed_run_mx', env1 = env.data, e
 
 
 ## Save outputs
-#dir.create('E-space/output')
-
-#saveRDS(full.run.mx, 'E-space/output/full_run_mx.rds')
-#saveRDS(trimmed.run.mx, 'E-space/output/trimmed_run_mx.rds')
+#saveRDS(full.run.mx, 'output/full_run_mx.rds')
+#saveRDS(trimmed.run.mx, 'output/trimmed_run_mx.rds')
