@@ -10,6 +10,7 @@ gc()
 library(raster)
 library(dplyr)
 library(ENMeval)
+library(ggplot2)
 
 ### load models
 o.models <- readRDS('output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
@@ -62,7 +63,7 @@ o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, 
                    tune.args = list(fc = 'H', rm = 2.5), algorithm = 'maxent.jar', doClamp = T, partitions = 'user', user.grp = o.folds[[2]])
 
 # test nulls
-o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'H', rm = 2.5), eval.stats = c("auc.val", "auc.diff", "cbi.val", "or.10p"),
+o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'H', rm = 2.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'),
                     user.eval.type = 'kspatial', no.iter = 1000)
 
 
@@ -71,9 +72,83 @@ k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, b
                    tune.args = list(fc = 'Q', rm = 1.0), algorithm = 'maxent.jar', doClamp = T, partitions = 'user', user.grp = k.folds[[2]])
 
 # test nulls
-k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 1.0), eval.stats = c("auc.val", "auc.diff", "cbi.val", "or.10p"),
+k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 1.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'),
                     user.eval.type = 'kspatial', no.iter = 1000)
+
+
+####  save null models
+#saveRDS(o.nulls, 'output_nulls/O.koreanus_null.rds')
+#saveRDS(k.nulls, 'output_nulls/K.koreana_null.rds')
+
+
+#### plot null model results
+
+
 
 #####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
 # function to pull out response data
+respDataPull <- function(sp.name, model, names.var) {
+  resp.data <- list()
+  
+  for (i in 1:length(names.var)) {
+    resp <- as.data.frame(dismo::response(x = model, var = names.var[[i]]))
+    colnames(resp) = c('x','y')
+    resp$var = names.var[[i]]
+    resp.data[[i]] <- resp
+    resp.data.out <- dplyr::bind_rows(resp.data)
+    resp.data.out$Species = sp.name
+  }
+  return(resp.data.out)
+}
 
+#####  pull out the data
+# O.koreanus
+o.resp <- respDataPull(sp.name = 'O.koreanus', model = o.models$models[[2]], names.var = names(envs))
+print(o.resp)
+
+# K.koreana
+k.resp <- respDataPull(sp.name = 'K.koreana', model = k.models$models[[2]], names.var = names(envs))
+print(k.resp)
+
+
+####  plot response curves
+# bind
+resp <- rbind(o.resp, k.resp)
+glimpse(resp)
+
+# reorder vars
+resp$var = factor(resp$var, levels = c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope'))
+resp$Species = factor(resp$Species, levels = c('O.koreanus', 'K.koreana'))
+
+# plot
+resp %>%
+  ggplot(aes(x = x, y = y, group = Species, color = Species)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(values = c('#6495ED', '#FDEF3B')) +
+  facet_wrap(~ var, scales = 'free') +
+  xlab('Value') + ylab('Suitability') +
+  theme_bw() +
+  theme(axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 20)),
+        axis.title.y = element_text(margin = margin(r = 20)),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = 'bold'),
+        legend.text = element_text(size = 14, face = 'italic'),
+        legend.position = 'top')
+  
+
+#####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
+## extract envs values
+print(envs)
+
+o.val <- raster::extract(envs, o.occs[, -1]) %>% as.data.frame()
+o.val$Species = 'O.koreanus'
+
+k.val <- raster::extract(envs, k.occs[, -1]) %>% as.data.frame()
+k.val$Species = 'K.koreana'
+
+vals <- rbind(o.val, k.val)
+print(vals)
+
+## plot box
