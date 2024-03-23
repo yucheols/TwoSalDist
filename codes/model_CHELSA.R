@@ -22,7 +22,7 @@ head(bg2_5000)
 #####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
-test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp, type) {
+test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
   output <- list()
   models <- list()
   preds <- list()
@@ -32,10 +32,9 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     for (i in 1:length(bg.list)) {
       
       # make models
-      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
-                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
-                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
-                                   parallelType = 'doSNOW')
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs, bg = bg.list[[i]], 
+                                   tune.args = tune.args, partitions = partitions, partition.settings = partition.settings, 
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T, parallelType = 'doSNOW')
       
       # get results
       eval.res <- ENMeval::eval.results(eval)
@@ -66,10 +65,9 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     for (i in 1:length(bg.list)) {
       
       # make models
-      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
-                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
-                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
-                                   parallelType = 'doSNOW')
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs, bg = bg.list[[i]], 
+                                   tune.args = tune.args, partitions = partitions, partition.settings = partition.settings,
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T, parallelType = 'doSNOW')
       
       # get results
       eval.res <- ENMeval::eval.results(eval)

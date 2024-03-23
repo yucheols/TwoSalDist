@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(111)
+set.seed(1313)
 
 # prevent encoding error
 Sys.getlocale()
@@ -31,8 +31,10 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 # load mask polygon 
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
-## climate == WorldClim (1970-2000)
+## climate == WorldClim (1970-2000) 
 clim <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.tif$', full.names = T))
+clim <- dropLayer(clim, c('bio2', 'bio3','bio5', 'bio6', 'bio7'))  # drop layers not represented in paleoclim layers
+
 clim <- raster::crop(clim, extent(poly))
 clim <- raster::mask(clim, poly)
 
@@ -205,20 +207,20 @@ write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # extract 50000 random points across the extent
-pts <- rbind(o.occs[, c(2,3)], k.occs[, c(2,3)])
+pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
 write.csv(pts, 'data/bg/envCor.csv')
 
 # use ntbox
 ntbox::run_ntbox()
 
-### Pearson |r| > 0.7 removed ==  bio1 bio3 bio4 bio12 bio14 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope')))
+### Pearson |r| > 0.8 removed ==  bio1 bio4 bio12 bio13 bio14 bio15 forest slope 
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
 
 
-#####  PART 5 ::: make cross validation folds      ---------------------------------------------------------------------------------------------
+#####  PART 5 ::: make cross validation folds...if you want to specify them yourself  ----------------------------------------------------------------------
 # make "user-specified" folds
 
 ### Step 1 === get block size
@@ -288,9 +290,7 @@ fold_maker <- function(occs, bg.list, envs, k, block.size) {
     bg.fold.out[[i]] <- bg_folds
     
   }
-  
   return(list(occ.fold.out, bg.fold.out))
-  
 }
 
 ######## make folds per species
@@ -400,5 +400,11 @@ for (i in 1:length(k.folds)) {
 
 
 ### save folds
-#saveRDS(o.folds, 'data/folds/WorldClim/O.koreanus_folds.rds')
-#saveRDS(k.folds, 'data/folds/WorldClim/K.koreana_folds.rds')
+#saveRDS(o.folds, 'data/folds/WorldClim/O.koreanus_user_folds.rds')
+#saveRDS(k.folds, 'data/folds/WorldClim/K.koreana_user_folds.rds')
+
+
+####  try checkerboard as well....using bg1_10000 as an example
+k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000, envs = envs, aggregation.factor = c(7,7))
+ENMeval::evalplot.grps(pts = k.occs[, -1], pts.grp = k.cb2$occs.grp, envs = envs)
+ENMeval::evalplot.grps(pts = bg1_10000, pts.grp = k.cb2$bg.grp, envs = envs)

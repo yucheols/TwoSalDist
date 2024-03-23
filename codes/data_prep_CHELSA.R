@@ -4,7 +4,7 @@ rm(list = ls(all.names = T))
 gc()
 
 # set seed 
-set.seed(111)
+set.seed(1313)
 
 # prevent encoding error
 Sys.getlocale()
@@ -223,7 +223,7 @@ print(envs)
 plot(envs[[1]])
 
 
-#####  PART 5 ::: make cross validation folds      ---------------------------------------------------------------------------------------------
+#####  PART 5 ::: make cross validation folds...if you want to specify them yourself  ----------------------------------------------------------------------
 # make "user-specified" folds
 
 ### Step 1 === get block size

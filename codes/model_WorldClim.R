@@ -18,13 +18,13 @@ head(k.occs)
 head(bg1_5000)
 head(bg2_5000)
 
-glimpse(o.folds)
-glimpse(k.folds)
+#glimpse(o.folds)
+#glimpse(k.folds)
 
 #####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
-test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, user.grp, type) {
+test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
   output <- list()
   models <- list()
   preds <- list()
@@ -34,10 +34,9 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     for (i in 1:length(bg.list)) {
       
       # make models
-      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
-                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
-                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
-                                   parallelType = 'doSNOW')
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs, bg = bg.list[[i]], 
+                                   tune.args = tune.args, partitions = partitions, partition.settings = partition.settings, 
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T, parallelType = 'doSNOW')
       
       # get results
       eval.res <- ENMeval::eval.results(eval)
@@ -68,10 +67,9 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
     for (i in 1:length(bg.list)) {
       
       # make models
-      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs,
-                                   bg = bg.list[[i]], tune.args = tune.args, partitions = partitions,
-                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T,
-                                   parallelType = 'doSNOW')
+      eval <- ENMeval::ENMevaluate(taxon.name = taxon.name, occs = occs, envs = envs, bg = bg.list[[i]], 
+                                   tune.args = tune.args, partitions = partitions, partition.settings = partition.settings,
+                                   user.grp = user.grp[[i]], doClamp = T, algorithm = 'maxent.jar', parallel = T, parallelType = 'doSNOW')
       
       # get results
       eval.res <- ENMeval::eval.results(eval)
@@ -112,8 +110,8 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 ### O. koreanus model testing run
 # run
-o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, bg.list = bg.list, 
-                        tune.args = tune.args, partitions = c('user'), user.grp = o.folds, type = 'type1')
+o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
+                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
 
 # look at results
 print(o.models$metrics)
@@ -127,8 +125,8 @@ saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
 
 
 ### K. koreana model testing run
-k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, bg.list = bg.list, 
-                        tune.args = tune.args, partitions = c('user'), user.grp = k.folds, type = 'type1')
+k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
+                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
 
 # look at results
 print(k.models$metrics)

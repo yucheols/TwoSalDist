@@ -40,6 +40,8 @@ write.csv(k.models$contrib[[2]], 'data/varimp/K.koreana_var_imp.csv')
 
 
 #####  Part 11 ::: model eval using null models ---------------------------------------------------------------------------------------------
+# if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
+
 # load occs
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
 k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
@@ -47,33 +49,31 @@ k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 # load bg
 bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv')
 
-# load folds
-o.folds <- readRDS('data/folds/WorldClim/O.koreanus_folds.rds')
-k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
+# load folds == only needed if user specified folds were used to make the models
+#o.folds <- readRDS('data/folds/WorldClim/O.koreanus_user_folds.rds')
+#k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
 
 # load envs 
 envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
-envs <- raster::stack(subset(envs, c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope')))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 print(envs)
 
 
-####  O.koreanus null model testing == H 2.5
+####  O.koreanus null model testing == LP 1.5
 # make ENMeval object as input for ENMnulls
-o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_10000[, -1], 
-                   tune.args = list(fc = 'H', rm = 2.5), algorithm = 'maxent.jar', doClamp = T, partitions = 'user', user.grp = o.folds[[2]])
+o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LP', rm = 1.5), 
+                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)))
 
 # test nulls
-o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'H', rm = 2.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'),
-                    user.eval.type = 'kspatial', no.iter = 1000)
+o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'LP', rm = 1.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
 
 
-####  K.koreana null model testing == Q 1.0
-k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], 
-                   tune.args = list(fc = 'Q', rm = 1.0), algorithm = 'maxent.jar', doClamp = T, partitions = 'user', user.grp = k.folds[[2]])
+####  K.koreana null model testing == Q 4.5
+k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'Q', rm = 4.5), 
+                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)))
 
 # test nulls
-k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 1.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'),
-                    user.eval.type = 'kspatial', no.iter = 1000)
+k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 4.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
 
 
 ####  save null models
@@ -82,7 +82,11 @@ k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 1.0), eval.stat
 
 
 #### plot null model results
+# O.koreanus
+evalplot.nulls(e.null = o.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'violin')
 
+# K.koreana
+evalplot.nulls(e.null = k.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'violin')
 
 
 #####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
@@ -117,7 +121,7 @@ resp <- rbind(o.resp, k.resp)
 glimpse(resp)
 
 # reorder vars
-resp$var = factor(resp$var, levels = c('bio1', 'bio3', 'bio4', 'bio12', 'bio14', 'forest', 'slope'))
+resp$var = factor(resp$var, levels = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope'))
 resp$Species = factor(resp$Species, levels = c('O.koreanus', 'K.koreana'))
 
 # plot
