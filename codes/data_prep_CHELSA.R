@@ -41,6 +41,9 @@ plot(clim[[1]])
 names(clim) = gsub('_', '', names(clim))
 print(clim)
 
+# drop layers not represented in paleoclim layers
+clim <- dropLayer(clim, c('bio2', 'bio3','bio5', 'bio6', 'bio7'))  
+
 ## topo
 topo <- raster::stack(list.files(path = 'data/topo', pattern = '.tif$', full.names = T))
 topo <- raster::crop(topo, extent(poly))
@@ -75,149 +78,36 @@ for (i in 1:nlayers(envs)) {
 
 
 #####  PART 3 ::: background data          ------------------------------------------------------------------------------------------------
-### set 1 ::: target group background points == all available amphibian points from the Korean Peninsula
-# list of spp 
-spplist <- read.csv('data/target_group/baseline/korean_amphibian_splist.csv') %>% as.vector()
-print(spplist)
+### use the bg data sampled in "data_prep_WorldClim" code
 
-# collect target group species points
-megaSDM::OccurrenceCollection(spplist = spplist$Species,
-                              output = 'data/target_group',
-                              trainingarea = extent(poly))
-
-# compile points
-targ.pts <- list.files(path = 'data/target_group', pattern = '.csv', full.names = T) %>%
-  lapply(read_csv) %>%
-  rbind.fill %>%
-  dplyr::select(4,6,5)
-
-colnames(targ.pts) = c('species', 'long', 'lat')
-head(targ.pts)
-
-# add on occurrence points based on 4th NES amphibian datatpoints and Borzee et al. 2021
-nes_nk <- read.csv('data/target_group/baseline/target_group_NES_NK_SK.csv') 
-head(nes_nk)
-
-# combine the two
-targ.pts <- rbind(targ.pts, nes_nk)
-
-# thin
-targ.pts <- SDMtune::thinData(coords = targ.pts[, c(2,3)], env = terra::rast(envs[[1]]), x = 'long', y = 'lat', verbose = T, progress = T)
-write.csv(targ.pts, 'data/target_group/thinned/targ.pts.csv')
-
-###  make density raster for Set 1
-targ.ras1 <- rasterize(targ.pts, envs, 1)
-plot(targ.ras1)
-
-targ.pres1 <- which(values(targ.ras1) == 1)
-targ.pres.locs1 <- coordinates(targ.ras1)[targ.pres1, ]
-
-targ.dens1 <- MASS::kde2d(targ.pres.locs1[,1], targ.pres.locs1[,2],
-                          n = c(nrow(targ.ras1), ncol(targ.ras1)),
-                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
-
-targ.dens.ras1 <- raster(targ.dens1, envs)
-targ.dens.ras1 <- resample(targ.dens.ras1, envs)
-
-bias.layer1 <- raster::mask(targ.dens.ras1, poly)
-plot(bias.layer1)
-
-
-### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
+### set 1 ::: target group
 # n = 5000
-bg1_5000 <- xyFromCell(bias.layer1,
-                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
-                              prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg1_5000) = c('long', 'lat')
-points(bg1_5000, col = 'blue')
-
-write.csv(bg1_5000, 'data/bg/set1/bg1_5000.csv')
-
+bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv')
 
 # n = 10000
-bg1_10000 <- xyFromCell(bias.layer1,
-                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
-                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg1_10000) = c('long', 'lat')
-points(bg1_10000, col = 'blue')
-
-write.csv(bg1_10000, 'data/bg/set1/bg1_10000.csv')
-
+bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv')
 
 # n = 15000
-bg1_15000 <- xyFromCell(bias.layer1,
-                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
-                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg1_15000) = c('long', 'lat')
-points(bg1_15000, col = 'blue')
-
-write.csv(bg1_15000, 'data/bg/set1/bg1_15000.csv')
+bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv')
 
 
 ### set 2 ::: pooled occurrence points
-targ.ras2 <- rasterize(rbind(o.occs[, c(2,3)], k.occs[, c(2,3)]), envs, 1)
-plot(targ.ras2)
-
-targ.pres2 <- which(values(targ.ras2) == 1)
-targ.pres.locs2 <- coordinates(targ.ras2)[targ.pres2, ]
-
-targ.dens2 <- MASS::kde2d(targ.pres.locs2[,1], targ.pres.locs2[,2],
-                          n = c(nrow(targ.ras2), ncol(targ.ras2)),
-                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
-
-targ.dens.ras2 <- raster(targ.dens2, envs)
-targ.dens.ras2 <- resample(targ.dens.ras2, envs)
-
-bias.layer2 <- raster::mask(targ.dens.ras2, poly)
-plot(bias.layer2)
-
-### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
 # n = 5000
-bg2_5000 <- xyFromCell(bias.layer2,
-                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
-                              prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg2_5000) = c('long', 'lat')
-points(bg2_5000, col = 'green')
-
-write.csv(bg2_5000, 'data/bg/set2/bg2_5000.csv')
-
+bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv')
 
 # n = 10000
-bg2_10000 <- xyFromCell(bias.layer2,
-                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
-                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg2_10000) = c('long', 'lat')
-points(bg2_10000, col = 'green')
-
-write.csv(bg2_10000, 'data/bg/set2/bg2_10000.csv')
-
+bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv')
 
 # n = 15000
-bg2_15000 <- xyFromCell(bias.layer2,
-                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
-                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
-
-colnames(bg2_15000) = c('long', 'lat')
-points(bg2_15000, col = 'green')
-
-write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
+bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv')
 
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
-# bind occurrences of the two species
-pts <- rbind(o.occs[, c(2,3)], k.occs[, c(2,3)])
-write.csv(pts, 'data/bg/envCor.csv')
-
 # use ntbox
 ntbox::run_ntbox()
 
-### Pearson |r| > 0.7 removed ==  bio1 bio2 bio4 bio12 bio14 bio15 forest slope 
-envs <- raster::stack(subset(envs, c('bio1', 'bio2', 'bio4', 'bio12', 'bio14', 'bio15', 'forest', 'slope')))
+### Pearson |r| > 0.8 removed ==  bio1 bio4 bio12 bio13 bio14 bio15 forest slope  
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 
 print(envs)
 plot(envs[[1]])
@@ -407,3 +297,9 @@ for (i in 1:length(k.folds)) {
 ### save folds
 #saveRDS(o.folds, 'data/folds/CHELSA/O.koreanus_folds.rds')
 #saveRDS(k.folds, 'data/folds/CHELSA/K.koreana_folds.rds')
+
+
+####  try checkerboard as well....using bg1_10000 as an example
+k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000[, -1], envs = envs, aggregation.factor = c(7,7))
+ENMeval::evalplot.grps(pts = k.occs[, -1], pts.grp = k.cb2$occs.grp, envs = envs)
+ENMeval::evalplot.grps(pts = bg1_10000[, -1], pts.grp = k.cb2$bg.grp, envs = envs)
