@@ -1,4 +1,17 @@
-##### Part 15 ::: fit climate-only model
+# clear working environment
+rm(list = ls(all.names = T))
+gc()
+
+# turn off scientific notation
+options(scipen = 999)
+
+# load packages
+library(raster)
+library(dplyr)
+library(ENMeval)
+
+##### Part 15 ::: fit climate-only model ---------------------------------------------------------------------------------------------
+####  prep data 
 ## load occs
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
 k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
@@ -11,8 +24,13 @@ bg <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
 head(bg)
 
 ## load envs
+envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil', full.names = T))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
 print(envs)
+plot(envs[[1]])
 
+
+#### Model tuning
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
@@ -90,3 +108,17 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
   return(list(metrics = metrics, models = models, preds = preds.stack, contrib = contrib))
 }
 
+
+### tuning arguments
+tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
+                  rm = seq(0.5,5, by = 0.5))
+
+
+### O.koreanus
+o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1') 
+
+
+### K.koreana 
+k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')

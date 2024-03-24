@@ -8,7 +8,6 @@ options(scipen = 999)
 
 # load packages
 library(raster)
-library(ENMeval)
 library(dplyr)
 
 ##### Part 14 ::: hindcasting data prep  ---------------------------------------------------------------------------------------------
@@ -99,6 +98,9 @@ unitCheck(ref.env = envs, proj.env = lgm, n = 10000)  # LGM
 unitCheck(ref.env = envs, proj.env = mh, n = 10000)  # MH
 
 #### ....and "fix" the rasters as needed /// divide temp related variables by 10 == bio1 & bio4
+#### NOTE == the max values from "unitCheck" output and printed max value of the full RasterStack can differ
+#### this is simply because the "unitCheck" function uses n random points sampled across the reference extent to speed up the calculation! 
+
 # mPWP
 mpwp.bio1 <- mpwp[['bio1']]/10
 mpwp.bio4 <- mpwp[['bio4']]/10
@@ -110,9 +112,105 @@ print(mpwp)
 unitCheck(ref.env = envs, proj.env = mpwp, n = 10000)
 
 # MIS19
+mis.bio1 <- mis[['bio1']]/10
+mis.bio4 <- mis[['bio4']]/10
+
+mis <- dropLayer(mis, c('bio1', 'bio4'))
+mis <- raster::stack(mis.bio1, mis.bio4, mis)
+print(mis)
+
+unitCheck(ref.env = envs, proj.env = mis, n = 10000)
+
 # LIG
+lig.bio1 <- lig[['bio1']]/10
+lig.bio4 <- lig[['bio4']]/10
+
+lig <- dropLayer(lig, c('bio1', 'bio4'))
+lig <- raster::stack(lig.bio1, lig.bio4, lig)
+print(lig)
+
+unitCheck(ref.env = envs, proj.env = lig, n = 10000)
+
 # LGM
+lgm.bio1 <- lgm[['bio1']]/10
+lgm.bio4 <- lgm[['bio4']]/10
+
+lgm <- dropLayer(lgm, c('bio1', 'bio4'))
+lgm <- raster::stack(lgm.bio1, lgm.bio4, lgm)
+print(lgm)
+
+unitCheck(ref.env = envs, proj.env = lgm, n = 10000)
+
 # MH
+mh.bio1 <- mh[['bio1']]/10
+mh.bio4 <- mh[['bio4']]/10
+
+mh <- dropLayer(mh, c('bio1', 'bio4'))
+mh <- raster::stack(mh.bio1, mh.bio4, mh)
+print(mh)
+
+unitCheck(ref.env = envs, proj.env = mh, n = 10000)
 
 
+#### downscale to 1km using bilinear interpolation == fact is 5 since the original resolution (5km) is 5 times greater than the desired resolution
+# mPWP
+mpwp <- raster::disaggregate(mpwp, fact = 5, method = 'bilinear')
+print(mpwp)
+plot(mpwp[[1]])
 
+# MIS19
+mis <- raster::disaggregate(mis, fact = 5, method = 'bilinear')
+print(mis)
+plot(mis[[1]])
+
+# LIG
+lig <- raster::disaggregate(lig, fact = 5, method = 'bilinear')
+print(lig)
+plot(lig[[1]])
+
+# LGM
+lgm <- raster::disaggregate(lgm, fact = 5, method = 'bilinear')
+print(lgm)
+plot(lgm[[1]])
+
+# MH
+mh <- raster::disaggregate(mh, fact = 5, method = 'bilinear')
+print(mh)
+plot(mh[[1]])
+
+
+#### export processed layers
+# mPWP
+for (i in 1:nlayers(mpwp)) {
+  r <- mpwp[[i]]
+  name <- paste0('data/hindcast_layers/processed/mPWP/', names(mpwp)[i], '.bil')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+# MIS19
+for (i in 1:nlayers(mis)) {
+  r <- mis[[i]]
+  name <- paste0('data/hindcast_layers/processed/MIS19/', names(mis)[i], '.bil')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+# LIG
+for (i in 1:nlayers(lig)) {
+  r <- lig[[i]]
+  name <- paste0('data/hindcast_layers/processed/lig/', names(lig)[i], '.bil')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+# LGM
+for (i in 1:nlayers(lgm)) {
+  r <- lgm[[i]]
+  name <- paste0('data/hindcast_layers/processed/lgm/', names(lgm)[i], '.bil')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+# MH
+for (i in 1:nlayers(mh)) {
+  r <- mh[[i]]
+  name <- paste0('data/hindcast_layers/processed/mh/', names(mh)[i], '.bil')
+  writeRaster(r, filename = name, overwrite = T)
+}
