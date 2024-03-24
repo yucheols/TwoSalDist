@@ -129,7 +129,7 @@ resp$Species = factor(resp$Species, levels = c('O.koreanus', 'K.koreana'))
 resp %>%
   ggplot(aes(x = x, y = y, group = Species, color = Species)) +
   geom_line(linewidth = 1.2) +
-  scale_color_manual(values = c('#6495ED', '#FDEF3B')) +
+  scale_color_manual(values = c('#6495ED', '#ffe600')) +
   facet_wrap(~ var, scales = 'free', nrow = 2, ncol = 4) +
   xlab('Value') + ylab('Suitability') +
   theme_bw() +
@@ -156,7 +156,7 @@ boxdata <- function(sp.name, envs, pts) {
     val <- raster::extract(envs[[i]], pts) %>% as.data.frame()
     val$var = names(envs)[i]
     val$species = sp.name
-    colnames(val) = c('val', 'var', 'species')
+    colnames(val) = c('val', 'var', 'Species')
     output[[i]] <- val
   }
   output <- dplyr::bind_rows(output)
@@ -173,13 +173,33 @@ vals <- rbind(o.val, k.val)
 head(vals)
 
 ## reorder species plotting order
-vals$species = factor(vals$species, levels = c('O.koreanus', 'K.koreana'))
+vals$Species = factor(vals$Species, levels = c('O.koreanus', 'K.koreana'))
+
+## recode variable names
+vals$var = dplyr::recode_factor(vals$var, 
+                                'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
+                                'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
 
 ## plot box
 vals %>%
-  ggplot(aes(x = var, y = val, fill = species, color = species)) +
-  geom_boxplot(linewidth = 1.0, alpha = 0.4) +
+  ggplot(aes(x = var, y = val, fill = Species, color = Species)) +
+  geom_boxplot(linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_point(position = position_jitterdodge(0.4), alpha = 0.4) +
   facet_wrap(~ var, scale = 'free', nrow = 2, ncol = 4) +
-  scale_fill_manual(values = c('#6495ED', '#FDEF3B')) +
-  scale_color_manual(values = c('#6495ED', '#FDEF3B')) +
-  theme_bw()
+  scale_fill_manual(values = c('#6495ED', '#ffe600')) +
+  scale_color_manual(values = c('#6495ED', '#ffe600')) +
+  xlab('Variable') + ylab('Value') +
+  theme_bw() +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 20)),
+        axis.title.y = element_text(margin = margin(r = 20)),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = 'bold'),
+        legend.text = element_text(size = 14, face = 'italic'),
+        legend.position = 'top')
+
+## save
+ggsave('plots/WorldClim models/env_values_boxplot.png', width = 20, height = 25, dpi = 800, units = 'cm')
