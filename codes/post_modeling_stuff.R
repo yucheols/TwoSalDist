@@ -93,6 +93,8 @@ evalplot.nulls(e.null = k.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'v
 #####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
 # function to pull out response data
 respDataPull <- function(sp.name, model, names.var) {
+  require(dplyr)
+  
   resp.data <- list()
   
   for (i in 1:length(names.var)) {
@@ -158,6 +160,8 @@ print(envs)
 ## O. koreanus
 # function to format data for box plot
 boxdata <- function(sp.name, envs, pts) {
+  require(dplyr)
+  
   output <- list()
   
   for (i in 1:length(names(envs))) {

@@ -23,6 +23,10 @@ head(bg2_5000)
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
+  require(dplyr)
+  require(ENMeval)
+  require(raster)
+  
   output <- list()
   models <- list()
   preds <- list()

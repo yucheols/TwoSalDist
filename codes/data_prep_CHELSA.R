@@ -119,6 +119,7 @@ plot(envs[[1]])
 ### Step 1 === get block size
 # automate block size calc
 block_size <- function(points, raster, num_sample, crs) {
+  
   block_size_list <- list()
   
   block_prep <- for (i in 1:length(points)) {
