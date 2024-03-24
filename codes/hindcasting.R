@@ -115,10 +115,25 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 
 ### O.koreanus
+# run
 o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1') 
 
+# look at metric
+
+# look at prediction
+
+# save models
+
 
 ### K.koreana 
+# run
 k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+
+# look at metric
+
+# look at prediction
+
+# save models
+
