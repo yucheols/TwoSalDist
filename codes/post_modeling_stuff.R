@@ -19,13 +19,31 @@ k.models <- readRDS('output_model_rds/K_koreana_model_tuning_WorldClim.rds')
 glimpse(o.models)
 glimpse(k.models)
 
-### check model metrics
+# check model metrics
 print(o.models$metrics)
 print(k.models$metrics)
 
-### look at preds
+# look at preds
 plot(o.models$preds)
 plot(k.models$preds)
+
+
+### load occs
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
+
+### load bg
+bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv')
+
+### load folds == only needed if user specified folds were used to make the models
+#o.folds <- readRDS('data/folds/WorldClim/O.koreanus_user_folds.rds')
+#k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
+
+### load envs 
+envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
+print(envs)
+
 
 #####  Part 10 ::: get variable importance for each sp. ---------------------------------------------------------------------------------------------
 # O. koreanus == bg1_10000
@@ -41,23 +59,6 @@ write.csv(k.models$contrib[[2]], 'data/varimp/K.koreana_var_imp.csv')
 
 #####  Part 11 ::: model eval using null models ---------------------------------------------------------------------------------------------
 # if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
-
-# load occs
-o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
-k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
-
-# load bg
-bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv')
-
-# load folds == only needed if user specified folds were used to make the models
-#o.folds <- readRDS('data/folds/WorldClim/O.koreanus_user_folds.rds')
-#k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
-
-# load envs 
-envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
-envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
-print(envs)
-
 
 ####  O.koreanus null model testing == LP 1.5
 # make ENMeval object as input for ENMnulls
@@ -129,7 +130,7 @@ resp %>%
   ggplot(aes(x = x, y = y, group = Species, color = Species)) +
   geom_line(linewidth = 1.2) +
   scale_color_manual(values = c('#6495ED', '#FDEF3B')) +
-  facet_wrap(~ var, scales = 'free') +
+  facet_wrap(~ var, scales = 'free', nrow = 2, ncol = 4) +
   xlab('Value') + ylab('Suitability') +
   theme_bw() +
   theme(axis.title = element_text(size = 14, face = 'bold'),
