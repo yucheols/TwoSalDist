@@ -125,6 +125,11 @@ glimpse(resp)
 resp$var = factor(resp$var, levels = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope'))
 resp$Species = factor(resp$Species, levels = c('O.koreanus', 'K.koreana'))
 
+# recode variable names
+resp$var = dplyr::recode_factor(resp$var,
+                                'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
+                                'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
+
 # plot
 resp %>%
   ggplot(aes(x = x, y = y, group = Species, color = Species)) +
@@ -141,6 +146,9 @@ resp %>%
         legend.title = element_text(size = 14, face = 'bold'),
         legend.text = element_text(size = 14, face = 'italic'),
         legend.position = 'top')
+
+# save plot
+ggsave('plots/WorldClim models/response_curves.png', width = 30, height = 22, dpi = 800, units = 'cm')
   
 
 #####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
