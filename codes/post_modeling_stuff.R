@@ -147,13 +147,39 @@ resp %>%
 ## extract envs values
 print(envs)
 
-o.val <- raster::extract(envs, o.occs[, -1]) %>% as.data.frame()
-o.val$Species = 'O.koreanus'
+## O. koreanus
+# function to format data for box plot
+boxdata <- function(sp.name, envs, pts) {
+  output <- list()
+  
+  for (i in 1:length(names(envs))) {
+    val <- raster::extract(envs[[i]], pts) %>% as.data.frame()
+    val$var = names(envs)[i]
+    val$species = sp.name
+    colnames(val) = c('val', 'var', 'species')
+    output[[i]] <- val
+  }
+  output <- dplyr::bind_rows(output)
+  return(output)
+}
 
-k.val <- raster::extract(envs, k.occs[, -1]) %>% as.data.frame()
-k.val$Species = 'K.koreana'
+o.val <- boxdata(sp.name = 'O.koreanus', envs = envs, pts = o.occs[, -1])
+print(o.val)
+
+k.val <- boxdata(sp.name = 'K.koreana', envs = envs, pts = k.occs[, -1])
+print(k.val)
 
 vals <- rbind(o.val, k.val)
-print(vals)
+head(vals)
+
+## reorder species plotting order
+vals$species = factor(vals$species, levels = c('O.koreanus', 'K.koreana'))
 
 ## plot box
+vals %>%
+  ggplot(aes(x = var, y = val, fill = species, color = species)) +
+  geom_boxplot(linewidth = 1.0, alpha = 0.4) +
+  facet_wrap(~ var, scale = 'free', nrow = 2, ncol = 4) +
+  scale_fill_manual(values = c('#6495ED', '#FDEF3B')) +
+  scale_color_manual(values = c('#6495ED', '#FDEF3B')) +
+  theme_bw()
