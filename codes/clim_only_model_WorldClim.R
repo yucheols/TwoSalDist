@@ -136,7 +136,7 @@ write.csv(o.models_clim$contrib, 'tuning_experiments/varimp/O.koreanus_clim_only
 write.csv(o.models_clim$metrics, 'tuning_experiments/metrics/O.koreanus_clim_only_WorldClim_metrics.csv')
 
 # export continuous pred
-writeRaster(o.models_clim$preds, 'tuning_experiments/preds/O.koreanus/WorldClim/cont/O.koreanus_clim_only.tif')
+writeRaster(o.models_clim$preds, 'tuning_experiments/preds/O.koreanus/WorldClim/cont/O.koreanus_clim_only.tif', overwrite = T)
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -166,6 +166,6 @@ write.csv(k.models_clim$contrib, 'tuning_experiments/varimp/K.koreana_clim_only_
 write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only_WorldClim_metrics.csv')
 
 # export pred
-writeRaster(k.models_clim$preds, 'tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_clim_only.tif')
+writeRaster(k.models_clim$preds, 'tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_clim_only.tif', overwrite = T)
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
