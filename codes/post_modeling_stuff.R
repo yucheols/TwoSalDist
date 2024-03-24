@@ -13,8 +13,8 @@ library(ENMeval)
 library(ggplot2)
 
 ### load models
-o.models <- readRDS('output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
-k.models <- readRDS('output_model_rds/K_koreana_model_tuning_WorldClim.rds')
+o.models <- readRDS('tuning_experiments/output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
+k.models <- readRDS('tuning_experiments/output_model_rds/K_koreana_model_tuning_WorldClim.rds')
 
 glimpse(o.models)
 glimpse(k.models)

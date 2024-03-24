@@ -296,8 +296,8 @@ for (i in 1:length(k.folds)) {
 
 
 ### save folds
-#saveRDS(o.folds, 'data/folds/CHELSA/O.koreanus_folds.rds')
-#saveRDS(k.folds, 'data/folds/CHELSA/K.koreana_folds.rds')
+#saveRDS(o.folds, 'data/folds/CHELSA/O.koreanus_user_folds.rds')
+#saveRDS(k.folds, 'data/folds/CHELSA/K.koreana_user_folds.rds')
 
 
 ####  try checkerboard as well....using bg1_10000 as an example

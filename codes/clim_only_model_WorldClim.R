@@ -111,6 +111,7 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
                   rm = seq(0.5,5, by = 0.5))
 
 
+##### ------------------------------------------------------------------------------------------------------------------------------------------------
 ### O.koreanus == LQP 3.5
 # run
 o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
@@ -126,9 +127,21 @@ print(o.models_clim$contrib)
 plot(o.models_clim$preds)
 
 # save models
-saveRDS(o.models_clim, 'output_model_rds/O_koreanus_clim_only_WorldClim.rds')
+saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
+
+# export contribution
+write.csv(o.models_clim$contrib, 'tuning_experiments/varimp/O.koreanus_clim_only_var.imp.csv')
+
+# export metric
+write.csv(o.models_clim$metrics, 'tuning_experiments/metrics/O.koreanus_clim_only_WorldClim_metrics.csv')
+
+# export continuous pred
+writeRaster(o.models_clim$preds, 'tuning_experiments/preds/O.koreanus/WorldClim/cont/O.koreanus_clim_only.tif')
+
+##### ------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+##### ------------------------------------------------------------------------------------------------------------------------------------------------
 ### K.koreana == Q 0.5
 # run
 k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
@@ -144,4 +157,15 @@ print(k.models_clim$contrib)
 plot(k.models_clim$preds)
 
 # save models
-saveRDS(k.models_clim, 'output_model_rds/K_koreana_clim_only_WorldClim.rds')
+saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
+
+# export contribution
+write.csv(k.models_clim$contrib, 'tuning_experiments/varimp/K.koreana_clim_only_var.imp.csv')
+
+# export metric
+write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only_WorldClim_metrics.csv')
+
+# export pred
+writeRaster(k.models_clim$preds, 'tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_clim_only.tif')
+
+##### ------------------------------------------------------------------------------------------------------------------------------------------------

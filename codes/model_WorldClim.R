@@ -125,7 +125,7 @@ names(o.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2
 plot(o.models$preds)
 
 # save output as .rds for later use
-saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
+saveRDS(o.models, 'tuning_experiments/output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
 
 
 ### K. koreana model testing run
@@ -140,7 +140,7 @@ names(k.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2
 plot(k.models$preds)
 
 # save output as .rds for later use
-saveRDS(k.models, 'output_model_rds/K_koreana_model_tuning_WorldClim.rds')
+saveRDS(k.models, 'tuning_experiments/output_model_rds/K_koreana_model_tuning_WorldClim.rds')
 
 
 #####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
