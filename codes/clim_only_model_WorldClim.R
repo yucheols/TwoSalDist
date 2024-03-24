@@ -111,7 +111,7 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
                   rm = seq(0.5,5, by = 0.5))
 
 
-### O.koreanus
+### O.koreanus == LQP 3.5
 # run
 o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1') 
@@ -119,20 +119,29 @@ o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = en
 # look at metric
 print(o.models_clim$metrics)
 
+# look at variable importance
+print(o.models_clim$contrib)
+
 # look at prediction
 plot(o.models_clim$preds)
 
 # save models
+saveRDS(o.models_clim, 'output_model_rds/O_koreanus_clim_only_WorldClim.rds')
 
 
-### K.koreana 
+### K.koreana == Q 0.5
 # run
 k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
 
 # look at metric
+print(k.models_clim$metrics)
+
+# look at variable importance
+print(k.models_clim$contrib)
 
 # look at prediction
+plot(k.models_clim$preds)
 
 # save models
-
+saveRDS(k.models_clim, 'output_model_rds/K_koreana_clim_only_WorldClim.rds')
