@@ -49,11 +49,10 @@ po/*~
 rsconnect/
 
 data/
-output_model_rds/
 plots/
 tuning_experiments/
 niche_analyses/
 TwoSalDist_mapping/
 output_nulls/
-hindcast_layers/
+hindcast/
 

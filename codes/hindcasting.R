@@ -7,6 +7,8 @@ gc()
 library(raster)
 library(dplyr)
 library(ENMeval)
+library(ggplot2)
+
 
 ##### Part 14 ::: hindcasting run --------------------------------------------------------------------------------------------------------------------
 
@@ -84,4 +86,149 @@ print(k.hinds)
 plot(k.hinds)
 
 
-##### Part 14 ::: MESS --------------------------------------------------------------------------------------------------------------------
+### export hindcast rasters
+# O.koreanus
+for (i in 1:nlayers(o.hinds)) {
+  r <- o.hinds[[i]]
+  name <- paste0('hindcast/O_koreanus/O.koreanus_', names(o.hinds)[i], '.tif')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+# K.koreana
+for (i in 1:nlayers(k.hinds)) {
+  r <- k.hinds[[i]]
+  name <- paste0('hindcast/K_koreana/K.koreana_', names(k.hinds)[i], '.tif')
+  writeRaster(r, filename = name, overwrite = T)
+}
+
+
+##### Part 15 ::: MESS --------------------------------------------------------------------------------------------------------------------
+
+
+
+
+##### Part 16 :::  compare env values between time ----------------------------------------------------------------------
+
+
+
+
+##### Part 17 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
+##### annual mean temp and annual precip
+
+## function to automate data formatting
+env.val.get <- function(env.list, var, time, type) {
+  require(dplyr)
+  
+  output <- list()
+  
+  if (type == 'max'){
+    for (i in 1:length(env.list)) {
+      get.df <- env.list[[i]][[var]] %>% as.data.frame() %>% na.omit()
+      get.df.max <- max(get.df[[var]])
+      df.max <- data.frame(val = get.df.max, time = time[[i]])
+      
+      output[[i]] <- df.max
+      output[[i]]$type = type
+      output[[i]]$var = var
+    }
+  }
+  else if (type == 'mean') {
+    for (i in 1:length(env.list)) {
+      get.df <- env.list[[i]][[var]] %>% as.data.frame() %>% na.omit()
+      get.df.mean <- mean(get.df[[var]])
+      df.mean <- data.frame(val = get.df.mean, time = time[[i]])
+      
+      output[[i]] <- df.mean
+      output[[i]]$type = type
+      output[[i]]$var = var
+    }
+  }
+  else if (type == 'min') {
+    for (i in 1:length(env.list)) {
+      get.df <- env.list[[i]][[var]] %>% as.data.frame() %>% na.omit()
+      get.df.min <- min(get.df[[var]])
+      df.min <- data.frame(val = get.df.min, time = time[[i]])
+      
+      output[[i]] <- df.min
+      output[[i]]$type = type
+      output[[i]]$var = var
+    }
+  }
+  output.all <- dplyr::bind_rows(output)
+  return(output.all)
+}
+
+
+### load current values
+cur <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
+cur <- raster::stack(subset(cur, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))  
+print(cur)
+plot(cur[[1]])
+
+### bio1 ::: Annual Mean Temp
+# min
+min.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
+
+print(min.vals.tmp)
+
+# mean
+mean.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
+
+print(mean.vals.tmp)
+
+# max
+max.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
+
+print(max.vals.tmp)
+
+
+### bio13 ::: 
+# min
+min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+                           time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
+
+print(min.vals.pr)
+
+# mean
+mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
+
+print(mean.vals.pr)
+
+# max
+max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+                           time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
+
+print(max.vals.pr)
+
+
+### bind
+env.vals <- rbind(min.vals.tmp, mean.vals.tmp, max.vals.tmp, min.vals.pr, mean.vals.pr, max.vals.pr)
+print(env.vals)
+
+### reorder variable levels 
+env.vals$time = factor(env.vals$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
+env.vals$type = factor(env.vals$type, levels = c('min', 'mean', 'max'))
+
+### rename variables
+env.vals$var <- dplyr::recode_factor(env.vals$var, 'bio1' = 'Bio1 (°C)', 'bio13' = 'Bio13 (mm)')
+env.vals$type <- dplyr::recode_factor(env.vals$type, 'min' = 'Min', 'mean' = 'Mean', 'max' = 'Max')
+
+### plot
+env.vals %>%
+  ggplot(aes(x = time, y = val, group = type, color = type)) +
+  geom_line(linewidth = 1.1) +
+  facet_wrap(~ var, scales = 'free') +
+  xlab('Time period') + ylab('Values') +
+  theme_bw() +
+  theme(axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 20)),
+        axis.title.y = element_text(margin = margin(r = 20)),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 14),
+        legend.position = 'top')
