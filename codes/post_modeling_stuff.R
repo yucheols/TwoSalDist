@@ -132,6 +132,9 @@ resp$var = dplyr::recode_factor(resp$var,
                                 'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
                                 'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
 
+# recode species names
+resp$Species = dplyr::recode_factor(resp$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
+
 # plot
 resp %>%
   ggplot(aes(x = x, y = y, group = Species, color = Species)) +
@@ -191,6 +194,9 @@ vals$Species = factor(vals$Species, levels = c('O.koreanus', 'K.koreana'))
 vals$var = dplyr::recode_factor(vals$var, 
                                 'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
                                 'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
+
+## recode species names
+vals$Species = dplyr::recode_factor(vals$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
 
 ## plot box
 vals %>%
