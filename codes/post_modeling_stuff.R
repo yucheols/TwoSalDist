@@ -45,7 +45,7 @@ envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 
 print(envs)
 
 
-#####  Part 10 ::: get variable importance for each sp. ---------------------------------------------------------------------------------------------
+#####  Part 9 ::: get variable importance for each sp. ---------------------------------------------------------------------------------------------
 # O. koreanus == bg1_10000
 print(o.models$contrib[[2]])
 
@@ -57,7 +57,7 @@ write.csv(o.models$contrib[[2]], 'data/varimp/O.koreanus_var.imp.csv')
 write.csv(k.models$contrib[[2]], 'data/varimp/K.koreana_var_imp.csv')
 
 
-#####  Part 11 ::: model eval using null models ---------------------------------------------------------------------------------------------
+#####  Part 10 ::: model eval using null models ---------------------------------------------------------------------------------------------
 # if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
 
 ####  O.koreanus null model testing == LP 1.5
@@ -90,7 +90,7 @@ evalplot.nulls(e.null = o.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'v
 evalplot.nulls(e.null = k.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'violin')
 
 
-#####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
+#####  Part 11 ::: response curves ---------------------------------------------------------------------------------------------
 # function to pull out response data
 respDataPull <- function(sp.name, model, names.var) {
   require(dplyr)
@@ -156,7 +156,7 @@ resp %>%
 ggsave('plots/WorldClim models/response_curves.png', width = 30, height = 22, dpi = 800, units = 'cm')
   
 
-#####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
+#####  Part 12 ::: compare envs values ---------------------------------------------------------------------------------------------
 ## extract envs values
 print(envs)
 

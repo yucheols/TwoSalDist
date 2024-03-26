@@ -7,7 +7,7 @@ library(raster)
 library(dplyr)
 library(ENMeval)
 
-##### Part 15 ::: fit climate-only model ---------------------------------------------------------------------------------------------
+##### Part 13 ::: fit climate-only model ---------------------------------------------------------------------------------------------
 ####  prep data 
 ## load occs
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
@@ -169,3 +169,49 @@ write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only
 writeRaster(k.models_clim$preds, 'tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_clim_only.tif', overwrite = T)
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
+
+#####  Part 14 ::: climate-only model binary ----------------------------------------------------------------------------------------------------------
+# calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
+
+# ------------------------------------------------------------------------------------------------------------------------
+sdm_threshold <- function(sdm, occs, type = "mtp", binary = FALSE){
+  occPredVals <- raster::extract(sdm, occs)
+  if(type == "mtp"){
+    thresh <- min(na.omit(occPredVals))
+  } else if(type == "p10"){
+    if(length(occPredVals) < 10){
+      p10 <- floor(length(occPredVals) * 0.9)
+    } else {
+      p10 <- ceiling(length(occPredVals) * 0.9)
+    }
+    thresh <- rev(sort(occPredVals))[p10]
+  }
+  sdm_thresh <- sdm
+  sdm_thresh[sdm_thresh < thresh] <- NA
+  if(binary){
+    sdm_thresh[sdm_thresh >= thresh] <- 1
+  }
+  return(sdm_thresh)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+##### get thresholds 
+# O.koreanus == p10 == 0.3719397 
+sdm_threshold(sdm = o.models_clim$preds, occs = o.occs, type = 'p10', binary = F)
+
+# K.koreana == p10 == 0.4518484
+sdm_threshold(sdm = k.models_clim$preds, occs = k.occs, type = 'p10', binary = F)
+
+
+##### get binary
+# O.koreanus
+o.clim_bin <- ecospat::ecospat.binary.model(Pred = terra::rast(o.models_clim$preds), Threshold = 0.3719397) %>% raster()
+plot(o.clim_bin)
+
+writeRaster(o.clim_bin, 'tuning_experiments/preds/O.koreanus/WorldClim/bin/O.koreanus_clim_only_bin.tif', overwrite = T)
+
+# K.koreana 
+k.clim_bin <- ecospat::ecospat.binary.model(Pred = terra::rast(k.models_clim$preds), Threshold = 0.4518484) %>% raster()
+plot(k.clim_bin)
+
+writeRaster(k.clim_bin, 'tuning_experiments/preds/K.koreana/WorldClim/bin/K.koreana_clim_only_bin.tif', overwrite = T)

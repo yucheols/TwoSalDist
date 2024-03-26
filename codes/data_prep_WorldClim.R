@@ -21,13 +21,13 @@ library(blockCV)
 library(sf)
 library(tmap)
 
-#####  PART 1 ::: load occurrence points ------------------------------------------------------------------------------------------------
+#####  Part 1 ::: load occurrence points ------------------------------------------------------------------------------------------------
 # these data are already spatially thinned to 1km 
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
 k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 
 
-#####  PART 2 ::: load env data          ------------------------------------------------------------------------------------------------
+#####  Part 2 ::: load env data          ------------------------------------------------------------------------------------------------
 # load mask polygon 
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
@@ -70,7 +70,7 @@ envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil
 plot(envs[[1]])
 
 
-#####  PART 3 ::: background data          ------------------------------------------------------------------------------------------------
+#####  Part 3 ::: background data          ------------------------------------------------------------------------------------------------
 ### set 1 ::: target group background points == all available amphibian points from the Korean Peninsula
 # list of spp 
 spplist <- read.csv('data/target_group/baseline/korean_amphibian_splist.csv') %>% as.vector()
@@ -205,7 +205,7 @@ points(bg2_15000, col = 'green')
 write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
 
 
-#####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
+#####  Part 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # extract 50000 random points across the extent
 pts <- dismo::randomPoints(mask = envs[[1]], n = 10000) %>% as.data.frame()
 write.csv(pts, 'data/bg/envCor.csv')
@@ -220,7 +220,7 @@ print(envs)
 plot(envs[[1]])
 
 
-#####  PART 5 ::: make cross validation folds...if you want to specify them yourself  ----------------------------------------------------------------------
+#####  Part 5 ::: make cross validation folds...if you want to specify them yourself  ----------------------------------------------------------------------
 # make "user-specified" folds
 
 ### Step 1 === get block size
