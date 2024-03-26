@@ -105,42 +105,12 @@ for (i in 1:nlayers(k.hinds)) {
 ##### Part 17 ::: MESS --------------------------------------------------------------------------------------------------------------------
 
 
-##### Part 18 ::: hindcast binary for LGM and MH == prep for dispersal analyses using SDMtoolbox in ArcGIS --------------------------------
-
-### O.koreanus == clim only p10 == 0.3719397
-# LGM
-o.lgm.bin <- ecospat::ecospat.binary.model(Pred = terra::rast(o.hinds$LGM), Threshold = 0.3719397) %>% raster()
-plot(o.lgm.bin)
-
-# MH
-o.mh.bin <- ecospat::ecospat.binary.model(Pred = terra::rast(o.hinds$MH), Threshold = 0.3719397) %>% raster()
-plot(o.mh.bin)
-
-# export
-writeRaster(o.lgm.bin, 'dispersal_corridors/rasters/O.koreanus/O.koreanus_LGM_bin.tif', overwrite = T)
-writeRaster(o.mh.bin, 'dispersal_corridors/rasters/O.koreanus/O.koreanus_MH_bin.tif', overwrite = T)
-
-
-### K.koreana == clim only p10 == 0.4518484
-# LGM
-k.lgm.bin <- ecospat::ecospat.binary.model(Pred = terra::rast(k.hinds$LGM), Threshold = 0.4518484) %>% raster()
-plot(k.lgm.bin)
-
-# MH
-k.mh.bin <- ecospat::ecospat.binary.model(Pred = terra::rast(k.hinds$MH), Threshold = 0.4518484) %>% raster()
-plot(k.mh.bin)
-
-# export
-writeRaster(k.lgm.bin, 'dispersal_corridors/rasters/K.koreana/K.koreana_LGM_bin.tif', overwrite = T)
-writeRaster(k.mh.bin, 'dispersal_corridors/rasters/K.koreana/K.koreana_MH_bin.tif', overwrite = T)
-
-
-##### Part 19 :::  compare env values between time ----------------------------------------------------------------------
+##### Part 18 :::  compare env values between time ----------------------------------------------------------------------
 
 
 
 
-##### Part 20 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
+##### Part 19 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
 ##### annual mean temp and annual precip
 
 ## function to automate data formatting
