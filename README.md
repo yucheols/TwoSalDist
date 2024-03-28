@@ -1,4 +1,4 @@
-# Ecological niche modeling of two distantly related and lungless salamanders endemic to the Korean Peninsula   
+# Ecological niche modeling of two distantly related lungless salamanders  
 Ecological niche modeling and associated analyses for the two species of Korean endemic salamanders.
 
 ## Study background
