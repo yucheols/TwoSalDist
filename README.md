@@ -7,7 +7,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ## Study design
 
 ## Model tuning experiments
-![O koreanus_WorldClim_cont](https://github.com/yucheols/TwoSalDist/assets/85914125/a3c6a87f-f46f-4d1b-a9db-fe9f32a49caf)
+![O koreanus_WorldClim_cont](https://github.com/yucheols/TwoSalDist/assets/85914125/daab1611-197c-4950-9059-45e7ced8d13d)
+
 
 ## Hindcasting ENMs
 
