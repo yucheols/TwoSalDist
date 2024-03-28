@@ -117,12 +117,15 @@ o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = en
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
 
 # look at metric
+print(o.models_clim$metrics)
 
 # look at variable importance
 
 # look at prediction
+plot(o.models_clim$preds)
 
 # save models
+saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
 
 # export contribution
 
@@ -137,12 +140,15 @@ k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = env
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
 
 # look at metric
+print(k.models_clim$metrics)
 
 # look at variable importance
 
 # look at prediction
+plot(k.models_clim$preds)
 
 # save models
+saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
 
 # export contribution
 
