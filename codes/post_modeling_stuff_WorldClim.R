@@ -53,8 +53,8 @@ print(o.models$contrib[[2]])
 print(k.models$contrib[[2]])
 
 # export
-write.csv(o.models$contrib[[2]], 'data/varimp/O.koreanus_var.imp.csv')
-write.csv(k.models$contrib[[2]], 'data/varimp/K.koreana_var_imp.csv')
+write.csv(o.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/O.koreanus_WorldClim_var.imp.csv')
+write.csv(k.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/K.koreana_WorldClim_var_imp.csv')
 
 
 #####  Part 10 ::: model eval using null models ---------------------------------------------------------------------------------------------

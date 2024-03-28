@@ -90,14 +90,14 @@ plot(k.hinds)
 # O.koreanus
 for (i in 1:nlayers(o.hinds)) {
   r <- o.hinds[[i]]
-  name <- paste0('hindcast/O_koreanus/O.koreanus_', names(o.hinds)[i], '.tif')
+  name <- paste0('hindcast/WorldClim/O_koreanus/O.koreanus_', names(o.hinds)[i], '.tif')
   writeRaster(r, filename = name, overwrite = T)
 }
 
 # K.koreana
 for (i in 1:nlayers(k.hinds)) {
   r <- k.hinds[[i]]
-  name <- paste0('hindcast/K_koreana/K.koreana_', names(k.hinds)[i], '.tif')
+  name <- paste0('hindcast/WorldClim/K_koreana/K.koreana_', names(k.hinds)[i], '.tif')
   writeRaster(r, filename = name, overwrite = T)
 }
 

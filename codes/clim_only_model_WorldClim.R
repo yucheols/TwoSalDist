@@ -130,7 +130,7 @@ plot(o.models_clim$preds)
 saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
 
 # export contribution
-write.csv(o.models_clim$contrib, 'tuning_experiments/varimp/O.koreanus_clim_only_var.imp.csv')
+write.csv(o.models_clim$contrib, 'tuning_experiments/varimp/WorldCLim/O.koreanus_clim_only_WorldClim_var.imp.csv')
 
 # export metric
 write.csv(o.models_clim$metrics, 'tuning_experiments/metrics/O.koreanus_clim_only_WorldClim_metrics.csv')
@@ -160,7 +160,7 @@ plot(k.models_clim$preds)
 saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
 
 # export contribution
-write.csv(k.models_clim$contrib, 'tuning_experiments/varimp/K.koreana_clim_only_var.imp.csv')
+write.csv(k.models_clim$contrib, 'tuning_experiments/varimp/WorldClim/K.koreana_clim_only_WorldClim_var.imp.csv')
 
 # export metric
 write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only_WorldClim_metrics.csv')
