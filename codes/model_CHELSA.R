@@ -123,7 +123,7 @@ names(o.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2
 plot(o.models$preds)
 
 # save output as .rds for later use
-saveRDS(o.models, 'output_model_rds/O_koreanus_model_tuning_CHELSA.rds')
+saveRDS(o.models, 'tuning_experiments/output_model_rds/O_koreanus_model_tuning_CHELSA.rds')
 
 
 ### K. koreana model testing run
@@ -138,7 +138,7 @@ names(k.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2
 plot(k.models$preds)
 
 # save output as .rds for later use
-saveRDS(k.models, 'output_model_rds/K_koreana_model_tuning_CHELSA.rds')
+saveRDS(k.models, 'tuning_experiments/output_model_rds/K_koreana_model_tuning_CHELSA.rds')
 
 
 #####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
@@ -217,8 +217,20 @@ plot(k.bin)
 #####  Part 8 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
 
 ### O. koreanus continuous
+# convert to SpatRaster for layer renaming
+o.cont.spat <- terra::rast(o.models$preds)
+
+# recode layer names
+names(o.cont.spat) = dplyr::recode(names(o.cont.spat),
+                                   'bg1_5000' = 'BG1 (n = 5000)',
+                                   'bg1_10000' = 'BG1 (n = 10000)',
+                                   'bg1_15000' = 'BG1 (n = 15000)',
+                                   'bg2_5000' = 'BG2 (n = 5000)',
+                                   'bg2_10000' = 'BG2 (n = 10000)',
+                                   'bg2_15000' = 'BG2 (n = 15000)')
+
 # plot
-gplot(o.models$preds) +  
+gplot(o.cont.spat) +  
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -243,8 +255,20 @@ ggsave('plots/CHELSA tuning/O.koreanus_CHELSA_cont.png', width = 30, height = 22
 
 
 ### O. koreanus binary
+# convert to SpatRaster for layer renaming
+o.bin.spat <- terra::rast(o.bin)
+
+# recode layer names
+names(o.bin.spat) = recode(names(o.bin.spat),
+                           'bg1_5000' = 'BG1 (n = 5000)',
+                           'bg1_10000' = 'BG1 (n = 10000)',
+                           'bg1_15000' = 'BG1 (n = 15000)',
+                           'bg2_5000' = 'BG2 (n = 5000)',
+                           'bg2_10000' = 'BG2 (n = 10000)',
+                           'bg2_15000' = 'BG2 (n = 15000)')
+
 # plot
-gplot(o.bin) + 
+gplot(o.bin.spat) + 
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -267,8 +291,20 @@ ggsave('plots/CHELSA tuning/O.koreanus_CHELSA_bin.png', width = 30, height = 22,
 #-----------------------------------------------------------------------------------------------------------------------------
 
 ### K. koreana continuous
+# convert to SpatRaster for layer renaming
+k.cont.spat <- terra::rast(k.models$preds)
+
+# recode layer names
+names(k.cont.spat) = recode(names(k.cont.spat),
+                            'bg1_5000' = 'BG1 (n = 5000)',
+                            'bg1_10000' = 'BG1 (n = 10000)',
+                            'bg1_15000' = 'BG1 (n = 15000)',
+                            'bg2_5000' = 'BG2 (n = 5000)',
+                            'bg2_10000' = 'BG2 (n = 10000)',
+                            'bg2_15000' = 'BG2 (n = 15000)')
+
 # plot
-gplot(k.models$preds) +  
+gplot(k.cont.spat) +  
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -293,8 +329,20 @@ ggsave('plots/CHELSA tuning/K.koreana_CHELSA_cont.png', width = 30, height = 22,
 
 
 ### K. koreana binary
+# convert to SpatRaster for layer renaming
+k.bin.spat <- terra::rast(k.bin)
+
+# recode layer names
+names(k.bin.spat) = recode(names(k.bin.spat),
+                           'bg1_5000' = 'BG1 (n = 5000)',
+                           'bg1_10000' = 'BG1 (n = 10000)',
+                           'bg1_15000' = 'BG1 (n = 15000)',
+                           'bg2_5000' = 'BG2 (n = 5000)',
+                           'bg2_10000' = 'BG2 (n = 10000)',
+                           'bg2_15000' = 'BG2 (n = 15000)')
+
 # plot
-gplot(k.bin) + 
+gplot(k.bin.spat) + 
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
