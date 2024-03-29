@@ -14,27 +14,27 @@ library(ggplot2)
 
 ### load hindcast layers
 # mid-Pliocene Warm Period (mPWP)
-mpwp <- raster::stack(list.files(path = 'data/hindcast_layers/processed/mPWP', pattern = '.bil$', full.names = T))
+mpwp <- raster::stack(list.files(path = 'data/hindcast_layers/processed_WorldClim/mPWP', pattern = '.bil$', full.names = T))
 print(mpwp)
 plot(mpwp[[1]])
 
 # Marine Isotope Stage 19 (MIS19)
-mis <- raster::stack(list.files(path = 'data/hindcast_layers/processed/MIS19', pattern = '.bil$', full.names = T))
+mis <- raster::stack(list.files(path = 'data/hindcast_layers/processed_WorldClim/MIS19', pattern = '.bil$', full.names = T))
 print(mis)
 plot(mis[[1]])
 
 # Last Interglacial (LIG)
-lig <- raster::stack(list.files(path = 'data/hindcast_layers/processed/LIG', pattern = '.bil$', full.names = T))
+lig <- raster::stack(list.files(path = 'data/hindcast_layers/processed_WorldClim/LIG', pattern = '.bil$', full.names = T))
 print(lig)
 plot(lig[[1]])
 
 # Last Glacial Maximum (LGM)
-lgm <- raster::stack(list.files(path = 'data/hindcast_layers/processed/LGM', pattern = '.bil$', full.names = T))
+lgm <- raster::stack(list.files(path = 'data/hindcast_layers/processed_WorldClim/LGM', pattern = '.bil$', full.names = T))
 print(lgm)
 plot(lgm[[1]])
 
 # Mid-Holocene (MH)
-mh <- raster::stack(list.files(path = 'data/hindcast_layers/processed/MH', pattern = '.bil$', full.names = T))
+mh <- raster::stack(list.files(path = 'data/hindcast_layers/processed_WorldClim/MH', pattern = '.bil$', full.names = T))
 print(mh)
 plot(mh[[1]])
 

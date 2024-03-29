@@ -78,8 +78,8 @@ k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 4.5), eval.stat
 
 
 ####  save null models
-#saveRDS(o.nulls, 'output_nulls/O.koreanus_null.rds')
-#saveRDS(k.nulls, 'output_nulls/K.koreana_null.rds')
+saveRDS(o.nulls, 'output_nulls/O.koreanus_null_WorldClim.rds')
+saveRDS(k.nulls, 'output_nulls/K.koreana_null_WorldClim.rds')
 
 
 #### plot null model results
