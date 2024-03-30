@@ -113,7 +113,7 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 ### O. koreanus model testing run
 # run
 o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
-                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at results
 print(o.models$metrics)
@@ -128,7 +128,7 @@ saveRDS(o.models, 'tuning_experiments/output_model_rds/O_koreanus_model_tuning_C
 
 ### K. koreana model testing run
 k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
-                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+                        partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at results
 print(k.models$metrics)

@@ -17,8 +17,11 @@ head(o.occs)
 head(k.occs)
 
 ## load bg
-bg <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
-head(bg)
+o.bg <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
+k.bg <- read.csv('data/bg/set1/bg1_15000.csv') %>% select('long', 'lat')
+
+head(o.bg)
+head(k.bg)
 
 ## load envs
 envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
@@ -113,13 +116,14 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 ### O.koreanus == 
 # run
-o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args, 
-                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(o.bg), tune.args = tune.args, 
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at metric
 print(o.models_clim$metrics)
 
 # look at variable importance
+print(o.models_clim$contrib)
 
 # look at prediction
 plot(o.models_clim$preds)
@@ -136,13 +140,14 @@ saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only
 
 ### K.koreana
 # run
-k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args, 
-                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(k.bg), tune.args = tune.args, 
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at metric
 print(k.models_clim$metrics)
 
 # look at variable importance
+print(k.models_clim$contrib)
 
 # look at prediction
 plot(k.models_clim$preds)
