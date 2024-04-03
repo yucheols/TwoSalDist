@@ -17,8 +17,15 @@ head(o.occs)
 head(k.occs)
 
 ## load bg
-bg <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
-head(bg)
+# set1
+bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv') %>% select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv') %>% select('long', 'lat')
+
+# set2
+bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv') %>% select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv') %>% select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv') %>% select('long', 'lat')
 
 ## load envs
 envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil', full.names = T))
@@ -110,12 +117,15 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
 tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
                   rm = seq(0.5,5, by = 0.5))
 
+### bg list
+bg.list <- list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000)
+
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
 ### O.koreanus == LQP 3.5
 # run
-o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
-                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1') 
+o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = bg.list, tune.args = tune.args,
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1') 
 
 # look at metric
 print(o.models_clim$metrics)
@@ -144,8 +154,8 @@ writeRaster(o.models_clim$preds, 'tuning_experiments/preds/O.koreanus/WorldClim/
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
 ### K.koreana == Q 0.5
 # run
-k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(bg), tune.args = tune.args,
-                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)), type = 'type1')
+k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = bg.list, tune.args = tune.args,
+                             partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at metric
 print(k.models_clim$metrics)
