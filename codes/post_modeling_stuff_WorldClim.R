@@ -45,18 +45,6 @@ envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 
 print(envs)
 
 
-#####  Part 9 ::: get variable importance for each sp. ---------------------------------------------------------------------------------------------
-# O. koreanus == bg1_10000
-print(o.models$contrib[[2]])
-
-# K. koreana == bg1_10000
-print(k.models$contrib[[2]])
-
-# export
-write.csv(o.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/O.koreanus_WorldClim_var.imp.csv')
-write.csv(k.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/K.koreana_WorldClim_var_imp.csv')
-
-
 #####  Part 10 ::: model eval using null models ---------------------------------------------------------------------------------------------
 # if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
 

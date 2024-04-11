@@ -120,6 +120,9 @@ o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs
 # look at results
 print(o.models$metrics)
 
+# look at variable importance
+print(o.models$contrib[[2]])
+
 # look at predictions
 names(o.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
 plot(o.models$preds)
@@ -134,6 +137,9 @@ k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs 
 
 # look at results
 print(k.models$metrics)
+
+# look at variable importance
+print(k.models$contrib[[2]])
 
 # look at predictions
 names(k.models$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
@@ -366,7 +372,7 @@ ggsave('plots/WorldClim tuning/K.koreana_WorldClim_bin.png', width = 30, height 
 
 #-----------------------------------------------------------------------------------------------------------------------------
 
-##### export model metrics and prediction layers
+##### export model metrics and variable importance
 ### metrics
 print(o.models$metrics)
 print(k.models$metrics)
@@ -374,7 +380,15 @@ print(k.models$metrics)
 write.csv(o.models$metrics, 'tuning_experiments/metrics/O.koreanus_WorldClim_metrics.csv')
 write.csv(k.models$metrics, 'tuning_experiments/metrics/K.koreana_WorldClim_metrics.csv')
 
-### prediction layers
+### variable importance
+print(o.models$contrib[[2]])
+print(k.models$contrib[[2]])
+
+write.csv(o.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/O.koreanus_WorldClim_var.imp.csv')
+write.csv(k.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/K.koreana_WorldClim_var_imp.csv')
+
+
+##### export prediction layers
 # O. koreanus cont
 for (i in 1:nlayers(o.models$preds)) {
   r <- o.models$preds[[i]]
