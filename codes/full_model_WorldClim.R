@@ -1,6 +1,8 @@
-##### Data prep for current ENM with WorldClim data 
-# set seed 
-set.seed(111)
+##### Calibrate current ENM with WorldClim data + topo + vegetation data 
+
+# clear working environment
+rm(list = ls(all.names = T))
+gc()
 
 # load packages
 library(ENMeval)
@@ -9,19 +11,35 @@ library(raster)
 library(rasterVis)
 library(ggplot2)
 
-# check data
-print(envs)
+##### Part 14 ::: prep data ---------------------------------------------------------------------------------------------
+## load mask polygon for later plotting
+poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
+
+## load occs
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
 
 head(o.occs)
 head(k.occs)
 
-head(bg1_5000)
-head(bg2_5000)
+## load bg
+# set1
+bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv') %>% select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv') %>% select('long', 'lat')
 
-#glimpse(o.folds)
-#glimpse(k.folds)
+# set2
+bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv') %>% select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv') %>% select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv') %>% select('long', 'lat')
 
-#####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
+## load envs
+envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil', full.names = T))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
+print(envs)
+plot(envs[[1]])
+
+#####  Part 15 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
@@ -149,7 +167,7 @@ plot(k.models$preds)
 saveRDS(k.models, 'tuning_experiments/output_model_rds/K_koreana_model_tuning_WorldClim.rds')
 
 
-#####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
+#####  Part 16 ::: look at binary  ---------------------------------------------------------------------------------------------
 # calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -222,7 +240,7 @@ k.bin <- bin_maker(preds = k.models$preds, th = k.thresh)
 plot(k.bin)
 
 
-#####  Part 8 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
+#####  Part 17 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
 
 ### O. koreanus continuous
 # convert to SpatRaster for layer renaming
@@ -371,16 +389,16 @@ gplot(k.bin.spat) +
 ggsave('plots/WorldClim tuning/K.koreana_WorldClim_bin.png', width = 30, height = 22, dpi = 800, units = 'cm')
 
 #-----------------------------------------------------------------------------------------------------------------------------
-
-##### export model metrics and variable importance
-### metrics
+#####  Part 18 ::: export everything ---------------------------------------------------------------------------------------------
+### export model metrics and variable importance
+# metrics
 print(o.models$metrics)
 print(k.models$metrics)
 
 write.csv(o.models$metrics, 'tuning_experiments/metrics/O.koreanus_WorldClim_metrics.csv')
 write.csv(k.models$metrics, 'tuning_experiments/metrics/K.koreana_WorldClim_metrics.csv')
 
-### variable importance
+# variable importance
 print(o.models$contrib[[2]])
 print(k.models$contrib[[2]])
 
@@ -388,7 +406,7 @@ write.csv(o.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/O.koreanus
 write.csv(k.models$contrib[[2]], 'tuning_experiments/varimp/WorldClim/K.koreana_WorldClim_var_imp.csv')
 
 
-##### export prediction layers
+### export prediction layers 
 # O. koreanus cont
 for (i in 1:nlayers(o.models$preds)) {
   r <- o.models$preds[[i]]

@@ -1,3 +1,5 @@
+##### Calibrate current ENM with WorldClim data only
+
 # clear working environment
 rm(list = ls(all.names = T))
 gc()
@@ -6,9 +8,13 @@ gc()
 library(raster)
 library(dplyr)
 library(ENMeval)
+library(rasterVis)
+library(ggplot2)
 
-##### Part 13 ::: fit climate-only model ---------------------------------------------------------------------------------------------
-####  prep data 
+##### Part 6 ::: prep data ---------------------------------------------------------------------------------------------
+## load mask polygon for later plotting
+poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
+
 ## load occs
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
 k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
@@ -34,7 +40,7 @@ print(envs)
 plot(envs[[1]])
 
 
-#### Model tuning
+##### Part 7 ::: Model tuning ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
@@ -122,7 +128,7 @@ bg.list <- list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000)
 
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
-### O.koreanus == LQP 3.5
+### O.koreanus == LQ 1.0
 # run
 o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = bg.list, tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1') 
@@ -131,28 +137,17 @@ o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = en
 print(o.models_clim$metrics)
 
 # look at variable importance
-print(o.models_clim$contrib)
+print(o.models_clim$contrib[[2]])
 
 # look at prediction
+names(o.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
 plot(o.models_clim$preds)
 
 # save models
 saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
 
-# export contribution
-write.csv(o.models_clim$contrib, 'tuning_experiments/varimp/WorldCLim/O.koreanus_clim_only_WorldClim_var.imp.csv')
 
-# export metric
-write.csv(o.models_clim$metrics, 'tuning_experiments/metrics/O.koreanus_clim_only_WorldClim_metrics.csv')
-
-# export continuous pred
-writeRaster(o.models_clim$preds, 'tuning_experiments/preds/O.koreanus/WorldClim/cont/O.koreanus_clim_only.tif', overwrite = T)
-
-##### ------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-##### ------------------------------------------------------------------------------------------------------------------------------------------------
-### K.koreana == Q 0.5
+### K.koreana == LP 5.0
 # run
 k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = bg.list, tune.args = tune.args,
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
@@ -161,26 +156,17 @@ k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = env
 print(k.models_clim$metrics)
 
 # look at variable importance
-print(k.models_clim$contrib)
+print(k.models_clim$contrib[[2]])
 
 # look at prediction
+names(k.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
 plot(k.models_clim$preds)
 
 # save models
 saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
 
-# export contribution
-write.csv(k.models_clim$contrib, 'tuning_experiments/varimp/WorldClim/K.koreana_clim_only_WorldClim_var.imp.csv')
 
-# export metric
-write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only_WorldClim_metrics.csv')
-
-# export pred
-writeRaster(k.models_clim$preds, 'tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_clim_only.tif', overwrite = T)
-
-##### ------------------------------------------------------------------------------------------------------------------------------------------------
-
-#####  Part 14 ::: climate-only model binary ----------------------------------------------------------------------------------------------------------
+#####  Part 8 ::: climate-only model binary ----------------------------------------------------------------------------------------------------------
 # calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -205,23 +191,249 @@ sdm_threshold <- function(sdm, occs, type = "mtp", binary = FALSE){
 }
 # ------------------------------------------------------------------------------------------------------------------------
 
-##### get thresholds 
-# O.koreanus == p10 == 0.3719397 
-sdm_threshold(sdm = o.models_clim$preds, occs = o.occs, type = 'p10', binary = F)
+#### get the list of p10 thresholds
+# O. koreanus
+o.thresh <- list()
 
-# K.koreana == p10 == 0.4518484
-sdm_threshold(sdm = k.models_clim$preds, occs = k.occs, type = 'p10', binary = F)
+for (i in 1:nlayers(o.models_clim$preds)) {
+  thresh <- sdm_threshold(sdm = o.models_clim$preds[[i]], occs = o.occs, type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  o.thresh[[i]] <- thresh2
+  print(o.thresh)
+}
 
 
-##### get binary
-# O.koreanus
-o.clim_bin <- ecospat::ecospat.binary.model(Pred = terra::rast(o.models_clim$preds), Threshold = 0.3719397) %>% raster()
-plot(o.clim_bin)
+# K. koreana
+k.thresh <- list()
 
-writeRaster(o.clim_bin, 'tuning_experiments/preds/O.koreanus/WorldClim/bin/O.koreanus_clim_only_bin.tif', overwrite = T)
+for (i in 1:nlayers(k.models_clim$preds)) {
+  thresh <- sdm_threshold(sdm = k.models_clim$preds[[i]], occs = k.occs, type = 'p10', binary = F)
+  thresh2 <- raster::minValue(thresh)
+  k.thresh[[i]] <- thresh2
+  print(k.thresh)
+}
 
-# K.koreana 
-k.clim_bin <- ecospat::ecospat.binary.model(Pred = terra::rast(k.models_clim$preds), Threshold = 0.4518484) %>% raster()
-plot(k.clim_bin)
 
-writeRaster(k.clim_bin, 'tuning_experiments/preds/K.koreana/WorldClim/bin/K.koreana_clim_only_bin.tif', overwrite = T)
+#### automate binary making
+
+# ------------------------------------------------------------------------------------------------------------------------
+bin_maker <- function(preds, th) {
+  binary.maps <- list()
+  
+  for (i in 1:nlayers(preds)) {
+    bin <- ecospat::ecospat.binary.model(Pred = terra::rast(preds[[i]]), Threshold = th[[i]]) %>% raster::raster()
+    binary.maps[[i]] <- bin
+    binary.out <- raster::stack(binary.maps)
+  }
+  return(binary.out)
+}
+# ------------------------------------------------------------------------------------------------------------------------
+
+#### get binary maps
+# O. koreanus
+o.bin_clim <- bin_maker(preds = o.models_clim$preds, th = o.thresh)
+plot(o.bin_clim)
+
+# K. koreana
+k.bin_clim <- bin_maker(preds = k.models_clim$preds, th = k.thresh)
+plot(k.bin_clim)
+
+
+#####  Part 9 ::: plot tuning output ----------------------------------------------------------------------------------------------------------
+
+### O. koreanus continuous
+# convert to SpatRaster for layer renaming
+o.cont.clim.spat <- terra::rast(o.models_clim$preds)
+
+# recode layer names
+names(o.cont.clim.spat) = dplyr::recode(names(o.cont.clim.spat),
+                                        'bg1_5000' = 'BG1 (n = 5000)',
+                                        'bg1_10000' = 'BG1 (n = 10000)',
+                                        'bg1_15000' = 'BG1 (n = 15000)',
+                                        'bg2_5000' = 'BG2 (n = 5000)',
+                                        'bg2_10000' = 'BG2 (n = 10000)',
+                                        'bg2_15000' = 'BG2 (n = 15000)')
+
+# plot
+gplot(o.cont.clim.spat) +  
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low', 'High')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() + 
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/O.koreanus_WorldClim_cont_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+
+### O. koreanus binary
+# convert to SpatRaster for layer renaming
+o.bin.clim.spat <- terra::rast(o.bin_clim)
+
+# recode layer names
+names(o.bin.clim.spat) = dplyr::recode(names(o.bin.clim.spat),
+                                       'bg1_5000' = 'BG1 (n = 5000)',
+                                       'bg1_10000' = 'BG1 (n = 10000)',
+                                       'bg1_15000' = 'BG1 (n = 15000)',
+                                       'bg2_5000' = 'BG2 (n = 5000)',
+                                       'bg2_10000' = 'BG2 (n = 10000)',
+                                       'bg2_15000' = 'BG2 (n = 15000)')
+
+# plot
+gplot(o.bin.clim.spat) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = rev(terrain.colors(1000)),
+                       na.value = NA,
+                       name = 'Suitability') +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/O.koreanus_WorldClim_bin_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+### K. koreana continuous
+# convert to SpatRaster for layer renaming
+k.cont.clim.spat <- terra::rast(k.models_clim$preds)
+
+# recode layer names
+names(k.cont.clim.spat) = dplyr::recode(names(k.cont.clim.spat),
+                                        'bg1_5000' = 'BG1 (n = 5000)',
+                                        'bg1_10000' = 'BG1 (n = 10000)',
+                                        'bg1_15000' = 'BG1 (n = 15000)',
+                                        'bg2_5000' = 'BG2 (n = 5000)',
+                                        'bg2_10000' = 'BG2 (n = 10000)',
+                                        'bg2_15000' = 'BG2 (n = 15000)')
+
+# plot
+gplot(k.cont.clim.spat) +  
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low', 'High')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() + 
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/K.koreana_WorldClim_cont_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+
+### K. koreana binary
+# convert to SpatRaster for layer renaming
+k.bin.clim.spat <- terra::rast(k.bin_clim)
+
+# recode layer names
+names(k.bin.clim.spat) = dplyr::recode(names(k.bin.clim.spat),
+                                       'bg1_5000' = 'BG1 (n = 5000)',
+                                       'bg1_10000' = 'BG1 (n = 10000)',
+                                       'bg1_15000' = 'BG1 (n = 15000)',
+                                       'bg2_5000' = 'BG2 (n = 5000)',
+                                       'bg2_10000' = 'BG2 (n = 10000)',
+                                       'bg2_15000' = 'BG2 (n = 15000)')
+
+# plot
+gplot(k.bin.clim.spat) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable) +
+  scale_fill_gradientn(colors = rev(terrain.colors(1000)),
+                       na.value = NA,
+                       name = 'Suitability') +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 1, fill = NA) + 
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/WorldClim tuning/K.koreana_WorldClim_bin_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+
+
+
+#####  Part 10 ::: export everything ----------------------------------------------------------------------------------------------------------
+### export model metrics and variable importance
+# metrics
+print(o.models_clim$metrics)
+print(k.models_clim$metrics)
+
+write.csv(o.models_clim$metrics, 'tuning_experiments/metrics/O.koreanus_clim_only_WorldClim_metrics.csv')
+write.csv(k.models_clim$metrics, 'tuning_experiments/metrics/K.koreana_clim_only_WorldClim_metrics.csv')
+
+# variable importance
+print(o.models_clim$contrib[[2]])
+print(k.models_clim$contrib[[2]])
+
+write.csv(o.models_clim$contrib[[2]], 'tuning_experiments/varimp/WorldClim/O.koreanus_clim_only_WorldClim_var.imp.csv')
+write.csv(k.models_clim$contrib[[2]], 'tuning_experiments/varimp/WorldClim/K.koreana_clim_only_WorldClim_var.imp.csv')
+
+
+### export prediction layers 
+# O. koreanus cont
+for (i in 1:nlayers(o.models_clim$preds)) {
+  r <- o.models_clim$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/WorldClim/cont_clim_only/', names(o.models_clim$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# O. koreanus bin
+for (i in 1:nlayers(o.bin_clim)) {
+  r <- o.bin_clim[[i]]
+  file.name <- paste0('tuning_experiments/preds/O.koreanus/WorldClim/bin_clim_only/', names(o.bin_clim)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# K. koreana cont
+for (i in 1:nlayers(k.models_clim$preds)) {
+  r <- k.models_clim$preds[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/WorldClim/cont_clim_only/', names(k.models_clim$preds)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+
+# K. koreana bin
+for (i in 1:nlayers(k.bin_clim)) {
+  r <- k.bin_clim[[i]]
+  file.name <- paste0('tuning_experiments/preds/K.koreana/WorldClim/bin_clim_only/', names(k.bin_clim)[i], '.tif')
+  writeRaster(r, file.name, overwrite = T)
+}
+

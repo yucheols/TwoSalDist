@@ -1,5 +1,5 @@
 #####  post modeling stuff == model eval, var contributions, resp curves, etc.
-#####  this continues from the "model_WorldClim.R" workflow
+#####  this continues from the "clim_only_model_WorldClim.R" workflow
 getwd()
 
 # clean up working env
@@ -13,19 +13,19 @@ library(ENMeval)
 library(ggplot2)
 
 ### load models
-o.models <- readRDS('tuning_experiments/output_model_rds/O_koreanus_model_tuning_WorldClim.rds')
-k.models <- readRDS('tuning_experiments/output_model_rds/K_koreana_model_tuning_WorldClim.rds')
+o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
+k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
 
-glimpse(o.models)
-glimpse(k.models)
+glimpse(o.models_clim)
+glimpse(k.models_clim)
 
 # check model metrics
-print(o.models$metrics)
-print(k.models$metrics)
+print(o.models_clim$metrics)
+print(k.models_clim$metrics)
 
 # look at preds
-plot(o.models$preds)
-plot(k.models$preds)
+plot(o.models_clim$preds)
+plot(k.models_clim$preds)
 
 
 ### load occs
@@ -41,33 +41,33 @@ bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv')
 
 ### load envs 
 envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
-envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
 print(envs)
 
 
-#####  Part 10 ::: model eval using null models ---------------------------------------------------------------------------------------------
+#####  Part 11 ::: model eval using null models ---------------------------------------------------------------------------------------------
 # if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
 
-####  O.koreanus null model testing == LP 1.5
+####  O.koreanus null model testing == LQ 1.0
 # make ENMeval object as input for ENMnulls
-o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LP', rm = 1.5), 
-                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)))
+o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LQ', rm = 1.0), 
+                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
 
 # test nulls
-o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'LP', rm = 1.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'LQ', rm = 1.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
 
 
-####  K.koreana null model testing == Q 4.5
-k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'Q', rm = 4.5), 
-                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(7,7)))
+####  K.koreana null model testing == LP 5.0
+k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LP', rm = 5.0), 
+                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
 
 # test nulls
-k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'Q', rm = 4.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'LP', rm = 5.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
 
 
 ####  save null models
-saveRDS(o.nulls, 'output_nulls/O.koreanus_null_WorldClim.rds')
-saveRDS(k.nulls, 'output_nulls/K.koreana_null_WorldClim.rds')
+saveRDS(o.nulls, 'output_nulls/O.koreanus_null_clim_only_WorldClim.rds')
+saveRDS(k.nulls, 'output_nulls/K.koreana_null_clim_only_WorldClim.rds')
 
 
 #### plot null model results
@@ -78,7 +78,7 @@ evalplot.nulls(e.null = o.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'v
 evalplot.nulls(e.null = k.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'violin')
 
 
-#####  Part 11 ::: response curves ---------------------------------------------------------------------------------------------
+#####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
 # function to pull out response data
 respDataPull <- function(sp.name, model, names.var) {
   require(dplyr)
@@ -144,7 +144,7 @@ resp %>%
 ggsave('plots/WorldClim models/response_curves.png', width = 30, height = 22, dpi = 800, units = 'cm')
   
 
-#####  Part 12 ::: compare envs values ---------------------------------------------------------------------------------------------
+#####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
 ## extract envs values
 print(envs)
 
