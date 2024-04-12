@@ -42,10 +42,10 @@ plot(mh[[1]])
 ### load climate-only models
 # O. koreanus 
 o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
-print(o.models_clim)
+glimpse(o.models_clim)
 
 k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
-print(k.models_clim)
+glimpse(k.models_clim)
 
 
 ##### model prediction to past climatic conditions
@@ -103,11 +103,138 @@ for (i in 1:nlayers(k.hinds)) {
 
 
 ##### Part 17 ::: MESS --------------------------------------------------------------------------------------------------------------------
+## occs
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% dplyr::select(2,3)
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% dplyr::select(2,3)
+
+head(o.occs)
+head(k.occs)
+
+## get reference env 
+ref.env <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
+ref.env <- raster::stack(subset(ref.env, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
+
+## automate MESS
+get.mess <- function(proj.env, proj.names, ref.env, occs) {
+  require(dplyr)
+  require(raster)
+  require(dismo)
+  
+  output <- list()
+  ref.env.val <- raster::extract(ref.env, occs) %>% as.data.frame()
+  
+  for (i in 1:length(proj.names)) {
+    mess.calc <- dismo::mess(proj.env[[i]], ref.env.val, full = F)
+    output[[i]] <- mess.calc
+  }
+  stack.mess <- raster::stack(output)
+  names(stack.mess) = proj.names
+  
+  return(stack.mess)
+}
+
+## get MESS 
+# O.koreanus
+o.mess <- get.mess(proj.env = list(mpwp, mis, lig, lgm, mh), proj.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'), ref.env = ref.env, occs = o.occs)
+plot(o.mess)
+
+# K.koreana
+k.mess <- get.mess(proj.env = list(mpwp, mis, lig, lgm, mh), proj.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'), ref.env = ref.env, occs = k.occs)
+plot(k.mess)
+
+# export MESS
+writeRaster(o.mess, 'output_other/WorldClim/clim_only/O.koreanus_clim_only_MESS.tif', overwrite = T)
+writeRaster(k.mess, 'output_other/WorldClim/clim_only/K.koreana_clim_only_MESS.tif', overwrite = T)
 
 
 ##### Part 18 :::  compare env values between time ----------------------------------------------------------------------
+## use bio1 (most important var for O.koreanus) and bio13 (most important var for K.koreana)
+
+# function to format data for box plot
+boxdata <- function(sp.name, envs, pts) {
+  require(dplyr)
+  
+  output <- list()
+  
+  for (i in 1:length(names(envs))) {
+    val <- raster::extract(envs[[i]], pts) %>% as.data.frame()
+    val$var = names(envs)[i]
+    val$species = sp.name
+    colnames(val) = c('val', 'var', 'Species')
+    output[[i]] <- val
+  }
+  output <- dplyr::bind_rows(output)
+  return(output)
+}
+
+##### O.koreanus
+
+### get data
+# mPWP
+o.dat.mpwp <- boxdata(sp.name = 'O.koreanus', envs = mpwp[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.mpwp$time = 'mPWP'
+head(o.dat.mpwp)
+
+# MIS19
+o.dat.mis <- boxdata(sp.name = 'O.koreanus', envs = mis[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.mis$time = 'MIS19'
+head(o.dat.mis)
+
+# LIG
+o.dat.lig <- boxdata(sp.name = 'O.koreanus', envs = lig[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.lig$time = 'LIG'
+head(o.dat.lig)
+
+# LGM
+o.dat.lgm <- boxdata(sp.name = 'O.koreanus', envs = lgm[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.lgm$time = 'LGM'
+head(o.dat.lgm)
+
+# MH
+o.dat.mh <- boxdata(sp.name = 'O.koreanus', envs = mh[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.mh$time = 'MH'
+head(o.dat.mh)
+
+## format data for plotting
+o.dat.bind <- rbind(o.dat.mpwp, o.dat.mis, o.dat.lig, o.dat.lgm, o.dat.mh)
+head(o.dat.bind)
+
+## plot
 
 
+##### K.koreana 
+
+### get data
+# mPWP
+k.dat.mpwp <- boxdata(sp.name = 'K.koreana', envs = mpwp[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.mpwp$time = 'mPWP'
+head(k.dat.mpwp)
+
+# MIS19
+k.dat.mis <- boxdata(sp.name = 'K.koreana', envs = mis[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.mis$time = 'MIS19'
+head(k.dat.mis)
+
+# LIG
+k.dat.lig <- boxdata(sp.name = 'K.koreana', envs = lig[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.lig$time = 'LIG'
+head(k.dat.lig)
+
+# LGM
+k.dat.lgm <- boxdata(sp.name = 'K.koreana', envs = lgm[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.lgm$time = 'LGM'
+head(k.dat.lgm)
+
+# MH
+k.dat.mh <- boxdata(sp.name = 'K.koreana', envs = mh[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.mh$time = 'MH'
+head(k.dat.mh)
+
+## format data for plotting
+k.dat.bind <- rbind(k.dat.mpwp, k.dat.mis, k.dat.lig, k.dat.lgm, k.dat.mh)
+head(k.dat.bind)
+
+## plot
 
 
 ##### Part 19 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
@@ -158,46 +285,44 @@ env.val.get <- function(env.list, var, time, type) {
 
 
 ### load current values
-cur <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
-cur <- raster::stack(subset(cur, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))  
-print(cur)
-plot(cur[[1]])
+print(ref.env)
+plot(ref.env[[1]])
 
 ### bio1 ::: Annual Mean Temp
 # min
-min.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+min.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
 
 print(min.vals.tmp)
 
 # mean
-mean.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+mean.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                              time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
 
 print(mean.vals.tmp)
 
 # max
-max.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio1', 
+max.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
 
 print(max.vals.tmp)
 
 
-### bio13 ::: 
+### bio13 ::: precipitation of wettest month
 # min
-min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
 
 print(min.vals.pr)
 
 # mean
-mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
 
 print(mean.vals.pr)
 
 # max
-max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, cur), var = 'bio13', 
+max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
 
 print(max.vals.pr)
