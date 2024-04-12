@@ -211,16 +211,16 @@ o.dat.bind$var <- dplyr::recode(o.dat.bind$var, 'bio1' = 'Bio1 (°C)', 'bio13' =
 ## plot
 o.env.plot <- o.dat.bind %>%
   ggplot(aes(x = time, y = val)) +
-  geom_boxplot(fill = '#ffe600', color = '#ffe600', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_boxplot(fill = '#6495ED', color = '#6495ED', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
   geom_point(aes(color = var), position = position_jitterdodge(0.4), alpha = 0.4) +
-  scale_color_manual(values = rep('#ffe600', 2)) +
+  scale_color_manual(values = rep('#6495ED', 2)) +
   facet_wrap(~ var, scales = 'free') +
   theme_bw() +
   theme(axis.title = element_blank(),
         axis.text = element_text(size = 12),
         strip.text = element_text(size = 12),
         legend.position = 'none')
-
+  
 ##### K.koreana 
 
 ### get data
@@ -265,9 +265,9 @@ k.dat.bind$var <- dplyr::recode(k.dat.bind$var, 'bio14' = 'Bio14 (mm)', 'bio13' 
 ## plot
 k.env.plot <- k.dat.bind %>%
   ggplot(aes(x = time, y = val)) +
-  geom_boxplot(fill = '#6495ED', color = '#6495ED', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_boxplot(fill = '#ffe600', color = '#ffe600', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
   geom_point(aes(color = var), position = position_jitterdodge(0.4), alpha = 0.4) +
-  scale_color_manual(values = rep('#6495ED', 2)) +
+  scale_color_manual(values = rep('#ffe600', 2)) +
   facet_wrap(~ var, scales = 'free') +
   theme_bw() +
   theme(axis.title = element_blank(),
