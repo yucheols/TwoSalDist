@@ -55,7 +55,8 @@ o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, 
 
 # test nulls
 o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'LQ', rm = 1.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
-
+print(o.nulls@null.results)
+print(o.nulls@null.emp.results)
 
 ####  K.koreana null model testing == LP 5.0
 k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LP', rm = 5.0), 
@@ -63,11 +64,18 @@ k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, b
 
 # test nulls
 k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'LP', rm = 5.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+print(k.nulls@null.results)
+print(k.nulls@null.emp.results)
 
-
-####  save null models
+####  save null models & results
 saveRDS(o.nulls, 'output_nulls/O.koreanus_null_clim_only_WorldClim.rds')
 saveRDS(k.nulls, 'output_nulls/K.koreana_null_clim_only_WorldClim.rds')
+
+write.csv(o.nulls@null.results, 'output_nulls/O.koreanus_null_results.csv')
+write.csv(o.nulls@null.emp.results, 'output_nulls/O.koreanus_null_summary.csv')
+
+write.csv(k.nulls@null.results, 'output_nulls/K.koreana_null_results.csv')
+write.csv(k.nulls@null.emp.results, 'output_nulls/K.koreana_null_summary.csv')
 
 
 #### plot null model results
@@ -98,37 +106,37 @@ respDataPull <- function(sp.name, model, names.var) {
 
 #####  pull out the data
 # O.koreanus
-o.resp <- respDataPull(sp.name = 'O.koreanus', model = o.models$models[[2]], names.var = names(envs))
-print(o.resp)
+o.resp_clim <- respDataPull(sp.name = 'O.koreanus', model = o.models_clim$models[[2]], names.var = names(envs))
+print(o.resp_clim)
 
 # K.koreana
-k.resp <- respDataPull(sp.name = 'K.koreana', model = k.models$models[[2]], names.var = names(envs))
-print(k.resp)
+k.resp_clim <- respDataPull(sp.name = 'K.koreana', model = k.models_clim$models[[2]], names.var = names(envs))
+print(k.resp_clim)
 
 
 ####  plot response curves
 # bind
-resp <- rbind(o.resp, k.resp)
-glimpse(resp)
+resp_clim <- rbind(o.resp_clim, k.resp_clim)
+glimpse(resp_clim)
 
 # reorder vars
-resp$var = factor(resp$var, levels = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope'))
-resp$Species = factor(resp$Species, levels = c('O.koreanus', 'K.koreana'))
+resp_clim$var = factor(resp_clim$var, levels = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15'))
+resp_clim$Species = factor(resp_clim$Species, levels = c('O.koreanus', 'K.koreana'))
 
 # recode variable names
-resp$var = dplyr::recode_factor(resp$var,
-                                'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
-                                'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
+resp_clim$var = dplyr::recode_factor(resp_clim$var,
+                                     'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
+                                     'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
 
 # recode species names
-resp$Species = dplyr::recode_factor(resp$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
+resp_clim$Species = dplyr::recode_factor(resp_clim$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
 
 # plot
-resp %>%
+resp_clim %>%
   ggplot(aes(x = x, y = y, group = Species, color = Species)) +
   geom_line(linewidth = 1.2) +
   scale_color_manual(values = c('#6495ED', '#ffe600')) +
-  facet_wrap(~ var, scales = 'free', nrow = 2, ncol = 4) +
+  facet_wrap(~ var, scales = 'free', nrow = 2, ncol = 3) +
   xlab('Value') + ylab('Suitability') +
   theme_bw() +
   theme(axis.title = element_text(size = 14, face = 'bold'),
@@ -141,12 +149,14 @@ resp %>%
         legend.position = 'top')
 
 # save plot
-ggsave('plots/WorldClim models/response_curves.png', width = 30, height = 22, dpi = 800, units = 'cm')
+ggsave('plots/WorldClim models/response_curves_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
   
 
 #####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
-## extract envs values
-print(envs)
+## full envs data
+envs_full <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil$', full.names = T))
+envs_full <- raster::stack(subset(envs_full, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
+print(envs_full)
 
 ## O. koreanus
 # function to format data for box plot
@@ -166,10 +176,10 @@ boxdata <- function(sp.name, envs, pts) {
   return(output)
 }
 
-o.val <- boxdata(sp.name = 'O.koreanus', envs = envs, pts = o.occs[, -1])
+o.val <- boxdata(sp.name = 'O.koreanus', envs = envs_full, pts = o.occs[, -1])
 print(o.val)
 
-k.val <- boxdata(sp.name = 'K.koreana', envs = envs, pts = k.occs[, -1])
+k.val <- boxdata(sp.name = 'K.koreana', envs = envs_full, pts = k.occs[, -1])
 print(k.val)
 
 vals <- rbind(o.val, k.val)
