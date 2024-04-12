@@ -8,7 +8,7 @@ library(raster)
 library(dplyr)
 library(ENMeval)
 library(ggplot2)
-
+library(patchwork)
 
 ##### Part 16 ::: hindcasting run --------------------------------------------------------------------------------------------------------------------
 
@@ -167,6 +167,7 @@ boxdata <- function(sp.name, envs, pts) {
   return(output)
 }
 
+
 ##### O.koreanus
 
 ### get data
@@ -195,12 +196,30 @@ o.dat.mh <- boxdata(sp.name = 'O.koreanus', envs = mh[[c('bio1', 'bio13')]], pts
 o.dat.mh$time = 'MH'
 head(o.dat.mh)
 
+# current
+o.dat.cur <- boxdata(sp.name = 'O.koreanus', envs = ref.env[[c('bio1', 'bio13')]], pts = o.occs)
+o.dat.cur$time = 'Current'
+head(o.dat.cur)
+
 ## format data for plotting
-o.dat.bind <- rbind(o.dat.mpwp, o.dat.mis, o.dat.lig, o.dat.lgm, o.dat.mh)
+o.dat.bind <- rbind(o.dat.mpwp, o.dat.mis, o.dat.lig, o.dat.lgm, o.dat.mh, o.dat.cur)
 head(o.dat.bind)
 
-## plot
+o.dat.bind$time <- factor(o.dat.bind$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
+o.dat.bind$var <- dplyr::recode(o.dat.bind$var, 'bio1' = 'Bio1 (°C)', 'bio13' = 'Bio13 (mm)')
 
+## plot
+o.env.plot <- o.dat.bind %>%
+  ggplot(aes(x = time, y = val)) +
+  geom_boxplot(fill = '#ffe600', color = '#ffe600', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_point(aes(color = var), position = position_jitterdodge(0.4), alpha = 0.4) +
+  scale_color_manual(values = rep('#ffe600', 2)) +
+  facet_wrap(~ var, scales = 'free') +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        legend.position = 'none')
 
 ##### K.koreana 
 
@@ -230,11 +249,39 @@ k.dat.mh <- boxdata(sp.name = 'K.koreana', envs = mh[[c('bio13', 'bio14')]], pts
 k.dat.mh$time = 'MH'
 head(k.dat.mh)
 
+# current
+k.dat.cur <- boxdata(sp.name = 'K.koreana', envs = ref.env[[c('bio13', 'bio14')]], pts = k.occs)
+k.dat.cur$time = 'Current'
+head(k.dat.cur)
+
 ## format data for plotting
-k.dat.bind <- rbind(k.dat.mpwp, k.dat.mis, k.dat.lig, k.dat.lgm, k.dat.mh)
+k.dat.bind <- rbind(k.dat.mpwp, k.dat.mis, k.dat.lig, k.dat.lgm, k.dat.mh, k.dat.cur)
 head(k.dat.bind)
 
+k.dat.bind$time <- factor(k.dat.bind$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
+k.dat.bind$var <- factor(k.dat.bind$var, levels = c('bio14', 'bio13'))
+k.dat.bind$var <- dplyr::recode(k.dat.bind$var, 'bio14' = 'Bio14 (mm)', 'bio13' = 'Bio13 (mm)')
+
 ## plot
+k.env.plot <- k.dat.bind %>%
+  ggplot(aes(x = time, y = val)) +
+  geom_boxplot(fill = '#6495ED', color = '#6495ED', linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_point(aes(color = var), position = position_jitterdodge(0.4), alpha = 0.4) +
+  scale_color_manual(values = rep('#6495ED', 2)) +
+  facet_wrap(~ var, scales = 'free') +
+  theme_bw() +
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 12),
+        strip.text = element_text(size = 12),
+        legend.position = 'none')
+
+
+## combine plots for the two species into one == using the patchwork library
+o.env.plot + k.env.plot +
+  plot_layout(nrow = 2)
+
+## export   
+ggsave('plots/WorldClim models/env_values_thru_time.png', width = 20, height = 25, dpi = 800, units = 'cm')
 
 
 ##### Part 19 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
@@ -355,3 +402,6 @@ env.vals %>%
         legend.title = element_blank(),
         legend.text = element_text(size = 14),
         legend.position = 'top')
+
+### save
+ggsave('plots/WorldClim models/clim_trends_thru_time.png', width = 20, height = 25, dpi = 800, units = 'cm')
