@@ -124,7 +124,7 @@ bg.list <- list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000)
 
 
 ##### ------------------------------------------------------------------------------------------------------------------------------------------------
-### O.koreanus == LQHP 3.5
+### O.koreanus == Q 0.5 // nbg = 5000
 # run
 o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
@@ -133,7 +133,7 @@ o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = en
 print(o.models_clim$metrics)
 
 # look at variable importance
-print(o.models_clim$contrib[[2]])
+print(o.models_clim$contrib[[1]])
 
 # look at prediction
 names(o.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
@@ -143,7 +143,7 @@ plot(o.models_clim$preds)
 saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
 
 
-### K.koreana == 
+### K.koreana == LQ 0.5 // nbg = 10000
 # run
 k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
@@ -152,7 +152,7 @@ k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = env
 print(k.models_clim$metrics)
 
 # look at variable importance
-print(k.models_clim$contrib[[5]])
+print(k.models_clim$contrib[[2]])
 
 # look at prediction
 names(k.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')

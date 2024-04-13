@@ -1,6 +1,8 @@
-##### Data prep for current ENM with CHELSA data 
-# set seed 
-set.seed(111)
+##### Calibrate current ENM with CHELSA data + topo + vegetation data 
+
+# clear working environment
+rm(list = ls(all.names = T))
+gc()
 
 # load packages
 library(ENMeval)
