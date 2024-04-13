@@ -7,21 +7,27 @@ library(raster)
 library(dplyr)
 library(ENMeval)
 
-##### Part 13 ::: fit climate-only model ---------------------------------------------------------------------------------------------
-####  prep data 
+##### Part 13 ::: prep data ---------------------------------------------------------------------------------------------
+## load mask polygon for later plotting
+poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
+
 ## load occs
-o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
-k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% dplyr::select('long', 'lat')
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% dplyr::select('long', 'lat')
 
 head(o.occs)
 head(k.occs)
 
 ## load bg
-o.bg <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
-k.bg <- read.csv('data/bg/set1/bg1_15000.csv') %>% select('long', 'lat')
+# set1
+bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv') %>% dplyr::select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/CHELSA/set1/bg1_10000.csv') %>% dplyr::select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/CHELSA/set1/bg1_15000.csv') %>% dplyr::select('long', 'lat')
 
-head(o.bg)
-head(k.bg)
+# set2
+bg2_5000 <- read.csv('data/bg/CHELSA/set2/bg2_5000.csv') %>% dplyr::select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/CHELSA/set2/bg2_10000.csv') %>% dplyr::select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/CHELSA/set2/bg2_15000.csv') %>% dplyr::select('long', 'lat')
 
 ## load envs
 envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
@@ -30,7 +36,7 @@ print(envs)
 plot(envs[[1]])
 
 
-#### Model tuning
+##### Part 7 ::: Model tuning ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
@@ -113,50 +119,44 @@ test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, 
 tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
                   rm = seq(0.5,5, by = 0.5))
 
+### bg list
+bg.list <- list(bg1_5000, bg1_10000, bg1_15000, bg2_5000, bg2_10000, bg2_15000)
 
-### O.koreanus == 
+
+##### ------------------------------------------------------------------------------------------------------------------------------------------------
+### O.koreanus == LQHP 3.5
 # run
-o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = list(o.bg), tune.args = tune.args, 
+o.models_clim <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at metric
 print(o.models_clim$metrics)
 
 # look at variable importance
-print(o.models_clim$contrib)
+print(o.models_clim$contrib[[2]])
 
 # look at prediction
+names(o.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
 plot(o.models_clim$preds)
 
 # save models
-saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
-
-# export contribution
-
-# export metric
-
-# export continuous pred
+saveRDS(o.models_clim, 'tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
 
 
-### K.koreana
+### K.koreana == 
 # run
-k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = list(k.bg), tune.args = tune.args, 
+k.models_clim <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                              partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at metric
 print(k.models_clim$metrics)
 
 # look at variable importance
-print(k.models_clim$contrib)
+print(k.models_clim$contrib[[5]])
 
 # look at prediction
+names(k.models_clim$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
 plot(k.models_clim$preds)
 
 # save models
-saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
-
-# export contribution
-
-# export metric
-
-# export continuous pred
+saveRDS(k.models_clim, 'tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')

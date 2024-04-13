@@ -129,7 +129,7 @@ bg1_5000 <- xyFromCell(bias.layer1,
 colnames(bg1_5000) = c('long', 'lat')
 points(bg1_5000, col = 'blue')
 
-write.csv(bg1_5000, 'data/bg/set1/bg1_5000.csv')
+write.csv(bg1_5000, 'data/bg/WorldClim/set1/bg1_5000.csv')
 
 
 # n = 10000
@@ -140,7 +140,7 @@ bg1_10000 <- xyFromCell(bias.layer1,
 colnames(bg1_10000) = c('long', 'lat')
 points(bg1_10000, col = 'blue')
 
-write.csv(bg1_10000, 'data/bg/set1/bg1_10000.csv')
+write.csv(bg1_10000, 'data/bg/WorldClim/set1/bg1_10000.csv')
 
 
 # n = 15000
@@ -151,7 +151,7 @@ bg1_15000 <- xyFromCell(bias.layer1,
 colnames(bg1_15000) = c('long', 'lat')
 points(bg1_15000, col = 'blue')
 
-write.csv(bg1_15000, 'data/bg/set1/bg1_15000.csv')
+write.csv(bg1_15000, 'data/bg/WorldClim/set1/bg1_15000.csv')
 
 
 ### set 2 ::: pooled occurrence points
@@ -180,7 +180,7 @@ bg2_5000 <- xyFromCell(bias.layer2,
 colnames(bg2_5000) = c('long', 'lat')
 points(bg2_5000, col = 'green')
 
-write.csv(bg2_5000, 'data/bg/set2/bg2_5000.csv')
+write.csv(bg2_5000, 'data/bg/WorldClim/set2/bg2_5000.csv')
 
 
 # n = 10000
@@ -191,7 +191,7 @@ bg2_10000 <- xyFromCell(bias.layer2,
 colnames(bg2_10000) = c('long', 'lat')
 points(bg2_10000, col = 'green')
 
-write.csv(bg2_10000, 'data/bg/set2/bg2_10000.csv')
+write.csv(bg2_10000, 'data/bg/WorldClim/set2/bg2_10000.csv')
 
 
 # n = 15000
@@ -202,7 +202,7 @@ bg2_15000 <- xyFromCell(bias.layer2,
 colnames(bg2_15000) = c('long', 'lat')
 points(bg2_15000, col = 'green')
 
-write.csv(bg2_15000, 'data/bg/set2/bg2_15000.csv')
+write.csv(bg2_15000, 'data/bg/WorldClim/set2/bg2_15000.csv')
 
 
 #####  Part 4 ::: select environmental data    ------------------------------------------------------------------------------------------------

@@ -24,14 +24,14 @@ head(k.occs)
 
 ## load bg
 # set1
-bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv') %>% dplyr::select('long', 'lat')
-bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv') %>% dplyr::select('long', 'lat')
-bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv') %>% dplyr::select('long', 'lat')
+bg1_5000 <- read.csv('data/bg/WorldClim/set1/bg1_5000.csv') %>% dplyr::select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/WorldClim/set1/bg1_10000.csv') %>% dplyr::select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/WorldClim/set1/bg1_15000.csv') %>% dplyr::select('long', 'lat')
 
 # set2
-bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv') %>% dplyr::select('long', 'lat')
-bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv') %>% dplyr::select('long', 'lat')
-bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv') %>% dplyr::select('long', 'lat')
+bg2_5000 <- read.csv('data/bg/WorldClim/set2/bg2_5000.csv') %>% dplyr::select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/WorldClim/set2/bg2_10000.csv') %>% dplyr::select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/WorldClim/set2/bg2_15000.csv') %>% dplyr::select('long', 'lat')
 
 ## load envs
 envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil', full.names = T))
