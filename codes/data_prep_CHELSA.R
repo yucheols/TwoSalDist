@@ -303,12 +303,6 @@ for (i in 1:length(k.folds)) {
 
 #####  PART 5b ::: explore data partitioning methods  ----------------------------------------------------------------------
 #### data extraction for downstream use
-## K.koreana
-k.occs.z <- cbind(k.occs[, -1], raster::extract(envs, k.occs[, -1]))
-k.bg.z <- cbind(bg1_10000[, -1], raster::extract(envs, bg1_10000[, -1]))
-
-head(k.occs.z)
-head(k.occs.z)
 
 ## O.koreanus
 o.occs.z <- cbind(o.occs[, -1], raster::extract(envs, o.occs[, -1]))
@@ -317,22 +311,14 @@ o.bg.z <- cbind(bg1_10000[, -1], raster::extract(envs, bg1_10000[, -1]))
 head(o.occs.z)
 head(o.bg.z)
 
+## K.koreana
+k.occs.z <- cbind(k.occs[, -1], raster::extract(envs, k.occs[, -1]))
+k.bg.z <- cbind(bg1_10000[, -1], raster::extract(envs, bg1_10000[, -1]))
+
+head(k.occs.z)
+head(k.occs.z)
 
 ########  try checkerboard2 
-
-#### K.koreana
-k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000[, -1], envs = envs[[1:6]], aggregation.factor = c(4,4))
-ENMeval::evalplot.grps(pts = k.occs[, -1], pts.grp = k.cb2$occs.grp, envs = envs)
-ENMeval::evalplot.grps(pts = bg1_10000[, -1], pts.grp = k.cb2$bg.grp, envs = envs)
-
-# check points per bin
-table(k.cb2$occs.grp)
-table(k.cb2$bg.grp)
-
-# check environmental similarity between bins
-evalplot.envSim.hist(sim.type = 'mess', ref.data = 'occs', occs.z = k.occs.z, bg.z = k.bg.z, occs.grp = k.cb2$occs.grp, bg.grp = k.cb2$bg.grp) # occs
-evalplot.envSim.hist(sim.type = 'mess', ref.data = 'bg', occs.z = k.occs.z, bg.z = k.bg.z, occs.grp = k.cb2$occs.grp, bg.grp = k.cb2$bg.grp)   # bg
-
 
 #### O.koreanus
 o.cb2 <- ENMeval::get.checkerboard2(occs = o.occs[, -1], bg = bg1_10000[, -1], envs = envs[[1:6]], aggregation.factor = c(4,4))
@@ -344,5 +330,19 @@ table(o.cb2$occs.grp)
 table(o.cb2$bg.grp)
 
 # check environmental similarity between bins
-evalplot.envSim.hist(sim.type = 'mess', ref.data = 'occs', occs.z = o.occs.z, bg.z = o.bg.z, occs.grp = o.cb2$occs.grp, bg.grp = o.cb2$bg.grp) # occs
-evalplot.envSim.hist(sim.type = 'mess', ref.data = 'bg', occs.z = o.occs.z, bg.z = o.bg.z, occs.grp = o.cb2$occs.grp, bg.grp = o.cb2$bg.grp)   # bg
+ENMeval::evalplot.envSim.hist(sim.type = 'mess', ref.data = 'occs', occs.z = o.occs.z, bg.z = o.bg.z, occs.grp = o.cb2$occs.grp, bg.grp = o.cb2$bg.grp) # occs
+ENMeval::evalplot.envSim.hist(sim.type = 'mess', ref.data = 'bg', occs.z = o.occs.z, bg.z = o.bg.z, occs.grp = o.cb2$occs.grp, bg.grp = o.cb2$bg.grp)   # bg
+
+
+#### K.koreana
+k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000[, -1], envs = envs[[1:6]], aggregation.factor = c(4,4))
+ENMeval::evalplot.grps(pts = k.occs[, -1], pts.grp = k.cb2$occs.grp, envs = envs)
+ENMeval::evalplot.grps(pts = bg1_10000[, -1], pts.grp = k.cb2$bg.grp, envs = envs)
+
+# check points per bin
+table(k.cb2$occs.grp)
+table(k.cb2$bg.grp)
+
+# check environmental similarity between bins
+ENMeval::evalplot.envSim.hist(sim.type = 'mess', ref.data = 'occs', occs.z = k.occs.z, bg.z = k.bg.z, occs.grp = k.cb2$occs.grp, bg.grp = k.cb2$bg.grp) # occs
+ENMeval::evalplot.envSim.hist(sim.type = 'mess', ref.data = 'bg', occs.z = k.occs.z, bg.z = k.bg.z, occs.grp = k.cb2$occs.grp, bg.grp = k.cb2$bg.grp)   # bg

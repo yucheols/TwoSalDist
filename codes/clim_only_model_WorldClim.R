@@ -16,22 +16,22 @@ library(ggplot2)
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
 ## load occs
-o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
-k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% dplyr::select('long', 'lat')
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% dplyr::select('long', 'lat')
 
 head(o.occs)
 head(k.occs)
 
 ## load bg
 # set1
-bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv') %>% select('long', 'lat')
-bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv') %>% select('long', 'lat')
-bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv') %>% select('long', 'lat')
+bg1_5000 <- read.csv('data/bg/set1/bg1_5000.csv') %>% dplyr::select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/set1/bg1_10000.csv') %>% dplyr::select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/set1/bg1_15000.csv') %>% dplyr::select('long', 'lat')
 
 # set2
-bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv') %>% select('long', 'lat')
-bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv') %>% select('long', 'lat')
-bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv') %>% select('long', 'lat')
+bg2_5000 <- read.csv('data/bg/set2/bg2_5000.csv') %>% dplyr::select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/set2/bg2_10000.csv') %>% dplyr::select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/set2/bg2_15000.csv') %>% dplyr::select('long', 'lat')
 
 ## load envs
 envs <- raster::stack(list.files(path = 'data/masked/WorldClim', pattern = '.bil', full.names = T))
