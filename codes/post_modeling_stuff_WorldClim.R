@@ -68,14 +68,14 @@ print(k.nulls@null.results)
 print(k.nulls@null.emp.results)
 
 ####  save null models & results
-saveRDS(o.nulls, 'output_nulls/O.koreanus_null_clim_only_WorldClim.rds')
-saveRDS(k.nulls, 'output_nulls/K.koreana_null_clim_only_WorldClim.rds')
+saveRDS(o.nulls, 'output_nulls/WorldClim/O.koreanus_null_clim_only_WorldClim.rds')
+saveRDS(k.nulls, 'output_nulls/WorldClim/K.koreana_null_clim_only_WorldClim.rds')
 
-write.csv(o.nulls@null.results, 'output_nulls/O.koreanus_null_results.csv')
-write.csv(o.nulls@null.emp.results, 'output_nulls/O.koreanus_null_summary.csv')
+write.csv(o.nulls@null.results, 'output_nulls/WorldClim/O.koreanus_null_results.csv')
+write.csv(o.nulls@null.emp.results, 'output_nulls/WorldClim/O.koreanus_null_summary.csv')
 
-write.csv(k.nulls@null.results, 'output_nulls/K.koreana_null_results.csv')
-write.csv(k.nulls@null.emp.results, 'output_nulls/K.koreana_null_summary.csv')
+write.csv(k.nulls@null.results, 'output_nulls/WorldClim/K.koreana_null_results.csv')
+write.csv(k.nulls@null.emp.results, 'output_nulls/WorldClim/K.koreana_null_summary.csv')
 
 
 #### plot null model results

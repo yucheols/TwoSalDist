@@ -3,9 +3,6 @@
 rm(list = ls(all.names = T))
 gc()
 
-# turn off scientific notation
-options(scipen = 999)
-
 # load packages
 library(raster)
 library(dplyr)
