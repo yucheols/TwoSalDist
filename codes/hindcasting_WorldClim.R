@@ -42,10 +42,10 @@ plot(mh[[1]])
 ### load climate-only models
 # O. koreanus 
 o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_WorldClim.rds')
-glimpse(o.models_clim)
+print(o.models_clim)
 
 k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_WorldClim.rds')
-glimpse(k.models_clim)
+print(k.models_clim)
 
 
 ##### model prediction to past climatic conditions
@@ -66,7 +66,7 @@ model_predictr <- function(model, preds.list, pred.names) {
 
 ### O.koreanus
 # run
-o.hinds <- model_predictr(model = o.models_clim$models[[1]], 
+o.hinds <- model_predictr(model = o.models_clim$models[[2]], 
                           preds.list = list(mpwp, mis, lig, lgm, mh), 
                           pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
 
@@ -77,7 +77,7 @@ plot(o.hinds)
 
 ### K.koreana
 # run
-k.hinds <- model_predictr(model = k.models_clim$models[[1]],
+k.hinds <- model_predictr(model = k.models_clim$models[[2]],
                           preds.list = list(mpwp, mis, lig, lgm, mh),
                           pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
 
