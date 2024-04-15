@@ -355,21 +355,21 @@ max.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), v
 print(max.vals.tmp)
 
 
-### bio13 ::: precipitation of wettest month
+### bio13 ::: Annual Precipitation
 # min
-min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
 
 print(min.vals.pr)
 
 # mean
-mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
 
 print(mean.vals.pr)
 
 # max
-max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
 
 print(max.vals.pr)
@@ -384,7 +384,7 @@ env.vals$time = factor(env.vals$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 
 env.vals$type = factor(env.vals$type, levels = c('min', 'mean', 'max'))
 
 ### rename variables
-env.vals$var <- dplyr::recode_factor(env.vals$var, 'bio1' = 'Bio1 (°C)', 'bio13' = 'Bio13 (mm)')
+env.vals$var <- dplyr::recode_factor(env.vals$var, 'bio1' = 'Bio1 (°C)', 'bio12' = 'Bio12 (mm)')
 env.vals$type <- dplyr::recode_factor(env.vals$type, 'min' = 'Min', 'mean' = 'Mean', 'max' = 'Max')
 
 ### plot

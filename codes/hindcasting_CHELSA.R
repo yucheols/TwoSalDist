@@ -8,7 +8,7 @@ library(raster)
 library(dplyr)
 library(ENMeval)
 library(ggplot2)
-
+library(patchwork)
 
 ##### Part 16 ::: hindcasting run --------------------------------------------------------------------------------------------------------------------
 
@@ -41,10 +41,19 @@ plot(mh[[1]])
 
 ### load climate-only models
 # O. koreanus 
-o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
+#o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
+#print(o.models_clim)
+
+# K.koreana
+#k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
+#print(k.models_clim)
+
+# O. koreanus 
+o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA_fixed_bg_params.rds')
 print(o.models_clim)
 
-k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
+# K.koreana
+k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA_fixed_bg_params.rds')
 print(k.models_clim)
 
 
@@ -66,7 +75,12 @@ model_predictr <- function(model, preds.list, pred.names) {
 
 ### O.koreanus
 # run
-o.hinds <- model_predictr(model = o.models_clim$models[[1]], 
+#o.hinds <- model_predictr(model = o.models_clim$models[[1]], 
+#                          preds.list = list(mpwp, mis, lig, lgm, mh), 
+#                          pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
+
+# run
+o.hinds <- model_predictr(model = o.models_clim@models$fc.LQ_rm.1, 
                           preds.list = list(mpwp, mis, lig, lgm, mh), 
                           pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
 
@@ -77,7 +91,12 @@ plot(o.hinds)
 
 ### K.koreana
 # run
-k.hinds <- model_predictr(model = k.models_clim$models[[2]],
+#k.hinds <- model_predictr(model = k.models_clim$models[[2]],
+#                          preds.list = list(mpwp, mis, lig, lgm, mh),
+#                          pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
+
+# run
+k.hinds <- model_predictr(model = k.models_clim@models$fc.LP_rm.5,
                           preds.list = list(mpwp, mis, lig, lgm, mh),
                           pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'))
 
@@ -87,16 +106,30 @@ plot(k.hinds)
 
 ### export hindcast rasters
 # O.koreanus
+#for (i in 1:nlayers(o.hinds)) {
+#  r <- o.hinds[[i]]
+#  name <- paste0('hindcast/CHELSA/O_koreanus/O.koreanus_', names(o.hinds)[i], '.tif')
+#  writeRaster(r, filename = name, overwrite = T)
+#}
+
+# K.koreana
+#for (i in 1:nlayers(k.hinds)) {
+#  r <- k.hinds[[i]]
+#  name <- paste0('hindcast/CHELSA/K_koreana/K.koreana_', names(k.hinds)[i], '.tif')
+#  writeRaster(r, filename = name, overwrite = T)
+#}
+
+# O.koreanus
 for (i in 1:nlayers(o.hinds)) {
   r <- o.hinds[[i]]
-  name <- paste0('hindcast/CHELSA/O_koreanus/O.koreanus_', names(o.hinds)[i], '.tif')
+  name <- paste0('hindcast/CHELSA/O_koreanus/O.koreanus_', names(o.hinds)[i], '_fixed_bg_params.tif')
   writeRaster(r, filename = name, overwrite = T)
 }
 
 # K.koreana
 for (i in 1:nlayers(k.hinds)) {
   r <- k.hinds[[i]]
-  name <- paste0('hindcast/CHELSA/K_koreana/K.koreana_', names(k.hinds)[i], '.tif')
+  name <- paste0('hindcast/CHELSA/K_koreana/K.koreana_', names(k.hinds)[i], '_fixed_bg_params.tif')
   writeRaster(r, filename = name, overwrite = T)
 }
 
@@ -173,31 +206,37 @@ boxdata <- function(sp.name, envs, pts) {
 # mPWP
 o.dat.mpwp <- boxdata(sp.name = 'O.koreanus', envs = mpwp[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.mpwp$time = 'mPWP'
+o.dat.mpwp[1:187, 1] <- o.dat.mpwp[1:187, 1]/10
 head(o.dat.mpwp)
 
 # MIS19
 o.dat.mis <- boxdata(sp.name = 'O.koreanus', envs = mis[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.mis$time = 'MIS19'
+o.dat.mis[1:187, 1] <- o.dat.mis[1:187, 1]/10
 head(o.dat.mis)
 
 # LIG
 o.dat.lig <- boxdata(sp.name = 'O.koreanus', envs = lig[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.lig$time = 'LIG'
+o.dat.lig[1:187, 1] <- o.dat.lig[1:187, 1]/10
 head(o.dat.lig)
 
 # LGM
 o.dat.lgm <- boxdata(sp.name = 'O.koreanus', envs = lgm[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.lgm$time = 'LGM'
+o.dat.lgm[1:187, 1] <- o.dat.lgm[1:187, 1]/10
 head(o.dat.lgm)
 
 # MH
 o.dat.mh <- boxdata(sp.name = 'O.koreanus', envs = mh[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.mh$time = 'MH'
+o.dat.mh[1:187, 1] <- o.dat.mh[1:187, 1]/10
 head(o.dat.mh)
 
 # current
 o.dat.cur <- boxdata(sp.name = 'O.koreanus', envs = ref.env[[c('bio1', 'bio13')]], pts = o.occs)
 o.dat.cur$time = 'Current'
+o.dat.cur[1:187, 1] <- o.dat.cur[1:187, 1]/10
 head(o.dat.cur)
 
 ## format data for plotting
@@ -205,6 +244,7 @@ o.dat.bind <- rbind(o.dat.mpwp, o.dat.mis, o.dat.lig, o.dat.lgm, o.dat.mh, o.dat
 head(o.dat.bind)
 
 o.dat.bind$time <- factor(o.dat.bind$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
+o.dat.bind$var <- factor(o.dat.bind$var, levels = c('bio1', 'bio13')) 
 o.dat.bind$var <- dplyr::recode(o.dat.bind$var, 'bio1' = 'Bio1 (°C)', 'bio13' = 'Bio13 (mm)')
 
 ## plot
@@ -220,37 +260,82 @@ o.env.plot <- o.dat.bind %>%
         strip.text = element_text(size = 12),
         legend.position = 'none')
 
-##### K.koreana 
+##### K.koreana
 
 ### get data
 # mPWP
-k.dat.mpwp <- boxdata(sp.name = 'K.koreana', envs = mpwp[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.mpwp <- boxdata(sp.name = 'K.koreana', envs = mpwp[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.mpwp$time = 'mPWP'
+#head(k.dat.mpwp)
+
+# MIS19
+#k.dat.mis <- boxdata(sp.name = 'K.koreana', envs = mis[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.mis$time = 'MIS19'
+#head(k.dat.mis)
+
+# LIG
+#k.dat.lig <- boxdata(sp.name = 'K.koreana', envs = lig[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.lig$time = 'LIG'
+#head(k.dat.lig)
+
+# LGM
+#k.dat.lgm <- boxdata(sp.name = 'K.koreana', envs = lgm[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.lgm$time = 'LGM'
+#head(k.dat.lgm)
+
+# MH
+#k.dat.mh <- boxdata(sp.name = 'K.koreana', envs = mh[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.mh$time = 'MH'
+#head(k.dat.mh)
+
+# current
+#k.dat.cur <- boxdata(sp.name = 'K.koreana', envs = ref.env[[c('bio4', 'bio12')]], pts = k.occs)
+#k.dat.cur$time = 'Current'
+#head(k.dat.cur)
+
+## format data for plotting
+#k.dat.bind <- rbind(k.dat.mpwp, k.dat.mis, k.dat.lig, k.dat.lgm, k.dat.mh, k.dat.cur)
+#head(k.dat.bind)
+
+#k.dat.bind$time <- factor(k.dat.bind$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
+#k.dat.bind$var <- factor(k.dat.bind$var, levels = c('bio4', 'bio12'))
+#k.dat.bind$var <- dplyr::recode(k.dat.bind$var, 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)')
+
+### get data
+# mPWP
+k.dat.mpwp <- boxdata(sp.name = 'K.koreana', envs = mpwp[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.mpwp$time = 'mPWP'
+k.dat.mpwp[1:137, 1] <- k.dat.mpwp[1:137, 1]/10
 head(k.dat.mpwp)
 
 # MIS19
-k.dat.mis <- boxdata(sp.name = 'K.koreana', envs = mis[[c('bio4', 'bio12')]], pts = k.occs)
+k.dat.mis <- boxdata(sp.name = 'K.koreana', envs = mis[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.mis$time = 'MIS19'
+k.dat.mis[1:137, 1] <- k.dat.mis[1:137, 1]/10
 head(k.dat.mis)
 
 # LIG
-k.dat.lig <- boxdata(sp.name = 'K.koreana', envs = lig[[c('bio4', 'bio12')]], pts = k.occs)
+k.dat.lig <- boxdata(sp.name = 'K.koreana', envs = lig[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.lig$time = 'LIG'
+k.dat.lig[1:137, 1] <- k.dat.lig[1:137, 1]/10
 head(k.dat.lig)
 
 # LGM
-k.dat.lgm <- boxdata(sp.name = 'K.koreana', envs = lgm[[c('bio4', 'bio12')]], pts = k.occs)
+k.dat.lgm <- boxdata(sp.name = 'K.koreana', envs = lgm[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.lgm$time = 'LGM'
+k.dat.lgm[1:137, 1] <- k.dat.lgm[1:137, 1]/10
 head(k.dat.lgm)
 
 # MH
-k.dat.mh <- boxdata(sp.name = 'K.koreana', envs = mh[[c('bio4', 'bio12')]], pts = k.occs)
+k.dat.mh <- boxdata(sp.name = 'K.koreana', envs = mh[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.mh$time = 'MH'
+k.dat.mh[1:137, 1] <- k.dat.mh[1:137, 1]/10
 head(k.dat.mh)
 
 # current
-k.dat.cur <- boxdata(sp.name = 'K.koreana', envs = ref.env[[c('bio4', 'bio12')]], pts = k.occs)
+k.dat.cur <- boxdata(sp.name = 'K.koreana', envs = ref.env[[c('bio4', 'bio14')]], pts = k.occs)
 k.dat.cur$time = 'Current'
+k.dat.cur[1:137, 1] <- k.dat.cur[1:137, 1]/10
 head(k.dat.cur)
 
 ## format data for plotting
@@ -258,8 +343,8 @@ k.dat.bind <- rbind(k.dat.mpwp, k.dat.mis, k.dat.lig, k.dat.lgm, k.dat.mh, k.dat
 head(k.dat.bind)
 
 k.dat.bind$time <- factor(k.dat.bind$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'))
-k.dat.bind$var <- factor(k.dat.bind$var, levels = c('bio4', 'bio12'))
-k.dat.bind$var <- dplyr::recode(k.dat.bind$var, 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)')
+k.dat.bind$var <- factor(k.dat.bind$var, levels = c('bio4', 'bio14'))
+k.dat.bind$var <- dplyr::recode(k.dat.bind$var, 'bio4' = 'Bio4', 'bio14' = 'Bio14 (mm)')
 
 ## plot
 k.env.plot <- k.dat.bind %>%
@@ -280,7 +365,8 @@ o.env.plot + k.env.plot +
   plot_layout(nrow = 2)
 
 ## export   
-ggsave('plots/CHELSA models/env_values_thru_time.png', width = 20, height = 25, dpi = 800, units = 'cm')
+#ggsave('plots/CHELSA models/env_values_thru_time.png', width = 20, height = 25, dpi = 800, units = 'cm')
+ggsave('plots/CHELSA models/env_values_thru_time_fixed_bg_params.png', width = 20, height = 25, dpi = 800, units = 'cm')
 
 
 ##### Part 19 :::  optional == visualize climate trends through time // from mPWP to current --------------------------------------------------------------
@@ -339,36 +425,39 @@ plot(ref.env[[1]])
 min.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
 
+min.vals.tmp$val <- min.vals.tmp$val/10
 print(min.vals.tmp)
 
 # mean
 mean.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                              time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
 
+mean.vals.tmp$val <- mean.vals.tmp$val/10
 print(mean.vals.tmp)
 
 # max
 max.vals.tmp <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio1', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
 
+max.vals.tmp$val <- max.vals.tmp$val/10
 print(max.vals.tmp)
 
 
-### bio13 ::: precipitation of wettest month
+### bio12 ::: Annual Precipitation
 # min
-min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+min.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'min')
 
 print(min.vals.pr)
 
 # mean
-mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+mean.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                             time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'mean')
 
 print(mean.vals.pr)
 
 # max
-max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio13', 
+max.vals.pr <- env.val.get(env.list = list(mpwp, mis, lig, lgm, mh, ref.env), var = 'bio12', 
                            time = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH', 'Current'), type = 'max')
 
 print(max.vals.pr)
@@ -383,7 +472,7 @@ env.vals$time = factor(env.vals$time, levels = c('mPWP', 'MIS19', 'LIG', 'LGM', 
 env.vals$type = factor(env.vals$type, levels = c('min', 'mean', 'max'))
 
 ### rename variables
-env.vals$var <- dplyr::recode_factor(env.vals$var, 'bio1' = 'Bio1 (°C)', 'bio13' = 'Bio13 (mm)')
+env.vals$var <- dplyr::recode_factor(env.vals$var, 'bio1' = 'Bio1 (°C)', 'bio12' = 'Bio12 (mm)')
 env.vals$type <- dplyr::recode_factor(env.vals$type, 'min' = 'Min', 'mean' = 'Mean', 'max' = 'Max')
 
 ### plot

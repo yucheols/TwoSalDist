@@ -81,111 +81,114 @@ for (i in 1:nlayers(envs)) {
 ### use the bg data sampled in "data_prep_WorldClim" code
 
 # import thinned target group points
-targ.pts <- read.csv('data/target_group/thinned/targ.pts.csv') %>% dplyr::select(2,3)
-head(targ.pts)
+#targ.pts <- read.csv('data/target_group/thinned/targ.pts.csv') %>% dplyr::select(2,3)
+#head(targ.pts)
 
 ###  make density raster for Set 1
-targ.ras1 <- rasterize(targ.pts, envs, 1)
-plot(targ.ras1)
+#targ.ras1 <- rasterize(targ.pts, envs, 1)
+#plot(targ.ras1)
 
-targ.pres1 <- which(values(targ.ras1) == 1)
-targ.pres.locs1 <- coordinates(targ.ras1)[targ.pres1, ]
+#targ.pres1 <- which(values(targ.ras1) == 1)
+#targ.pres.locs1 <- coordinates(targ.ras1)[targ.pres1, ]
 
-targ.dens1 <- MASS::kde2d(targ.pres.locs1[,1], targ.pres.locs1[,2],
-                          n = c(nrow(targ.ras1), ncol(targ.ras1)),
-                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
+#targ.dens1 <- MASS::kde2d(targ.pres.locs1[,1], targ.pres.locs1[,2],
+#                          n = c(nrow(targ.ras1), ncol(targ.ras1)),
+#                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
 
-targ.dens.ras1 <- raster(targ.dens1, envs)
-targ.dens.ras1 <- resample(targ.dens.ras1, envs)
+#targ.dens.ras1 <- raster(targ.dens1, envs)
+#targ.dens.ras1 <- resample(targ.dens.ras1, envs)
 
-bias.layer1 <- raster::mask(targ.dens.ras1, poly)
-plot(bias.layer1)
+#bias.layer1 <- raster::mask(targ.dens.ras1, poly)
+#plot(bias.layer1)
 
 
 ### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
 # n = 5000
-bg1_5000 <- xyFromCell(bias.layer1,
-                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
-                              prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg1_5000 <- xyFromCell(bias.layer1,
+#                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
+#                              prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg1_5000) = c('long', 'lat')
-points(bg1_5000, col = 'blue')
+#colnames(bg1_5000) = c('long', 'lat')
+#points(bg1_5000, col = 'blue')
 
-write.csv(bg1_5000, 'data/bg/CHELSA/set1/bg1_5000.csv')
+#write.csv(bg1_5000, 'data/bg/CHELSA/set1/bg1_5000.csv')
 
 
 # n = 10000
-bg1_10000 <- xyFromCell(bias.layer1,
-                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
-                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg1_10000 <- xyFromCell(bias.layer1,
+#                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
+#                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg1_10000) = c('long', 'lat')
-points(bg1_10000, col = 'blue')
+#colnames(bg1_10000) = c('long', 'lat')
+#points(bg1_10000, col = 'blue')
 
-write.csv(bg1_10000, 'data/bg/CHELSA/set1/bg1_10000.csv')
+#write.csv(bg1_10000, 'data/bg/CHELSA/set1/bg1_10000.csv')
 
 
 # n = 15000
-bg1_15000 <- xyFromCell(bias.layer1,
-                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
-                               prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg1_15000 <- xyFromCell(bias.layer1,
+#                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
+#                              prob = values(bias.layer1)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg1_15000) = c('long', 'lat')
-points(bg1_15000, col = 'blue')
+#colnames(bg1_15000) = c('long', 'lat')
+#points(bg1_15000, col = 'blue')
 
-write.csv(bg1_15000, 'data/bg/CHELSA/set1/bg1_15000.csv')
+#write.csv(bg1_15000, 'data/bg/CHELSA/set1/bg1_15000.csv')
 
 
 ### set 2 ::: pooled occurrence points
-targ.ras2 <- rasterize(rbind(o.occs[, c(2,3)], k.occs[, c(2,3)]), envs, 1)
-plot(targ.ras2)
+#targ.ras2 <- rasterize(rbind(o.occs[, c(2,3)], k.occs[, c(2,3)]), envs, 1)
+#plot(targ.ras2)
 
-targ.pres2 <- which(values(targ.ras2) == 1)
-targ.pres.locs2 <- coordinates(targ.ras2)[targ.pres2, ]
+#targ.pres2 <- which(values(targ.ras2) == 1)
+#targ.pres.locs2 <- coordinates(targ.ras2)[targ.pres2, ]
 
-targ.dens2 <- MASS::kde2d(targ.pres.locs2[,1], targ.pres.locs2[,2],
-                          n = c(nrow(targ.ras2), ncol(targ.ras2)),
-                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
+#targ.dens2 <- MASS::kde2d(targ.pres.locs2[,1], targ.pres.locs2[,2],
+#                          n = c(nrow(targ.ras2), ncol(targ.ras2)),
+#                          lims = c(extent(envs)[1], extent(envs)[2], extent(envs)[3], extent(envs)[4]))
 
-targ.dens.ras2 <- raster(targ.dens2, envs)
-targ.dens.ras2 <- resample(targ.dens.ras2, envs)
+#targ.dens.ras2 <- raster(targ.dens2, envs)
+#targ.dens.ras2 <- resample(targ.dens.ras2, envs)
 
-bias.layer2 <- raster::mask(targ.dens.ras2, poly)
-plot(bias.layer2)
+#bias.layer2 <- raster::mask(targ.dens.ras2, poly)
+#plot(bias.layer2)
 
 ### sample background points at three different sample sizes == 5,000 // 10,000 // 15,000
 # n = 5000
-bg2_5000 <- xyFromCell(bias.layer2,
-                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
-                              prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg2_5000 <- xyFromCell(bias.layer2,
+#                       sample(which(!is.na(values(subset(envs, 1)))), 5000,
+#                              prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg2_5000) = c('long', 'lat')
-points(bg2_5000, col = 'green')
+#colnames(bg2_5000) = c('long', 'lat')
+#points(bg2_5000, col = 'green')
 
-write.csv(bg2_5000, 'data/bg/CHELSA/set2/bg2_5000.csv')
+#write.csv(bg2_5000, 'data/bg/CHELSA/set2/bg2_5000.csv')
 
 
 # n = 10000
-bg2_10000 <- xyFromCell(bias.layer2,
-                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
-                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg2_10000 <- xyFromCell(bias.layer2,
+#                        sample(which(!is.na(values(subset(envs, 1)))), 10000,
+#                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg2_10000) = c('long', 'lat')
-points(bg2_10000, col = 'green')
+#colnames(bg2_10000) = c('long', 'lat')
+#points(bg2_10000, col = 'green')
 
-write.csv(bg2_10000, 'data/bg/CHELSA/set2/bg2_10000.csv')
+#write.csv(bg2_10000, 'data/bg/CHELSA/set2/bg2_10000.csv')
 
 
 # n = 15000
-bg2_15000 <- xyFromCell(bias.layer2,
-                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
-                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
+#bg2_15000 <- xyFromCell(bias.layer2,
+#                        sample(which(!is.na(values(subset(envs, 1)))), 15000,
+#                               prob = values(bias.layer2)[!is.na(values(subset(envs, 1)))])) %>% as.data.frame()
 
-colnames(bg2_15000) = c('long', 'lat')
-points(bg2_15000, col = 'green')
+#colnames(bg2_15000) = c('long', 'lat')
+#points(bg2_15000, col = 'green')
 
-write.csv(bg2_15000, 'data/bg/CHELSA/set2/bg2_15000.csv')
+#write.csv(bg2_15000, 'data/bg/CHELSA/set2/bg2_15000.csv')
 
+
+### use fixed bg
+bg1_10000 <- read.csv('data/bg/bg1_10000.csv')
 
 #####  PART 4 ::: select environmental data    ------------------------------------------------------------------------------------------------
 # use ntbox
@@ -194,7 +197,7 @@ ntbox::run_ntbox()
 ### Pearson |r| > 0.8 removed ==  bio1 bio4 bio12 bio13 bio14 bio15 forest slope  
 envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 
-print(envs)
+#print(envs)
 plot(envs[[1]])
 
 
@@ -391,14 +394,14 @@ for (i in 1:length(k.folds)) {
 
 ## O.koreanus
 o.occs.z <- cbind(o.occs[, -1], raster::extract(envs, o.occs[, -1]))
-o.bg.z <- cbind(bg1_10000, raster::extract(envs, bg1_10000))
+o.bg.z <- cbind(bg1_10000[, -1], raster::extract(envs, bg1_10000[, -1]))
 
 head(o.occs.z)
 head(o.bg.z)
 
 ## K.koreana
 k.occs.z <- cbind(k.occs[, -1], raster::extract(envs, k.occs[, -1]))
-k.bg.z <- cbind(bg1_10000, raster::extract(envs, bg1_10000))
+k.bg.z <- cbind(bg1_10000[, -1], raster::extract(envs, bg1_10000[, -1]))
 
 head(k.occs.z)
 head(k.occs.z)
@@ -406,9 +409,9 @@ head(k.occs.z)
 ########  try checkerboard2 
 
 #### O.koreanus
-o.cb2 <- ENMeval::get.checkerboard2(occs = o.occs[, -1], bg = bg1_10000, envs = envs[[1:6]], aggregation.factor = c(4,4))
+o.cb2 <- ENMeval::get.checkerboard2(occs = o.occs[, -1], bg = bg1_10000[, -1], envs = envs[[1:6]], aggregation.factor = c(4,4))
 ENMeval::evalplot.grps(pts = o.occs[, -1], pts.grp = o.cb2$occs.grp, envs = envs)
-ENMeval::evalplot.grps(pts = bg1_10000, pts.grp = o.cb2$bg.grp, envs = envs)
+ENMeval::evalplot.grps(pts = bg1_10000[, -1], pts.grp = o.cb2$bg.grp, envs = envs)
 
 # check points per bin
 table(o.cb2$occs.grp)
@@ -420,9 +423,9 @@ ENMeval::evalplot.envSim.hist(sim.type = 'mess', ref.data = 'bg', occs.z = o.occ
 
 
 #### K.koreana
-k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000, envs = envs[[1:6]], aggregation.factor = c(4,4))
+k.cb2 <- ENMeval::get.checkerboard2(occs = k.occs[, -1], bg = bg1_10000[, -1], envs = envs[[1:6]], aggregation.factor = c(4,4))
 ENMeval::evalplot.grps(pts = k.occs[, -1], pts.grp = k.cb2$occs.grp, envs = envs)
-ENMeval::evalplot.grps(pts = bg1_10000, pts.grp = k.cb2$bg.grp, envs = envs)
+ENMeval::evalplot.grps(pts = bg1_10000[, -1], pts.grp = k.cb2$bg.grp, envs = envs)
 
 # check points per bin
 table(k.cb2$occs.grp)

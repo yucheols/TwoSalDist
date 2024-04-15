@@ -13,28 +13,39 @@ library(ENMeval)
 library(ggplot2)
 
 ### load models
-o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
-k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
+#o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA.rds')
+#k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA.rds')
+
+o.models_clim <- readRDS('tuning_experiments/output_model_rds/O_koreanus_clim_only_CHELSA_fixed_bg_params.rds')
+k.models_clim <- readRDS('tuning_experiments/output_model_rds/K_koreana_clim_only_CHELSA_fixed_bg_params.rds')
 
 glimpse(o.models_clim)
 glimpse(k.models_clim)
 
 # check model metrics
-print(o.models_clim$metrics)
-print(k.models_clim$metrics)
+#print(o.models_clim$metrics)
+#print(k.models_clim$metrics)
+
+print(o.models_clim@results)
+print(k.models_clim@results)
 
 # look at preds
-plot(o.models_clim$preds)
-plot(k.models_clim$preds)
+#plot(o.models_clim$preds)
+#plot(k.models_clim$preds)
 
+plot(eval.predictions(o.models_clim))
+plot(eval.predictions(k.models_clim))
 
 ### load occs
 o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
 k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
 
 ### load bg
-bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv')
-bg1_10000 <- read.csv('data/bg/CHELSA/set1/bg1_10000.csv')
+#bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv')
+#bg1_10000 <- read.csv('data/bg/CHELSA/set1/bg1_10000.csv')
+
+bg1_10000 <- read.csv('data/bg/bg1_10000.csv')
+bg1_10000$X <- NULL
 
 ### load folds == only needed if user specified folds were used to make the models
 #o.folds <- readRDS('data/folds/WorldClim/O.koreanus_user_folds.rds')
@@ -46,37 +57,37 @@ envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 
 print(envs)
 
 
-#####  Part 11 ::: model eval using null models ---------------------------------------------------------------------------------------------
+#####  Part 12 ::: model eval using null models ---------------------------------------------------------------------------------------------
 # if user-specified folds were used to fit the models, then you need to provide 'user.eval.type' argument in ENMnulls function
 
 ####  O.koreanus null model testing == Q 0.5
 # make ENMeval object as input for ENMnulls
-o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_5000[, -1], tune.args = list(fc = 'Q', rm = 0.5), 
-                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
+#o.e <- ENMevaluate(taxon.name = 'O.koreanus', occs = o.occs[, -1], envs = envs, bg = bg1_5000[, -1], tune.args = list(fc = 'Q', rm = 0.5), 
+#                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
 
 # test nulls
-o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'Q', rm = 0.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
-print(o.nulls@null.results)
-print(o.nulls@null.emp.results)
+#o.nulls <- ENMnulls(e = o.e, mod.settings =  list(fc = 'Q', rm = 0.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+#print(o.nulls@null.results)
+#print(o.nulls@null.emp.results)
 
 ####  K.koreana null model testing == LQ 0.5
-k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LQ', rm = 0.5), 
-                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
+#k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LQ', rm = 0.5), 
+#                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
 
 # test nulls
-k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'LQ', rm = 0.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
-print(k.nulls@null.results)
-print(k.nulls@null.emp.results)
+#k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'LQ', rm = 0.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+#print(k.nulls@null.results)
+#print(k.nulls@null.emp.results)
 
 ####  save null models & results
-saveRDS(o.nulls, 'output_nulls/CHELSA/O.koreanus_null_clim_only_CHELSA.rds')
-saveRDS(k.nulls, 'output_nulls/CHELSA/K.koreana_null_clim_only_CHELSA.rds')
+#saveRDS(o.nulls, 'output_nulls/CHELSA/O.koreanus_null_clim_only_CHELSA.rds')
+#saveRDS(k.nulls, 'output_nulls/CHELSA/K.koreana_null_clim_only_CHELSA.rds')
 
-write.csv(o.nulls@null.results, 'output_nulls/CHELSA/O.koreanus_null_results.csv')
-write.csv(o.nulls@null.emp.results, 'output_nulls/CHELSA/O.koreanus_null_summary.csv')
+#write.csv(o.nulls@null.results, 'output_nulls/CHELSA/O.koreanus_null_results.csv')
+#write.csv(o.nulls@null.emp.results, 'output_nulls/CHELSA/O.koreanus_null_summary.csv')
 
-write.csv(k.nulls@null.results, 'output_nulls/CHELSA/K.koreana_null_results.csv')
-write.csv(k.nulls@null.emp.results, 'output_nulls/CHELSA/K.koreana_null_summary.csv')
+#write.csv(k.nulls@null.results, 'output_nulls/CHELSA/K.koreana_null_results.csv')
+#write.csv(k.nulls@null.emp.results, 'output_nulls/CHELSA/K.koreana_null_summary.csv')
 
 
 #### plot null model results
@@ -87,7 +98,7 @@ evalplot.nulls(e.null = o.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'v
 evalplot.nulls(e.null = k.nulls, stats = c('auc.val', 'cbi.val'), plot.type = 'violin')
 
 
-#####  Part 12 ::: response curves ---------------------------------------------------------------------------------------------
+#####  Part 13 ::: response curves ---------------------------------------------------------------------------------------------
 # function to pull out response data
 respDataPull <- function(sp.name, model, names.var) {
   require(dplyr)
@@ -107,11 +118,21 @@ respDataPull <- function(sp.name, model, names.var) {
 
 #####  pull out the data
 # O.koreanus
-o.resp_clim <- respDataPull(sp.name = 'O.koreanus', model = o.models_clim$models[[1]], names.var = names(envs))
+#o.resp_clim <- respDataPull(sp.name = 'O.koreanus', model = o.models_clim$models[[1]], names.var = names(envs))
+#print(o.resp_clim)
+
+# K.koreana
+#k.resp_clim <- respDataPull(sp.name = 'K.koreana', model = k.models_clim$models[[2]], names.var = names(envs))
+#print(k.resp_clim)
+
+# O.koreanus
+o.resp_clim <- respDataPull(sp.name = 'O.koreanus', model = o.models_clim@models$fc.LQ_rm.1, names.var = names(envs))
+o.resp_clim$x[1:200] <- o.resp_clim$x[1:200]/10
 print(o.resp_clim)
 
 # K.koreana
-k.resp_clim <- respDataPull(sp.name = 'K.koreana', model = k.models_clim$models[[2]], names.var = names(envs))
+k.resp_clim <- respDataPull(sp.name = 'K.koreana', model = k.models_clim@models$fc.LP_rm.5, names.var = names(envs))
+k.resp_clim$x[1:200] <- k.resp_clim$x[1:200]/10
 print(k.resp_clim)
 
 
@@ -150,10 +171,11 @@ resp_clim %>%
         legend.position = 'top')
 
 # save plot
-ggsave('plots/CHELSA models/response_curves_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+#ggsave('plots/CHELSA models/response_curves_clim_only.png', width = 30, height = 22, dpi = 800, units = 'cm')
+ggsave('plots/CHELSA models/response_curves_clim_only_fixed_bg_params.png', width = 30, height = 22, dpi = 800, units = 'cm')
 
 
-#####  Part 13 ::: compare envs values ---------------------------------------------------------------------------------------------
+#####  Part 14 ::: compare envs values ---------------------------------------------------------------------------------------------
 ## full envs data
 envs_full <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
 envs_full <- raster::stack(subset(envs_full, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
@@ -178,9 +200,11 @@ boxdata <- function(sp.name, envs, pts) {
 }
 
 o.val <- boxdata(sp.name = 'O.koreanus', envs = envs_full, pts = o.occs[, -1])
+o.val[1:374, 1] <- o.val[1:374, 1]/10
 print(o.val)
 
 k.val <- boxdata(sp.name = 'K.koreana', envs = envs_full, pts = k.occs[, -1])
+k.val[1:274, 1] <- k.val[1:274, 1]/10
 print(k.val)
 
 vals <- rbind(o.val, k.val)

@@ -11,17 +11,36 @@ library(raster)
 library(rasterVis)
 library(ggplot2)
 
-# check data
-print(envs)
+
+#####  Part 20 ::: prep data ---------------------------------------------------------------------------------------------
+## load mask polygon for later plotting
+poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
+
+## load occs
+o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv') %>% select('long', 'lat')
+k.occs <- read.csv('data/occs/Karsenia_koreana.csv') %>% select('long', 'lat')
 
 head(o.occs)
 head(k.occs)
 
-head(bg1_5000)
-head(bg2_5000)
+## load bg
+# set1
+bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv') %>% select('long', 'lat')
+bg1_10000 <- read.csv('data/bg/CHELSA/set1/bg1_10000.csv') %>% select('long', 'lat')
+bg1_15000 <- read.csv('data/bg/CHELSA/set1/bg1_15000.csv') %>% select('long', 'lat')
 
+# set2
+bg2_5000 <- read.csv('data/bg/CHELSA/set2/bg2_5000.csv') %>% select('long', 'lat')
+bg2_10000 <- read.csv('data/bg/CHELSA/set2/bg2_10000.csv') %>% select('long', 'lat')
+bg2_15000 <- read.csv('data/bg/CHELSA/set2/bg2_15000.csv') %>% select('long', 'lat')
 
-#####  Part 6 ::: model testing  ---------------------------------------------------------------------------------------------
+## load envs
+envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil', full.names = T))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
+print(envs)
+plot(envs[[1]])
+
+#####  Part 21 ::: model testing  ---------------------------------------------------------------------------------------------
 # automate model tuning 
 # type 1 == minimum or.10p.avg as primary criterion // type 2 == delta.AICc <= 2 as primary criterion 
 test_models <- function(taxon.name, occs, envs, bg.list, tune.args, partitions, partition.settings = NULL, user.grp = NULL, type) {
@@ -114,7 +133,7 @@ tune.args <- list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH'
 
 ### O. koreanus model testing run
 # run
-o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
+o.models <- test_models(taxon.name = 'O.koreanus', occs = o.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                         partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at results
@@ -129,7 +148,7 @@ saveRDS(o.models, 'tuning_experiments/output_model_rds/O_koreanus_model_tuning_C
 
 
 ### K. koreana model testing run
-k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs[, c(2,3)], envs = envs, bg.list = bg.list, tune.args = tune.args, 
+k.models <- test_models(taxon.name = 'K.koreana', occs = k.occs, envs = envs, bg.list = bg.list, tune.args = tune.args, 
                         partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)), type = 'type1')
 
 # look at results
@@ -143,7 +162,7 @@ plot(k.models$preds)
 saveRDS(k.models, 'tuning_experiments/output_model_rds/K_koreana_model_tuning_CHELSA.rds')
 
 
-#####  Part 7 ::: look at binary  ---------------------------------------------------------------------------------------------
+#####  Part 22 ::: look at binary  ---------------------------------------------------------------------------------------------
 # calculate thresholds == this function is available in ::: https://babichmorrowc.github.io/post/2019-04-12-sdm-threshold/
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -216,7 +235,7 @@ k.bin <- bin_maker(preds = k.models$preds, th = k.thresh)
 plot(k.bin)
 
 
-#####  Part 8 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
+#####  Part 23 ::: plot tuning outputs  ---------------------------------------------------------------------------------------------
 
 ### O. koreanus continuous
 # convert to SpatRaster for layer renaming
