@@ -126,8 +126,8 @@ resp_clim$Species = factor(resp_clim$Species, levels = c('O.koreanus', 'K.korean
 
 # recode variable names
 resp_clim$var = dplyr::recode_factor(resp_clim$var,
-                                     'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 'bio13' = 'Bio13 (mm)', 
-                                     'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15', 'forest' = 'Forest cover (%)', 'slope' = 'Slope (°)')
+                                     'bio1' = 'Bio1 (°C)', 'bio4' = 'Bio4', 'bio12' = 'Bio12 (mm)', 
+                                     'bio13' = 'Bio13 (mm)', 'bio14' = 'Bio14 (mm)', 'bio15' = 'Bio15')
 
 # recode species names
 resp_clim$Species = dplyr::recode_factor(resp_clim$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
