@@ -192,7 +192,7 @@ sdm_threshold <- function(sdm, occs, type = "mtp", binary = FALSE){
 o.thresh <- list()
 
 for (i in 1:nlayers(o.models$preds)) {
-  thresh <- sdm_threshold(sdm = o.models$preds[[i]], occs = o.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh <- sdm_threshold(sdm = o.models$preds[[i]], occs = o.occs, type = 'p10', binary = F)
   thresh2 <- raster::minValue(thresh)
   o.thresh[[i]] <- thresh2
   print(o.thresh)
@@ -203,7 +203,7 @@ for (i in 1:nlayers(o.models$preds)) {
 k.thresh <- list()
 
 for (i in 1:nlayers(k.models$preds)) {
-  thresh <- sdm_threshold(sdm = k.models$preds[[i]], occs = k.occs[, c(2,3)], type = 'p10', binary = F)
+  thresh <- sdm_threshold(sdm = k.models$preds[[i]], occs = k.occs, type = 'p10', binary = F)
   thresh2 <- raster::minValue(thresh)
   k.thresh[[i]] <- thresh2
   print(k.thresh)

@@ -37,8 +37,8 @@ plot(eval.predictions(o.models_clim))
 plot(eval.predictions(k.models_clim))
 
 ### load occs
-o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
-k.occs <- read.csv('data/occs/Karsenia_koreana.csv')
+#o.occs <- read.csv('data/occs/Onychodactylus_koreanus.csv')
+#k.occs <- read.csv('data/occs/Karsenia_koreana.csv') 
 
 ### load bg
 #bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv')
@@ -52,9 +52,9 @@ bg1_10000$X <- NULL
 #k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
 
 ### load envs 
-envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
-envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
-print(envs)
+#envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
+#envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
+#print(envs)
 
 
 #####  Part 12 ::: model eval using null models ---------------------------------------------------------------------------------------------
@@ -70,6 +70,13 @@ print(envs)
 #print(o.nulls@null.results)
 #print(o.nulls@null.emp.results)
 
+print(o.models_clim@results)
+
+o.nulls <- ENMnulls(e = o.models_clim, mod.settings = list(fc = 'LQ', rm = 1.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+print(o.nulls@null.results)
+print(o.nulls@null.emp.results)
+
+
 ####  K.koreana null model testing == LQ 0.5
 #k.e <- ENMevaluate(taxon.name = 'K.koreana', occs = k.occs[, -1], envs = envs, bg = bg1_10000[, -1], tune.args = list(fc = 'LQ', rm = 0.5), 
 #                   algorithm = 'maxent.jar', doClamp = T, partitions = 'checkerboard2', partition.settings = list(aggregation.factor = c(4,4)))
@@ -78,6 +85,13 @@ print(envs)
 #k.nulls <- ENMnulls(e = k.e, mod.settings =  list(fc = 'LQ', rm = 0.5), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
 #print(k.nulls@null.results)
 #print(k.nulls@null.emp.results)
+
+print(k.models_clim@results)
+
+k.nulls <- ENMnulls(e = k.models_clim, mod.settings = list(fc = 'LP', rm = 5.0), eval.stats = c('auc.val', 'auc.diff', 'cbi.val', 'or.10p'), no.iter = 1000)
+print(k.nulls@null.results)
+print(k.nulls@null.emp.results)
+
 
 ####  save null models & results
 #saveRDS(o.nulls, 'output_nulls/CHELSA/O.koreanus_null_clim_only_CHELSA.rds')
