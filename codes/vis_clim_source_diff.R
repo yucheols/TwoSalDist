@@ -85,7 +85,7 @@ comb.dat$Species <- dplyr::recode_factor(comb.dat$Species, 'O.koreanus' = 'O. ko
 comb.dat %>%
   ggplot(aes(x = source, y = val, fill = Species, color = Species)) +
   geom_boxplot(linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
-  geom_point(position = position_dodge(0.8), alpha = 0.4) +
+  geom_point(position = position_jitterdodge(0.4), alpha = 0.4) +
   facet_wrap(~ var, scale = 'free', nrow = 2, ncol = 3) +
   scale_fill_manual(values = c('#6495ED', '#ffe600')) +
   scale_color_manual(values = c('#6495ED', '#ffe600')) +
