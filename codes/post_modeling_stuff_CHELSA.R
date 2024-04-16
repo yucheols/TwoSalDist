@@ -52,9 +52,9 @@ bg1_10000$X <- NULL
 #k.folds <- readRDS('data/folds/WorldClim/K.koreana_folds.rds')
 
 ### load envs 
-#envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
-#envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
-#print(envs)
+envs <- raster::stack(list.files(path = 'data/masked/CHELSA', pattern = '.bil$', full.names = T))
+envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15')))
+print(envs)
 
 
 #####  Part 12 ::: model eval using null models ---------------------------------------------------------------------------------------------
@@ -102,6 +102,15 @@ print(k.nulls@null.emp.results)
 
 #write.csv(k.nulls@null.results, 'output_nulls/CHELSA/K.koreana_null_results.csv')
 #write.csv(k.nulls@null.emp.results, 'output_nulls/CHELSA/K.koreana_null_summary.csv')
+
+saveRDS(o.nulls, 'output_nulls/CHELSA/O.koreanus_null_clim_only_CHELSA_fixed_bg_params.rds')
+saveRDS(k.nulls, 'output_nulls/CHELSA/K.koreana_null_clim_only_CHELSA_fixed_bg_params.rds')
+
+write.csv(o.nulls@null.results, 'output_nulls/CHELSA/O.koreanus_null_results_fixed_bg_params.csv')
+write.csv(o.nulls@null.emp.results, 'output_nulls/CHELSA/O.koreanus_null_summary_fixed_bg_params.csv')
+
+write.csv(k.nulls@null.results, 'output_nulls/CHELSA/K.koreana_null_results_fixed_bg_params.csv')
+write.csv(k.nulls@null.emp.results, 'output_nulls/CHELSA/K.koreana_null_summary_fixed_bg_params.csv')
 
 
 #### plot null model results
