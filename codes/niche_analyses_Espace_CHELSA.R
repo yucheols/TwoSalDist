@@ -1,6 +1,6 @@
 ##### Niche analyses in E-space using humboldt
 # setwd
-setwd('niche_analyses/E-space')
+setwd('niche_analyses/CHELSA/E-space')
 
 # clean up working env
 rm(list = ls(all.names = T))
@@ -13,7 +13,7 @@ library(raster)
 ##### Step 1 ::: prep env data ----------------------------------------------------------------------------------------------------
 # use WorldClim 1km layers
 # use the selected subset of variables used for modeling
-e.data <- raster::stack(list.files(path = 'data/WorldClim', pattern = '.bil$', full.names = T))
+e.data <- raster::stack(list.files(path = 'data/CHELSA', pattern = '.bil$', full.names = T))
 e.data <- raster::stack(subset(e.data, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 plot(e.data[[1]])
 
@@ -27,6 +27,8 @@ head(e.points)
 
 ## Extract values to points from rasters
 ras.val <- data.frame(raster::extract(e.data, e.points))
+ras.val$bio1 <- ras.val$bio1/10
+ras.val$bio4 <- ras.val$bio4/10
 head(ras.val)
 
 ## merge sampled data to input
@@ -37,7 +39,7 @@ head(env.data)
 env.data <- humboldt.scrub.env(env.data)
 
 ## save the file as '.csv' for future analyses 
-write.csv(env.data, 'output/env_data_wc_subset.csv')
+write.csv(env.data, 'output/env_data_ch_subset.csv')
 
 
 #####  Step 2 ::: load occs data and format it for analysis in humboldt  ---------------------------------------------------------------------------------

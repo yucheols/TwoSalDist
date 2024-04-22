@@ -1,6 +1,6 @@
 ##### Niche analyses in G-space using ENMTools
 # setwd
-setwd('niche_analyses/G-space')
+setwd('niche_analyses/CHELSA/G-space')
 
 # clean up working env
 rm(list = ls(all.names = T))
@@ -27,7 +27,7 @@ bg.sp1 <- read.csv('bg/set1/bg1_10000.csv')
 bg.sp2 <- read.csv('bg/set1/bg1_10000.csv')
 
 ### envs data
-envs <- raster::stack(list.files(path = 'masked/WorldClim', pattern = '.bil$', full.names = T))
+envs <- raster::stack(list.files(path = 'masked/CHELSA', pattern = '.bil$', full.names = T))
 envs <- raster::stack(subset(envs, c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15', 'forest', 'slope')))
 
 print(envs)

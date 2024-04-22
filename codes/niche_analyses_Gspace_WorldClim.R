@@ -1,6 +1,6 @@
 ##### Niche analyses in G-space using ENMTools
 # setwd
-setwd('niche_analyses/G-space')
+setwd('niche_analyses/WorldClim/G-space')
 
 # clean up working env
 rm(list = ls(all.names = T))

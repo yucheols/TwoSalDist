@@ -1,6 +1,6 @@
 ##### Niche analyses in E-space using humboldt
 # setwd
-setwd('niche_analyses/E-space')
+setwd('niche_analyses/WorldClim/E-space')
 
 # clean up working env
 rm(list = ls(all.names = T))
