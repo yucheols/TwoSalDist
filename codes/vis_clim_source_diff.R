@@ -1,11 +1,13 @@
 #####  Visualize climate value differences at presence points between data sources
-library(dplyr)
-library(raster)
-library(ggplot2)
 
 # clear working environment
 rm(list = ls(all.names = T))
 gc()
+
+# load packages
+library(dplyr)
+library(raster)
+library(ggplot2)
 
 ### function for boxplot data formatting 
 boxdata <- function(sp.name, envs, pts) {
@@ -103,4 +105,10 @@ comb.dat %>%
 ## save
 ggsave('plots/compare_clim_source.png', width = 20, height = 25, dpi = 800, units = 'cm')        
 
-  
+
+##### run some stats analysis
+
+### O.koreanus
+# bio1
+wilcox.test(x = o.wc.dat$val[1:187], o.ch.dat$val[1:187], alternative = 'two.sided')
+
