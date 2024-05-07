@@ -24,7 +24,9 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - patchwork (version 1.1.2)
 
 ## Study background
-![DistMap](https://github.com/yucheols/TwoSalDist/assets/85914125/96be6909-fc2f-4e14-b883-9006a39a18c2)
+![Fig 1](https://github.com/yucheols/TwoSalDist/assets/85914125/c9a05ac0-8705-447b-87ed-d23caa248889)
+
+
 
 ## Study design
 
