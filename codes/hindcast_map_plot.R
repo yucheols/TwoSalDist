@@ -44,7 +44,7 @@ gplot(o.hinds.comb) +
                        breaks = c(0.1, 0.9),
                        labels = c('Low: 0.1', 'High: 0.9')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
-  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.8, linetype = 1, fill = NA) +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
         legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
@@ -55,7 +55,7 @@ gplot(o.hinds.comb) +
         axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/hindcast/hindcast_O_koreanus.png', width = 25, height = 20, dpi = 800, units = 'cm')
+ggsave('plots/hindcast/hindcast_O_koreanus.png', width = 40, height = 15, dpi = 800, units = 'cm')
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ gplot(k.hinds.comb) +
                        breaks = c(0.1, 0.9),
                        labels = c('Low: 0.1', 'High: 0.9')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
-  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.8, linetype = 1, fill = NA) +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
         legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
@@ -103,4 +103,4 @@ gplot(k.hinds.comb) +
         axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/hindcast/hindcast_K_koreana.png', width = 25, height = 20, dpi = 800, units = 'cm')
+ggsave('plots/hindcast/hindcast_K_koreana.png', width = 40, height = 15, dpi = 800, units = 'cm')
