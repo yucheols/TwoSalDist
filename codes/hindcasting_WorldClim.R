@@ -142,10 +142,20 @@ plot(o.mess)
 k.mess <- get.mess(proj.env = list(mpwp, mis, lig, lgm, mh), proj.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'), ref.env = ref.env, occs = k.occs)
 plot(k.mess)
 
-# export MESS
-writeRaster(o.mess, 'output_other/WorldClim/clim_only/O.koreanus_clim_only_MESS.tif', overwrite = T)
-writeRaster(k.mess, 'output_other/WorldClim/clim_only/K.koreana_clim_only_MESS.tif', overwrite = T)
+## export MESS
+# O.koreanus
+for (i in 1:nlayers(o.mess)) {
+  r <- o.mess[[i]]
+  name <- paste0('output_other/WorldClim/clim_only/MESS/O.koreanus/O.koreanus_', names(o.mess)[i], '_MESS.tif')
+  writeRaster(r, filename = name, overwrite = T)
+}
 
+# K.koreana
+for (i in 1:nlayers(k.mess)) {
+  r <- k.mess[[i]]
+  name <- paste0('output_other/WorldClim/clim_only/MESS/K.koreana/K.koreana_', names(k.mess)[i], '_MESS.tif')
+  writeRaster(r, filename = name, overwrite = T)
+}
 
 ##### Part 18 :::  compare env values between time ----------------------------------------------------------------------
 ## use bio1 (most important var for O.koreanus) and bio13 (most important var for K.koreana)

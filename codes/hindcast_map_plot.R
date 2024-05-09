@@ -1,4 +1,4 @@
-##########  plot hindcasting prediction maps
+##########  plot maps
 # clean up working env
 rm(list = ls(all.names = T))
 gc()
@@ -7,9 +7,13 @@ gc()
 library(rasterVis)
 library(terra)
 library(ggplot2)
+library(pals)
 
 ### import polygon
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
+
+
+#####  plot hindcasting prediction maps ----------------------------------------------------------------------------------------------------------------
 
 ### O.koreanus
 # WorldClim based preds
@@ -104,3 +108,9 @@ gplot(k.hinds.comb) +
 
 # save
 ggsave('plots/hindcast/hindcast_K_koreana.png', width = 40, height = 15, dpi = 800, units = 'cm')
+
+
+#####  plot MESS ----------------------------------------------------------------------------------------------------------------
+
+### O. koreanus
+o.mess <- rast('output_other/WorldClim/clim_only/O.koreanus_clim_only_MESS.tif')
