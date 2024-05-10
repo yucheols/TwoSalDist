@@ -156,7 +156,7 @@ get.mess <- function(proj.env, proj.names, ref.env, occs) {
   ref.env.val <- raster::extract(ref.env, occs) %>% as.data.frame()
   
   for (i in 1:length(proj.names)) {
-    mess.calc <- dismo::mess(proj.env[[i]], ref.env.val, full = F)
+    mess.calc <- dismo::mess(x = proj.env[[i]], v = ref.env.val, full = F)
     output[[i]] <- mess.calc
   }
   stack.mess <- raster::stack(output)
