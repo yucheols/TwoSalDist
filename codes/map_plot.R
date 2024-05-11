@@ -13,6 +13,146 @@ library(pals)
 poly <- rgdal::readOGR('data/polygons/kor_mer.shp')
 
 
+#####  Current model
+
+#### O.koreanus
+### contunuous
+o.clim.wc <- rast('tuning_experiments/preds/O.koreanus/WorldClim/cont_clim_only/bg1_10000.tif')                 # WorldClim clim only
+o.full.wc <- rast('tuning_experiments/preds/O.koreanus/WorldClim/cont/O.koreanus_full_model_fixed_parm.tif')    # WorldClim full
+o.clim.ch <- rast('tuning_experiments/preds/O.koreanus/CHELSA/cont_clim_only/bg1_10000.tif')                    # CHELSA clim only
+o.full.ch <- rast('tuning_experiments/preds/O.koreanus/CHELSA/cont/O.koreanus_full_model_fixed_parm.tif')       # CHELSA full
+
+# combine
+o.cont <- c(o.clim.wc, o.full.wc, o.clim.ch, o.full.ch)
+names(o.cont) = c('WorldClim', 'WorldClim - full', 'CHELSA', 'CHELSA - full')
+
+# plot
+gplot(o.cont) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable, ncol = 4, nrow = 1) +
+  scale_fill_gradientn(colors =  c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low: 0.1', 'High: 0.9')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/current/O.koreanus_model_preds.png', width = 25, height = 12, dpi = 800, units = 'cm')
+
+
+### binary
+o.clim.bin.wc <- rast('tuning_experiments/preds/O.koreanus/WorldClim/bin_clim_only/bg1_10000.tif')                 # WorldClim clim only
+o.full.bin.wc <- rast('tuning_experiments/preds/O.koreanus/WorldClim/bin/O.koreanus_full_model_fixed_parm.tif')    # WorldClim full
+o.clim.bin.ch <- rast('tuning_experiments/preds/O.koreanus/CHELSA/bin_clim_only/bg1_10000.tif')                    # CHELSA clim only
+o.full.bin.ch <- rast('tuning_experiments/preds/O.koreanus/CHELSA/bin/O.koreanus_full_model_fixed_parm.tif')       # CHELSA full
+
+# combine
+o.bin <- c(o.clim.bin.wc, o.full.bin.wc, o.clim.bin.ch, o.full.bin.ch)
+names(o.bin) = c('WorldClim', 'WorldClim - full', 'CHELSA', 'CHELSA - full')
+
+# plot
+gplot(o.bin) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable, ncol = 4, nrow = 1) +
+  scale_fill_gradientn(colors =  rev(terrain.colors(1000)),
+                       na.value = NA) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/current/O.koreanus_model_binary.png', width = 20, height = 10, dpi = 800, units = 'cm')
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#### K. koreana
+### Continuous
+k.clim.wc <- rast('tuning_experiments/preds/K.koreana/WorldClim/cont_clim_only/bg1_10000.tif')                 # WorldClim clim only
+k.full.wc <- rast('tuning_experiments/preds/K.koreana/WorldClim/cont/K.koreana_full_model_fixed_parm.tif')    # WorldClim full
+k.clim.ch <- rast('tuning_experiments/preds/K.koreana/CHELSA/cont_clim_only/bg1_10000.tif')                    # CHELSA clim only
+k.full.ch <- rast('tuning_experiments/preds/K.koreana/CHELSA/cont/K.koreana_full_model_fixed_parm.tif')       # CHELSA full
+
+# combine
+k.cont <- c(k.clim.wc, k.full.wc, k.clim.ch, k.full.ch)
+names(k.cont) = c('WorldClim', 'WorldClim - full', 'CHELSA', 'CHELSA - full')
+
+# plot
+gplot(k.cont) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable, ncol = 4, nrow = 1) +
+  scale_fill_gradientn(colors =  c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
+                       na.value = NA,
+                       name = 'Suitability',
+                       breaks = c(0.1, 0.9),
+                       labels = c('Low: 0.1', 'High: 0.9')) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/current/K.koreana_model_preds.png', width = 25, height = 12, dpi = 800, units = 'cm')
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### binary
+k.clim.bin.wc <- rast('tuning_experiments/preds/K.koreana/WorldClim/bin_clim_only/bg1_10000.tif')                 # WorldClim clim only
+k.full.bin.wc <- rast('tuning_experiments/preds/K.koreana/WorldClim/bin/K.koreana_full_model_fixed_parm.tif')    # WorldClim full
+k.clim.bin.ch <- rast('tuning_experiments/preds/K.koreana/CHELSA/bin_clim_only/bg1_10000.tif')                    # CHELSA clim only
+k.full.bin.ch <- rast('tuning_experiments/preds/K.koreana/CHELSA/bin/K.koreana_full_model_fixed_parm.tif')       # CHELSA full
+
+# combine
+k.bin <- c(k.clim.bin.wc, k.full.bin.wc, k.clim.bin.ch, k.full.bin.ch)
+names(k.bin) = c('WorldClim', 'WorldClim - full', 'CHELSA', 'CHELSA - full')
+
+# plot
+gplot(k.bin) + 
+  geom_tile(aes(fill = value)) +
+  coord_equal() +
+  facet_wrap(~ variable, ncol = 4, nrow = 1) +
+  scale_fill_gradientn(colors =  rev(terrain.colors(1000)),
+                       na.value = NA) +
+  xlab('Longitude (°)') + ylab('Latitude (°)') +
+  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+  theme_bw() +
+  theme(strip.text = element_text(size = 14),
+        legend.position = 'none',
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.text = element_text(size = 12))
+
+# save
+ggsave('plots/current/K.koreana_model_binary.png', width = 20, height = 10, dpi = 800, units = 'cm')
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #####  plot hindcasting prediction maps ----------------------------------------------------------------------------------------------------------------
 
 ### O.koreanus
