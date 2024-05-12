@@ -48,7 +48,7 @@ gplot(o.cont) +
         axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/current/O.koreanus_model_preds.png', width = 25, height = 12, dpi = 800, units = 'cm')
+ggsave('plots/current/O.koreanus_model_preds.png', width = 20, height = 10, dpi = 800, units = 'cm')
 
 
 ### binary
@@ -116,7 +116,7 @@ gplot(k.cont) +
         axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/current/K.koreana_model_preds.png', width = 25, height = 12, dpi = 800, units = 'cm')
+ggsave('plots/current/K.koreana_model_preds.png', width = 20, height = 10, dpi = 800, units = 'cm')
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------
 
