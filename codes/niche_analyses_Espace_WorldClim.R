@@ -10,6 +10,7 @@ gc()
 library(humboldt)
 library(raster)
 
+
 ##### Step 1 ::: prep env data ----------------------------------------------------------------------------------------------------
 # use WorldClim 1km layers
 # use the selected subset of variables used for modeling
@@ -82,3 +83,5 @@ trimmed.run.mx <- humboldt.doitall(inname = 'trimmed_run_mx', env1 = env.data, e
 ## Save outputs
 #saveRDS(full.run.mx, 'output/full_run_mx.rds')
 #saveRDS(trimmed.run.mx, 'output/trimmed_run_mx.rds')
+
+
