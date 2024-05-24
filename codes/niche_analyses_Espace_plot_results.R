@@ -15,7 +15,7 @@ c.trim <- readRDS('niche_analyses/CHELSA/E-space/output/trimmed_run_mx.rds')
 
 ### data formatting
 # make function
-format_data <- function(data, clim_data) {
+format_espace_data <- function(data, clim_data) {
   b12 <- as.data.frame(data$b12$sim$D)
   b21 <- as.data.frame(data$b21$sim$D)
   
@@ -31,14 +31,19 @@ format_data <- function(data, clim_data) {
 }
 
 # formatting
-w.full.dat <- format_data(data = w.full, clim_data = 'WorldClim full')  # WorldClim full
-w.trim.dat <- format_data(data = w.trim, clim_data = 'WorldClim trimmed')  # WorldClim trimmed
-c.full.dat <- format_data(data = c.full, clim_data = 'CHELSA full')     # CHELSA full
-c.trim.dat <- format_data(data = c.trim, clim_data = 'CHELSA trimmed')     # CHELSA trimmed
+w.full.dat <- format_espace_data(data = w.full, clim_data = 'WorldClim full')  # WorldClim full
+w.trim.dat <- format_espace_data(data = w.trim, clim_data = 'WorldClim trimmed')  # WorldClim trimmed
+c.full.dat <- format_espace_data(data = c.full, clim_data = 'CHELSA full')     # CHELSA full
+c.trim.dat <- format_espace_data(data = c.trim, clim_data = 'CHELSA trimmed')     # CHELSA trimmed
 
 # combine data
 all_data <- rbind(w.full.dat, w.trim.dat, c.full.dat, c.trim.dat)
 all_data$clim_data <- factor(all_data$clim_data, levels = c('WorldClim full', 'WorldClim trimmed', 'CHELSA full', 'CHELSA trimmed'))
+
+# recode the "Type" column
+all_data$Type <- recode_factor(all_data$Type,
+                               'b12' = 'Sp2 vs Sp1 background',
+                               'b21' = 'Sp1 vs Sp2 background')
 
 # empirical D values
 emp.d <- data.frame(var = c('WorldClim_full', 'WorldClim_trimmed', 'CHELSA_full', 'CHELSA_trimmed'),
@@ -50,9 +55,21 @@ all_data %>%
   ggplot(aes(x = D, fill = Type, color = Type)) +
   facet_wrap(~ clim_data) +
   geom_histogram(bins = 10, alpha = 0.3, linewidth = 1.0) +
-  geom_vline(data = emp.d, aes(xintercept = val), color = 'cornflowerblue', linewidth = 1.2, linetype = 'longdash') +
+  geom_vline(data = emp.d, aes(xintercept = val), color = 'black', linewidth = 1.0, linetype = 'longdash') +
   scale_fill_manual(values = c('#69b3a2', '#9966ff')) +
   scale_color_manual(values = c('#69b3a2', '#9966ff')) +
   xlab("Schoener's D") + ylab('Count') +
   theme_bw() +
-  theme(strip.text = element_text(size = 13))
+  theme(legend.position = 'top',
+        legend.title = element_blank(),
+        legend.text = element_text(size = 14),
+        strip.text = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = 'bold'),
+        axis.title.x = element_text(margin = margin(t = 20)),
+        axis.title.y = element_text(margin = margin(r = 20))) +
+  guides(fill = guide_legend(reverse = T),
+         color = guide_legend(reverse = T))
+
+# save
+ggsave('plots/niche_analyses_Espace.png', width = 20, height = 15, dpi = 800, units = 'cm')  
