@@ -22,6 +22,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - rasterVis (version 0.51.5)
 - ggplot2 (version 3.4.1)
 - patchwork (version 1.1.2)
+- ggpubr (version 0.5.0)
 
 ## Study background
 ![Fig 1](https://github.com/yucheols/TwoSalDist/assets/85914125/c9a05ac0-8705-447b-87ed-d23caa248889)
@@ -42,7 +43,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ![mapping](https://github.com/yucheols/TwoSalDist/assets/85914125/8a429e4e-c487-434e-afaf-01074b0f3a29)
 
 ## Niche analyses
-![niche_analyses_Espace](https://github.com/yucheols/TwoSalDist/assets/85914125/84bf97af-b954-41e6-8633-980b25a382aa)
+![niche_analyses_Espace](https://github.com/yucheols/TwoSalDist/assets/85914125/a412bc90-6337-4dba-a6d8-ed710a1a7c7b)
+
 
 
 ## Dateset
