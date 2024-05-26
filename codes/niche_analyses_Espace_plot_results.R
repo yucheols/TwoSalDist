@@ -71,8 +71,9 @@ id.plot <- id.test.result %>%
         strip.text = element_text(size = 14),
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = 'bold'),
-        axis.title.x = element_text(margin = margin(t = 20)),
-        axis.title.y = element_text(margin = margin(r = 20))) 
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 20)),
+        plot.margin = margin(l = 15, r = 15)) 
 
 
 #### background test
@@ -105,17 +106,18 @@ bg.plot <- bg.test.data %>%
         strip.text = element_text(size = 14),
         axis.text = element_text(size = 12),
         axis.title = element_text(size = 14, face = 'bold'),
-        axis.title.x = element_text(margin = margin(t = 20)),
-        axis.title.y = element_text(margin = margin(r = 20))) +
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 20)),
+        plot.margin = margin(l = 15, r = 15)) +
   guides(fill = guide_legend(reverse = T),
          color = guide_legend(reverse = T))
 
 
 ### combine plots
 espace_fig <- ggarrange(id.plot, bg.plot,
-                        font.label = list(size = 16),
+                        font.label = list(size = 18),
                         labels = c('A', 'B'),
                         ncol = 1, nrow = 2)
 
 ### save
-ggsave('plots/niche_analyses_Espace.png', width = 25, height = 20, dpi = 800, units = 'cm')  
+ggsave('plots/niche_analyses_Espace.png', width = 25, height = 17, dpi = 800, units = 'cm')  
