@@ -41,25 +41,25 @@ format_espace_data <- function(data, clim_data) {
 }
 
 # formatting
-w.full.dat <- format_espace_data(data = w.full, clim_data = 'WorldClim full')  # WorldClim full
-w.trim.dat <- format_espace_data(data = w.trim, clim_data = 'WorldClim trimmed')  # WorldClim trimmed
-c.full.dat <- format_espace_data(data = c.full, clim_data = 'CHELSA full')     # CHELSA full
-c.trim.dat <- format_espace_data(data = c.trim, clim_data = 'CHELSA trimmed')     # CHELSA trimmed
+w.full.dat <- format_espace_data(data = w.full, clim_data = 'WorldClim NOT')  # WorldClim full
+w.trim.dat <- format_espace_data(data = w.trim, clim_data = 'WorldClim NDT')  # WorldClim trimmed
+c.full.dat <- format_espace_data(data = c.full, clim_data = 'CHELSA NOT')     # CHELSA full
+c.trim.dat <- format_espace_data(data = c.trim, clim_data = 'CHELSA NDT')     # CHELSA trimmed
 
 #### identity test 
 # combine data
 id.test.result <- rbind(w.full.dat[[1]], w.trim.dat[[1]], c.full.dat[[1]], c.trim.dat[[1]])
 
 # empirical D values
-id.emp.d <- data.frame(var = c('WorldClim_full', 'WorldClim_trimmed', 'CHELSA_full', 'CHELSA_trimmed'),
+id.emp.d <- data.frame(var = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT'),
                        val = c(w.full$eqiv$obs$D, w.trim$eqiv$obs$D, c.full$eqiv$obs$D, c.trim$eqiv$obs$D),
-                       clim_data = c('WorldClim full', 'WorldClim trimmed', 'CHELSA full', 'CHELSA trimmed'))
+                       clim_data = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT'))
 
 # plot
 id.plot <- id.test.result %>% 
   ggplot(aes(x = D, fill = Type, color = Type)) + 
   geom_histogram(bins = 10, alpha = 0.3, linewidth = 1.0) +
-  facet_wrap(~ factor(clim_data, levels = c('WorldClim full', 'WorldClim trimmed', 'CHELSA full', 'CHELSA trimmed')), nrow = 1, ncol = 4) + 
+  facet_wrap(~ factor(clim_data, levels = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT')), nrow = 1, ncol = 4) + 
   geom_vline(data = id.emp.d, aes(xintercept = val), color = 'black', linewidth = 1.0, linetype = 'longdash') +
   scale_fill_manual(values = 'cornflowerblue') +
   scale_color_manual(values = 'cornflowerblue') +
@@ -86,15 +86,15 @@ bg.test.data$Type <- recode_factor(bg.test.data$Type,
                                    'b21' = 'Sp1 vs Sp2 background')
 
 # empirical D values
-bg.emp.d <- data.frame(var = c('WorldClim_full', 'WorldClim_trimmed', 'CHELSA_full', 'CHELSA_trimmed'),
+bg.emp.d <- data.frame(var = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT'),
                        val = c(w.full$b12$obs$D, w.trim$b12$obs$D, c.full$b12$obs$D, c.trim$b12$obs$D),
-                       clim_data = c('WorldClim full', 'WorldClim trimmed', 'CHELSA full', 'CHELSA trimmed')) 
+                       clim_data = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT')) 
 
 # plot
 bg.plot <- bg.test.data %>%
   ggplot(aes(x = D, fill = Type, color = Type)) +
   geom_histogram(bins = 10, alpha = 0.3, linewidth = 1.0) +
-  facet_wrap(~ factor(clim_data, levels = c('WorldClim full', 'WorldClim trimmed', 'CHELSA full', 'CHELSA trimmed')), nrow = 1, ncol = 4) +
+  facet_wrap(~ factor(clim_data, levels = c('WorldClim NOT', 'WorldClim NDT', 'CHELSA NOT', 'CHELSA NDT')), nrow = 1, ncol = 4) +
   geom_vline(data = bg.emp.d, aes(xintercept = val), color = 'black', linewidth = 1.0, linetype = 'longdash') +
   scale_fill_manual(values = c('#69b3a2', '#9966ff')) +
   scale_color_manual(values = c('#69b3a2', '#9966ff')) +
