@@ -28,7 +28,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ## Study background
 ![Fig 1](https://github.com/yucheols/TwoSalDist/assets/85914125/c9a05ac0-8705-447b-87ed-d23caa248889)
 
-- The Korean Clawed Salamander (Onychodactylus koreanus) and Korean Crevice Salamander (Karsenia koreana) are endemic to the Korean Peninsula.
+- The Korean Clawed Salamander (*Onychodactylus koreanus*) and Korean Crevice Salamander (*Karsenia koreana*) are endemic to the Korean Peninsula.
 
 ## Study design
 
