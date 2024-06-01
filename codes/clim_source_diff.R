@@ -111,9 +111,77 @@ ggsave('plots/compare_clim_source.png', width = 20, height = 25, dpi = 800, unit
 # turn off scientific notation 
 options(scipen = 999)
 
-### O.koreanus
-o.mann.b1 <- wilcox.test(x = o.wc.dat$val[1:187], y = o.ch.dat$val[1:187], alternative = 'two.sided')          # bio1
-o.mann.b4 <- wilcox.test(x = o.wc.dat$val[188:374], y = o.ch.dat$val[188:374], alternative = 'two.sided')      # bio4
-o.mann.b12 <- wilcox.test(x = o.wc.dat$val[375:561], y = o.ch.dat$val[375:561], alternative = 'two.sided')     # bio12
-o.mann.b13 <- wilcox.test(x = o.wc.dat$val[562:758], y = o.ch.dat$val[562:758], alternative = 'two.sided')     # bio13
-o.mann.b14 <- wilcox.test()
+#### O.koreanus
+## filter by variable
+# WorldClim
+o.wc.b1 <- o.wc.dat %>% filter(var == 'bio1')
+o.wc.b4 <- o.wc.dat %>% filter(var == 'bio4')
+o.wc.b12 <- o.wc.dat %>% filter(var == 'bio12')
+o.wc.b13 <- o.wc.dat %>% filter(var == 'bio13')
+o.wc.b14 <- o.wc.dat %>% filter(var == 'bio14')
+o.wc.b15 <- o.wc.dat %>% filter(var == 'bio15')
+
+# CHELSA
+o.ch.b1 <- o.ch.dat %>% filter(var == 'bio1')
+o.ch.b4 <- o.ch.dat %>% filter(var == 'bio4')
+o.ch.b12 <- o.ch.dat %>% filter(var == 'bio12')
+o.ch.b13 <- o.ch.dat %>% filter(var == 'bio13')
+o.ch.b14 <- o.ch.dat %>% filter(var == 'bio14')
+o.ch.b15 <- o.ch.dat %>% filter(var == 'bio15')
+
+## run tests
+o.mann.b1 <- wilcox.test(x = o.wc.b1$val, y = o.ch.b1$val, alternative = 'two.sided')          # bio1
+o.mann.b4 <- wilcox.test(x = o.wc.b4$val, y = o.ch.b4$val, alternative = 'two.sided')          # bio4
+o.mann.b12 <- wilcox.test(x = o.wc.b12$val, y = o.ch.b12$val, alternative = 'two.sided')       # bio12
+o.mann.b13 <- wilcox.test(x = o.wc.b13$val, y = o.ch.b13$val, alternative = 'two.sided')       # bio13
+o.mann.b14 <- wilcox.test(x = o.wc.b14$val, y = o.ch.b14$val, alternative = 'two.sided')       # bio14
+o.mann.b15 <- wilcox.test(x = o.wc.b15$val, y = o.ch.b15$val, alternative = 'two.sided')       # bio15
+
+## make a dataframe of results
+o.mann <- data.frame(W = c(o.mann.b1$statistic, o.mann.b4$statistic, o.mann.b12$statistic, o.mann.b13$statistic, o.mann.b14$statistic, o.mann.b15$statistic), 
+                     p = c(o.mann.b1$p.value, o.mann.b4$p.value, o.mann.b12$p.value, o.mann.b13$p.value, o.mann.b14$p.value, o.mann.b15$p.value),
+                     variable = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15'),
+                     species = 'O.koreanus')
+
+print(o.mann)
+
+## save results
+write.csv(o.mann, 'clim_source_compare/O.koreanus_MannWhitneyU.csv')
+
+
+#### K.koreana
+## filter by variable
+# WorldClim
+k.wc.b1 <- k.wc.dat %>% filter(var == 'bio1')
+k.wc.b4 <- k.wc.dat %>% filter(var == 'bio4')
+k.wc.b12 <- k.wc.dat %>% filter(var == 'bio12')
+k.wc.b13 <- k.wc.dat %>% filter(var == 'bio13')
+k.wc.b14 <- k.wc.dat %>% filter(var == 'bio14')
+k.wc.b15 <- k.wc.dat %>% filter(var == 'bio15')
+
+# CHELSA
+k.ch.b1 <- k.ch.dat %>% filter(var == 'bio1')
+k.ch.b4 <- k.ch.dat %>% filter(var == 'bio4')
+k.ch.b12 <- k.ch.dat %>% filter(var == 'bio12')
+k.ch.b13 <- k.ch.dat %>% filter(var == 'bio13')
+k.ch.b14 <- k.ch.dat %>% filter(var == 'bio14')
+k.ch.b15 <- k.ch.dat %>% filter(var == 'bio15')
+
+## run tests
+k.mann.b1 <- wilcox.test(x = k.wc.b1$val, y = k.ch.b1$val, alternative = 'two.sided')          # bio1
+k.mann.b4 <- wilcox.test(x = k.wc.b4$val, y = k.ch.b4$val, alternative = 'two.sided')          # bio4
+k.mann.b12 <- wilcox.test(x = k.wc.b12$val, y = k.ch.b12$val, alternative = 'two.sided')       # bio12
+k.mann.b13 <- wilcox.test(x = k.wc.b13$val, y = k.ch.b13$val, alternative = 'two.sided')       # bio13
+k.mann.b14 <- wilcox.test(x = k.wc.b14$val, y = k.ch.b14$val, alternative = 'two.sided')       # bio14
+k.mann.b15 <- wilcox.test(x = k.wc.b15$val, y = k.ch.b15$val, alternative = 'two.sided')       # bio15
+
+## make a dataframe of results
+k.mann <- data.frame(W = c(k.mann.b1$statistic, k.mann.b4$statistic, k.mann.b12$statistic, k.mann.b13$statistic, k.mann.b14$statistic, k.mann.b15$statistic), 
+                     p = c(k.mann.b1$p.value, k.mann.b4$p.value, k.mann.b12$p.value, k.mann.b13$p.value, k.mann.b14$p.value, k.mann.b15$p.value),
+                     variable = c('bio1', 'bio4', 'bio12', 'bio13', 'bio14', 'bio15'),
+                     species = 'K.koreana')
+
+print(k.mann)
+
+## save results
+write.csv(k.mann, 'clim_source_compare/K.koreana_MannWhitneyU.csv')
