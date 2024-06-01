@@ -108,7 +108,12 @@ ggsave('plots/compare_clim_source.png', width = 20, height = 25, dpi = 800, unit
 
 ##### run some stats analysis
 
-### O.koreanus
-# bio1
-wilcox.test(x = o.wc.dat$val[1:187], o.ch.dat$val[1:187], alternative = 'two.sided')
+# turn off scientific notation 
+options(scipen = 999)
 
+### O.koreanus
+o.mann.b1 <- wilcox.test(x = o.wc.dat$val[1:187], y = o.ch.dat$val[1:187], alternative = 'two.sided')          # bio1
+o.mann.b4 <- wilcox.test(x = o.wc.dat$val[188:374], y = o.ch.dat$val[188:374], alternative = 'two.sided')      # bio4
+o.mann.b12 <- wilcox.test(x = o.wc.dat$val[375:561], y = o.ch.dat$val[375:561], alternative = 'two.sided')     # bio12
+o.mann.b13 <- wilcox.test(x = o.wc.dat$val[562:758], y = o.ch.dat$val[562:758], alternative = 'two.sided')     # bio13
+o.mann.b14 <- wilcox.test()
