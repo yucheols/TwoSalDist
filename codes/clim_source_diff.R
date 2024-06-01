@@ -106,7 +106,7 @@ comb.dat %>%
 ggsave('plots/compare_clim_source.png', width = 20, height = 25, dpi = 800, units = 'cm')        
 
 
-##### run some stats analysis
+##### conduct Mann-Whitney U-tests to compare between climatic databases
 
 # turn off scientific notation 
 options(scipen = 999)
