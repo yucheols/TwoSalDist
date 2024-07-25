@@ -129,8 +129,45 @@ print(k.mpwp2)
 
 
 ##### Part 4 ::: export results ----------------------------------------------------------------------------------------------------
-quant_pred_diff <- data.frame()
+# O.koreanus overall
+o.diff <- data.frame(o.cur, o.mh, o.lgm, o.lig, o.mis, o.mpwp)
 
+o.diff$species = 'O.koreanus'
+o.diff$method = 'overall'
 
+colnames(o.diff) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 'method')
+print(o.diff)
 
+# K.koreana overall
+k.diff <- data.frame(k.cur, k.mh, k.lgm, k.lig, k.mis, k.mpwp)
 
+k.diff$species = 'K.koreana'
+k.diff$method = 'overall'
+
+colnames(k.diff) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 'method')
+print(k.diff)
+
+# O.koreanus Schoener
+o.diff2 <- data.frame(o.cur2, o.mh2, o.lgm2, o.lig2, o.mis2, o.mpwp2)
+
+o.diff2$species = 'O.koreanus'
+o.diff2$method = 'schoener'
+
+colnames(o.diff2) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 'method')
+print(o.diff2)
+
+# K.koreana Schoener
+k.diff2 <- data.frame(k.cur2, k.mh2, k.lgm2, k.lig2, k.mis2, k.mpwp2)
+
+k.diff2$species = 'K.koreana'
+k.diff2$method = 'schoener'
+
+colnames(k.diff2) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 'method')
+print(k.diff2)
+
+# bind the data & export
+diff.data <- rbind(o.diff, o.diff2, k.diff, k.diff2)
+diff.data <- diff.data[, c(7,8,1,2,3,4,5,6)]
+print(diff.data)
+
+write.csv(diff.data, 'clim_source_compare/quant_pred_diff.csv')
