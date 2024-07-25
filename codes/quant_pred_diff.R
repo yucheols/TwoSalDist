@@ -64,6 +64,12 @@ o.lig <- calc_pred_diff(layer.a = o.lig.ch, layer.b = o.lig.wc)
 o.mis <- calc_pred_diff(layer.a = o.mis.ch, layer.b = o.mis.wc)
 o.mpwp <- calc_pred_diff(layer.a = o.mpwp.ch, layer.b = o.mpwp.wc)
 
+print(o.cur)
+print(o.mh)
+print(o.lgm)
+print(o.lig)
+print(o.mis)
+print(o.mpwp)
 
 # K.koreana
 k.cur <- calc_pred_diff(layer.a = k.cur.ch, layer.b = k.cur.wc)
@@ -72,6 +78,13 @@ k.lgm <- calc_pred_diff(layer.a = k.lgm.ch, layer.b = k.lgm.wc)
 k.lig <- calc_pred_diff(layer.a = k.lig.ch, layer.b = k.lig.wc)
 k.mis <- calc_pred_diff(layer.a = k.mis.ch, layer.b = k.mis.wc)
 k.mpwp <- calc_pred_diff(layer.a = k.mpwp.ch, layer.b = k.mpwp.wc)
+
+print(k.cur)
+print(k.mh)
+print(k.lgm)
+print(k.lig)
+print(k.mis)
+print(k.mpwp)
 
 
 ##### Part 3 ::: use ENMTools ----------------------------------------------------------------------------------------------------
@@ -113,4 +126,11 @@ print(k.lgm2)
 print(k.lig2)
 print(k.mis2)
 print(k.mpwp2)
+
+
+##### Part 4 ::: export results ----------------------------------------------------------------------------------------------------
+quant_pred_diff <- data.frame()
+
+
+
 
