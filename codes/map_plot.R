@@ -445,6 +445,6 @@ gplot(mess.both) +
         axis.title.y = element_text(margin = margin(r = 15)),
         axis.text = element_text(size = 12))
 
-ggsave('plots/hindcast/MESS_both.png', width = 40, height = 10, dpi = 800, units = 'cm')
+ggsave('plots/hindcast/MESS_both.png', width = 40, height = 15, dpi = 800, units = 'cm')
 
 
