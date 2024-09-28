@@ -254,127 +254,186 @@ ggsave('plots/hindcast/hindcast_K_koreana.png', width = 40, height = 15, dpi = 8
 
 ##### O.koreanus
 ## WorldClim
-o.mess.wc <- rast(c(list.files(path = 'output_other/WorldClim/clim_only/MESS/O.koreanus', pattern = '.tif$', full.names = T)))
-sources(o.mess.wc)
-plot(o.mess.wc[[1]])
+#o.mess.wc <- rast(c(list.files(path = 'output_other/WorldClim/clim_only/MESS/O.koreanus', pattern = '.tif$', full.names = T)))
+#sources(o.mess.wc)
+#plot(o.mess.wc[[1]])
 
-names(o.mess.wc) = c('LGM - WorldClim', 'LIG - WorldClim', 'MH - WorldClim', 'MIS19 - WorldClim', 'mPWP - WorldClim')
-o.mess.wc <- terra::subset(o.mess.wc, c(5,4,2,1,3))
+#names(o.mess.wc) = c('LGM - WorldClim', 'LIG - WorldClim', 'MH - WorldClim', 'MIS19 - WorldClim', 'mPWP - WorldClim')
+#o.mess.wc <- terra::subset(o.mess.wc, c(5,4,2,1,3))
 
 # plot
-gplot(o.mess.wc) +
-  geom_tile(aes(fill = value)) +
-  coord_equal() +
-  facet_wrap(~ variable, nrow = 2, ncol = 5) +
-  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
-                       trans = 'reverse',
-                       name = 'MESS',
-                       na.value = NA,
-                       breaks = c(-1300, -3400),
-                       labels = c('Low', 'High')) +
-  xlab('Longitude (°)') + ylab('Latitude (°)') +
-  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
-  theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
-        axis.title.x = element_text(margin = margin(t = 15)),
-        axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+#gplot(o.mess.wc) +
+#  geom_tile(aes(fill = value)) +
+#  coord_equal() +
+#  facet_wrap(~ variable, nrow = 2, ncol = 5) +
+#  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
+#                       trans = 'reverse',
+#                       name = 'MESS',
+#                       na.value = NA,
+#                       breaks = c(-1300, -3400),
+#                       labels = c('Low', 'High')) +
+#  xlab('Longitude (°)') + ylab('Latitude (°)') +
+#  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+#  theme_bw() +
+#  theme(strip.text = element_text(size = 14),
+#        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+#        legend.text = element_text(size = 12),
+#        axis.title = element_text(size = 14, face = 'bold'),
+#        axis.title.x = element_text(margin = margin(t = 15)),
+#        axis.title.y = element_text(margin = margin(r = 15)),
+#        axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/hindcast/O.koreanus_MESS_WorldClim.png', width = 40, height = 10, dpi = 800, units = 'cm')
+#ggsave('plots/hindcast/O.koreanus_MESS_WorldClim.png', width = 40, height = 10, dpi = 800, units = 'cm')
 
 
 ## CHELSA
-o.mess.ch <- rast(c(list.files(path = 'output_other/CHELSA/clim_only/MESS/O.koreanus', pattern = '.tif$', full.names = T)))
-sources(o.mess.ch)
-plot(o.mess.ch[[1]])
+#o.mess.ch <- rast(c(list.files(path = 'output_other/CHELSA/clim_only/MESS/O.koreanus', pattern = '.tif$', full.names = T)))
+#sources(o.mess.ch)
+#plot(o.mess.ch[[1]])
 
-names(o.mess.ch) = c('LGM - CHELSA', 'LIG - CHELSA', 'MH - CHELSA', 'MIS19 - CHELSA', 'mPWP - CHELSA')
-o.mess.ch <- terra::subset(o.mess.ch, c(5,4,2,1,3))
+#names(o.mess.ch) = c('LGM - CHELSA', 'LIG - CHELSA', 'MH - CHELSA', 'MIS19 - CHELSA', 'mPWP - CHELSA')
+#o.mess.ch <- terra::subset(o.mess.ch, c(5,4,2,1,3))
 
 # plot
-gplot(o.mess.ch) +
-  geom_tile(aes(fill = value)) +
-  coord_equal() +
-  facet_wrap(~ variable, nrow = 2, ncol = 5) +
-  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
-                       trans = 'reverse',
-                       name = 'MESS',
-                       na.value = NA,
-                       breaks = c(-12000, -27500),
-                       labels = c('Low', 'High')) +
-  xlab('Longitude (°)') + ylab('Latitude (°)') +
-  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
-  theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
-        axis.title.x = element_text(margin = margin(t = 15)),
-        axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+#gplot(o.mess.ch) +
+#  geom_tile(aes(fill = value)) +
+#  coord_equal() +
+#  facet_wrap(~ variable, nrow = 2, ncol = 5) +
+#  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
+#                       trans = 'reverse',
+#                       name = 'MESS',
+#                       na.value = NA,
+#                       breaks = c(-12000, -27500),
+#                       labels = c('Low', 'High')) +
+#  xlab('Longitude (°)') + ylab('Latitude (°)') +
+#  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+#  theme_bw() +
+#  theme(strip.text = element_text(size = 14),
+#        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+#        legend.text = element_text(size = 12),
+#        axis.title = element_text(size = 14, face = 'bold'),
+#        axis.title.x = element_text(margin = margin(t = 15)),
+#        axis.title.y = element_text(margin = margin(r = 15)),
+#        axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/hindcast/O.koreanus_MESS_CHELSA.png', width = 40, height = 10, dpi = 800, units = 'cm')
+#ggsave('plots/hindcast/O.koreanus_MESS_CHELSA.png', width = 40, height = 10, dpi = 800, units = 'cm')
 
 
 ##### K.koreana
 ## WorldClim
-k.mess.wc <- rast(c(list.files(path = 'output_other/WorldClim/clim_only/MESS/K.koreana', pattern = '.tif$', full.names = T)))
-sources(k.mess.wc)
-plot(k.mess.wc[[1]])
+#k.mess.wc <- rast(c(list.files(path = 'output_other/WorldClim/clim_only/MESS/K.koreana', pattern = '.tif$', full.names = T)))
+#sources(k.mess.wc)
+#plot(k.mess.wc[[1]])
 
-names(k.mess.wc) = c('LGM - WorldClim', 'LIG - WorldClim', 'MH - WorldClim', 'MIS19 - WorldClim', 'mPWP - WorldClim')
-k.mess.wc <- terra::subset(k.mess.wc, c(5,4,2,1,3))
+#names(k.mess.wc) = c('LGM - WorldClim', 'LIG - WorldClim', 'MH - WorldClim', 'MIS19 - WorldClim', 'mPWP - WorldClim')
+#k.mess.wc <- terra::subset(k.mess.wc, c(5,4,2,1,3))
 
 # plot
-gplot(k.mess.wc) +
-  geom_tile(aes(fill = value)) +
-  coord_equal() +
-  facet_wrap(~ variable, nrow = 2, ncol = 5) +
-  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
-                       trans = 'reverse',
-                       name = 'MESS',
-                       na.value = NA,
-                       breaks = c(-2300, -5700),
-                       labels = c('Low', 'High')) +
-  xlab('Longitude (°)') + ylab('Latitude (°)') +
-  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
-  theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
-        axis.title.x = element_text(margin = margin(t = 15)),
-        axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+#gplot(k.mess.wc) +
+#  geom_tile(aes(fill = value)) +
+#  coord_equal() +
+#  facet_wrap(~ variable, nrow = 2, ncol = 5) +
+#  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
+#                       trans = 'reverse',
+#                       name = 'MESS',
+#                       na.value = NA,
+#                       breaks = c(-2300, -5700),
+#                       labels = c('Low', 'High')) +
+#  xlab('Longitude (°)') + ylab('Latitude (°)') +
+#  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+#  theme_bw() +
+#  theme(strip.text = element_text(size = 14),
+#        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+#        legend.text = element_text(size = 12),
+#        axis.title = element_text(size = 14, face = 'bold'),
+#        axis.title.x = element_text(margin = margin(t = 15)),
+#        axis.title.y = element_text(margin = margin(r = 15)),
+#        axis.text = element_text(size = 12))
 
 # save
-ggsave('plots/hindcast/K.koreana_MESS_WorldClim.png', width = 40, height = 10, dpi = 800, units = 'cm')
+#ggsave('plots/hindcast/K.koreana_MESS_WorldClim.png', width = 40, height = 10, dpi = 800, units = 'cm')
 
 
 ## CHELSA
-k.mess.ch <- rast(c(list.files(path = 'output_other/CHELSA/clim_only/MESS/K.koreana', pattern = '.tif$', full.names = T)))
-sources(k.mess.ch)
-plot(k.mess.ch[[1]])
+#k.mess.ch <- rast(c(list.files(path = 'output_other/CHELSA/clim_only/MESS/K.koreana', pattern = '.tif$', full.names = T)))
+#sources(k.mess.ch)
+#plot(k.mess.ch[[1]])
 
-names(k.mess.ch) =  c('LGM - CHELSA', 'LIG - CHELSA', 'MH - CHELSA', 'MIS19 - CHELSA', 'mPWP - CHELSA')
-k.mess.ch <- terra::subset(k.mess.ch, c(5,4,2,1,3))
+#names(k.mess.ch) =  c('LGM - CHELSA', 'LIG - CHELSA', 'MH - CHELSA', 'MIS19 - CHELSA', 'mPWP - CHELSA')
+#k.mess.ch <- terra::subset(k.mess.ch, c(5,4,2,1,3))
 
 # plot
-gplot(k.mess.ch) +
+#gplot(k.mess.ch) +
+#  geom_tile(aes(fill = value)) +
+#  coord_equal() +
+#  facet_wrap(~ variable, nrow = 2, ncol = 5) +
+#  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
+#                       trans = 'reverse',
+#                       name = 'MESS',
+#                       na.value = NA,
+#                       breaks = c(-23000, -56000),
+#                       labels = c('Low', 'High')) +
+#  xlab('Longitude (°)') + ylab('Latitude (°)') +
+#  geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
+#  theme_bw() +
+#  theme(strip.text = element_text(size = 14),
+#        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
+#        legend.text = element_text(size = 12),
+#        axis.title = element_text(size = 14, face = 'bold'),
+#        axis.title.x = element_text(margin = margin(t = 15)),
+#        axis.title.y = element_text(margin = margin(r = 15)),
+#        axis.text = element_text(size = 12))
+
+# save
+#ggsave('plots/hindcast/K.koreana_MESS_CHELSA.png', width = 40, height = 10, dpi = 800, units = 'cm')
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+####  plot WorldClim MESS
+
+## import files
+
+# WorldClim
+worldclim.mess <- rast(c(list.files(path = 'output_other/WorldClim/clim_only/MESS', pattern = '.tif$', full.names = T)))
+sources(worldclim.mess) 
+plot(worldclim.mess)
+
+names(worldclim.mess) = c('LGM - WorldClim', 'LIG - WorldClim', 'MH - WorldClim', 'MIS19 - WorldClim', 'mPWP - WorldClim')
+worldclim.mess <- terra::subset(worldclim.mess, c(5,4,2,1,3))
+
+# CHELSA
+chelsa.mess <- rast(c(list.files(path = 'output_other/CHELSA/clim_only/MESS', pattern = '.tif$', full.names = T)))
+sources(chelsa.mess)
+plot(chelsa.mess)
+
+names(chelsa.mess) = c('LGM - CHELSA', 'LIG - CHELSA', 'MH - CHELSA', 'MIS19 - CHELSA', 'mPWP - CHELSA')
+chelsa.mess <- terra::subset(chelsa.mess, c(5,4,2,1,3))
+
+# combine two
+mess.both <- c(worldclim.mess, chelsa.mess)
+print(mess.both)
+names(mess.both)
+
+# check min max
+minmax(mess.both)
+
+sort(c(-1512.4023, -1792.129, -1948.1958, -1767.5975, -1739.0354, -1208.5094, -1435.0566, -1561.4529, -1415.1886, -1392.0565)) # min
+sort(c(-637.1579, -787.470, -822.3456, -721.7958, -693.1871, -499.6604, -621.3962, -649.6415, -568.2075, -545.0377), decreasing = T)
+
+# plot
+gplot(mess.both) +
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable, nrow = 2, ncol = 5) +
-  scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
+  scale_fill_gradientn(colors = as.vector(pals::coolwarm(1000)),
+                       breaks = c(-660, -1800),
+                       labels = c('Low', 'High'),
                        trans = 'reverse',
                        name = 'MESS',
-                       na.value = NA,
-                       breaks = c(-23000, -56000),
-                       labels = c('Low', 'High')) +
+                       na.value = NA) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
@@ -386,5 +445,6 @@ gplot(k.mess.ch) +
         axis.title.y = element_text(margin = margin(r = 15)),
         axis.text = element_text(size = 12))
 
-# save
-ggsave('plots/hindcast/K.koreana_MESS_CHELSA.png', width = 40, height = 10, dpi = 800, units = 'cm')
+ggsave('plots/hindcast/MESS_both.png', width = 40, height = 10, dpi = 800, units = 'cm')
+
+
