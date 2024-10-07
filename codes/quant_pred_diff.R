@@ -50,48 +50,48 @@ k.mpwp.ch <- raster('hindcast/CHELSA/K_koreana/K.koreana_mPWP.tif')
 calc_pred_diff <- function(layer.a, layer.b) {
   sum.a <- cellStats(x = layer.a, stat = 'sum', na.rm = T)
   sum.b <- cellStats(x = layer.b, stat = 'sum', na.rm = T)
-  diff <- (abs(sum.a - sum.b)/sum.a) * 100
+  diff <- abs(sum.a - sum.b)/sum.a * 100
   
   return(diff)
 }
 
 ### calculate diff
 # O.koreanus
-o.cur <- calc_pred_diff(layer.a = o.cur.ch, layer.b = o.cur.wc)
-o.mh <- calc_pred_diff(layer.a = o.mh.ch, layer.b = o.mh.wc)
-o.lgm <- calc_pred_diff(layer.a = o.lgm.ch, layer.b = o.lgm.wc)
-o.lig <- calc_pred_diff(layer.a = o.lig.ch, layer.b = o.lig.wc)
-o.mis <- calc_pred_diff(layer.a = o.mis.ch, layer.b = o.mis.wc)
-o.mpwp <- calc_pred_diff(layer.a = o.mpwp.ch, layer.b = o.mpwp.wc)
+o.cur <- calc_pred_diff(layer.a = o.cur.wc, layer.b = o.cur.ch)
+o.mh <- calc_pred_diff(layer.a = o.mh.wc, layer.b = o.mh.ch)
+o.lgm <- calc_pred_diff(layer.a = o.lgm.wc, layer.b = o.lgm.ch)
+o.lig <- calc_pred_diff(layer.a = o.lig.wc, layer.b = o.lig.ch)
+o.mis <- calc_pred_diff(layer.a = o.mis.wc, layer.b = o.mis.ch)
+o.mpwp <- calc_pred_diff(layer.a = o.mpwp.wc, layer.b = o.mpwp.ch)
 
-print(o.cur)
-print(o.mh)
-print(o.lgm)
-print(o.lig)
-print(o.mis)
-print(o.mpwp)
+print(round(o.cur, digits = 0))
+print(round(o.mh, digits = 0))
+print(round(o.lgm, digits = 0))
+print(round(o.lig, digits = 0))
+print(round(o.mis, digits = 0))
+print(round(o.mpwp, digits = 0))
 
 # K.koreana
-k.cur <- calc_pred_diff(layer.a = k.cur.ch, layer.b = k.cur.wc)
-k.mh <- calc_pred_diff(layer.a = k.mh.ch, layer.b = k.mh.wc)
-k.lgm <- calc_pred_diff(layer.a = k.lgm.ch, layer.b = k.lgm.wc)
-k.lig <- calc_pred_diff(layer.a = k.lig.ch, layer.b = k.lig.wc)
-k.mis <- calc_pred_diff(layer.a = k.mis.ch, layer.b = k.mis.wc)
-k.mpwp <- calc_pred_diff(layer.a = k.mpwp.ch, layer.b = k.mpwp.wc)
+k.cur <- calc_pred_diff(layer.a = k.cur.wc, layer.b = k.cur.ch)
+k.mh <- calc_pred_diff(layer.a = k.mh.wc, layer.b = k.mh.ch)
+k.lgm <- calc_pred_diff(layer.a = k.lgm.wc, layer.b = k.lgm.ch)
+k.lig <- calc_pred_diff(layer.a = k.lig.wc, layer.b = k.lig.ch)
+k.mis <- calc_pred_diff(layer.a = k.mis.wc, layer.b = k.mis.ch)
+k.mpwp <- calc_pred_diff(layer.a = k.mpwp.wc, layer.b = k.mpwp.ch)
 
-print(k.cur)
-print(k.mh)
-print(k.lgm)
-print(k.lig)
-print(k.mis)
-print(k.mpwp)
+print(round(k.cur, digits = 0))
+print(round(k.mh, digits = 0))
+print(round(k.lgm, digits = 0))
+print(round(k.lig, digits = 0))
+print(round(k.mis, digits = 0))
+print(round(k.mpwp, digits = 0))
 
 
 ##### Part 3 ::: use ENMTools ----------------------------------------------------------------------------------------------------
 
 # function
 schoener_diff <- function(layer.a, layer.b, verbose = T) {
-  sim <- ENMTools::raster.overlap(x = layer.a, y = layer.b, verbose = T)
+  sim <- ENMTools::raster.overlap(x = terra::rast(layer.a), y = terra::rast(layer.b), verbose = T)
   sim_diff <- (1 - sim$D) * 100
   
   return(sim_diff)
@@ -105,12 +105,12 @@ o.lig2 <- schoener_diff(layer.a = o.lig.ch, layer.b = o.lig.wc, verbose = T)
 o.mis2 <- schoener_diff(layer.a = o.mis.ch, layer.b = o.mis.wc, verbose = T)
 o.mpwp2 <- schoener_diff(layer.a = o.mpwp.ch, layer.b = o.mpwp.wc, verbose = T)
 
-print(o.cur2)
-print(o.mh2)
-print(o.lgm2)
-print(o.lig2)
-print(o.mis2)
-print(o.mpwp2)
+print(round(o.cur2, digits = 0))
+print(round(o.mh2, digits = 0))
+print(round(o.lgm2, digits = 0))
+print(round(o.lig2, digits = 0))
+print(round(o.mis2, digits = 0))
+print(round(o.mpwp2, digits = 0))
 
 # K.koreana
 k.cur2 <- schoener_diff(layer.a = k.cur.ch, layer.b = k.cur.wc, verbose = T)
@@ -120,17 +120,18 @@ k.lig2 <- schoener_diff(layer.a = k.lig.ch, layer.b = k.lig.wc, verbose = T)
 k.mis2 <- schoener_diff(layer.a = k.mis.ch, layer.b = k.mis.wc, verbose = T)
 k.mpwp2 <- schoener_diff(layer.a = k.mpwp.ch, layer.b = k.mpwp.wc, verbose = T)
 
-print(k.cur2)
-print(k.mh2)
-print(k.lgm2)
-print(k.lig2)
-print(k.mis2)
-print(k.mpwp2)
+print(round(k.cur2, digits = 0))
+print(round(k.mh2, digits = 0))
+print(round(k.lgm2, digits = 0))
+print(round(k.lig2, digits = 0))
+print(round(k.mis2, digits = 0))
+print(round(k.mpwp2, digits = 0))
 
 
 ##### Part 4 ::: export results ----------------------------------------------------------------------------------------------------
 # O.koreanus overall
-o.diff <- data.frame(o.cur, o.mh, o.lgm, o.lig, o.mis, o.mpwp)
+o.diff <- data.frame(round(o.cur, digits = 0), round(o.mh, digits = 0), round(o.lgm, digits = 0), 
+                     round(o.lig, digits = 0), round(o.mis, digits = 0), round(o.mpwp, digits = 0))
 
 o.diff$species = 'O.koreanus'
 o.diff$method = 'overall'
@@ -139,7 +140,8 @@ colnames(o.diff) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 
 print(o.diff)
 
 # K.koreana overall
-k.diff <- data.frame(k.cur, k.mh, k.lgm, k.lig, k.mis, k.mpwp)
+k.diff <- data.frame(round(k.cur, digits = 0), round(k.mh, digits = 0), round(k.lgm, digits = 0), 
+                     round(k.lig, digits = 0), round(k.mis, digits = 0), round(k.mpwp, digits = 0))
 
 k.diff$species = 'K.koreana'
 k.diff$method = 'overall'
@@ -148,7 +150,8 @@ colnames(k.diff) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species', 
 print(k.diff)
 
 # O.koreanus Schoener
-o.diff2 <- data.frame(o.cur2, o.mh2, o.lgm2, o.lig2, o.mis2, o.mpwp2)
+o.diff2 <- data.frame(round(o.cur2, digits = 0), round(o.mh2, digits = 0), round(o.lgm2, digits = 0), 
+                      round(o.lig2, digits = 0), round(o.mis2, digits = 0), round(o.mpwp2, digits = 0))
 
 o.diff2$species = 'O.koreanus'
 o.diff2$method = 'schoener'
@@ -157,7 +160,8 @@ colnames(o.diff2) = c('current', 'MH', 'LGM', 'LIG', 'MIS19', 'mPWP', 'species',
 print(o.diff2)
 
 # K.koreana Schoener
-k.diff2 <- data.frame(k.cur2, k.mh2, k.lgm2, k.lig2, k.mis2, k.mpwp2)
+k.diff2 <- data.frame(round(k.cur2, digits = 0), round(k.mh2, digits = 0), round(k.lgm2, digits = 0), 
+                      round(k.lig2, digits = 0), round(k.mis2, digits = 0), round(k.mpwp2, digits = 0))
 
 k.diff2$species = 'K.koreana'
 k.diff2$method = 'schoener'
