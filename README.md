@@ -44,7 +44,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ![mapping](https://github.com/yucheols/TwoSalDist/assets/85914125/8a429e4e-c487-434e-afaf-01074b0f3a29)
 
 ## Niche analyses
-![niche_analyses_Espace](https://github.com/yucheols/TwoSalDist/assets/85914125/550d3128-5217-451a-b337-ed9adc4f5412)
+![Niche analyses](https://github.com/user-attachments/assets/475537ef-6ea4-4ce9-b734-f16a641b1c48)
+
 
 
 
