@@ -34,8 +34,6 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - They are also found in broad sympatry across their known ranges.
 - As these two species are both lungless, their ranges are closely tied to very speecific envieonmental conditions, and their current ranges likely have been shaped by the Pleistocene climatic fluctuations.
 
-## Study design
-
 ## Occurrence dataset
 
 ## Environmental dataset
@@ -56,9 +54,3 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ## Niche analyses
 ![Niche analyses](https://github.com/user-attachments/assets/475537ef-6ea4-4ce9-b734-f16a641b1c48)
 
-
-
-
-
-
-## Dateset
