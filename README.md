@@ -29,8 +29,18 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ![Fig 1](https://github.com/yucheols/TwoSalDist/assets/85914125/c9a05ac0-8705-447b-87ed-d23caa248889)
 
 - The Korean Clawed Salamander (*Onychodactylus koreanus*) and Korean Crevice Salamander (*Karsenia koreana*) are endemic to the Korean Peninsula.
+- *O. koreanus* is in the family Hynobiidae and *K. koreana* is in the family Plethodontidae (it is the only Asian representative of this family).
+- Although distantly related, these two species are ecologically similar and thus share similar habitat requirements. Both species are lungless and are strict habitat specialists found exclusively in heavily forested areas close to clean mountain streams.
+- They are also found in broad sympatry across their known ranges.
+- As these two species are both lungless, their ranges are closely tied to very speecific envieonmental conditions, and their current ranges likely have been shaped by the Pleistocene climatic fluctuations.
 
 ## Study design
+
+## Occurrence dataset
+
+## Environmental dataset
+
+## Background dataset
 
 ## Model tuning experiments
 ![O koreanus_WorldClim_cont](https://github.com/yucheols/TwoSalDist/assets/85914125/a08dc3eb-a409-4f6c-ad46-a88f168b3a68)
