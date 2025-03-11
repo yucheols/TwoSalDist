@@ -41,8 +41,6 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ## Background dataset
 
 ## Model tuning experiments
-![O koreanus_WorldClim_cont](https://github.com/yucheols/TwoSalDist/assets/85914125/a08dc3eb-a409-4f6c-ad46-a88f168b3a68)
-
 
 ## Current habitat suitability
 ![current](https://github.com/yucheols/TwoSalDist/assets/85914125/edf19032-9a3d-46d1-b9cc-84d67219a6e2)
