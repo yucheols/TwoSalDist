@@ -1,5 +1,6 @@
 # Ecological niche modeling of two distantly related lungless salamanders  
 Ecological niche modeling and associated analyses for the two species of Korean endemic salamanders.
+*Some of the custom R scripts used in this project have been updated and included in the R package ENMwrap (https://github.com/yucheols/ENMwrap)*
 
 ## Software and package dependencies
 - R (version 4.2.2)
