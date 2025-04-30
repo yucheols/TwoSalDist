@@ -3,8 +3,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 *Some of the custom R scripts used in this project have been updated and included in the R package ENMwrap (https://github.com/yucheols/ENMwrap)*
 
 ## Software and package dependencies
-- R (version 4.2.2)
-- ENMeval (version 2.0.4)
+- R (versions 4.2.2 & 4.4.2)
+- ENMeval (versions 2.0.4 & 2.0.5)
 - dismo (version 1.3.14)
 - ntbox (version 0.6.6.6)
 - humboldt (version 1.0.0.420121)
