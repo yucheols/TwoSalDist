@@ -4,8 +4,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 ## Software and package dependencies
 #### Core analyses
-- R (versions 4.2.2)
-- ENMeval (versions 2.0.4)
+- R (version 4.2.2)
+- ENMeval (version 2.0.4)
 - dismo (version 1.3.14)
 - ntbox (version 0.6.6.6)
 - humboldt (version 1.0.0.420121)
@@ -27,8 +27,9 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - patchwork (version 1.1.2)
 
 #### Additional analyses
-- R (versions 4.4.2)
-- ENMeval (versions 2.0.5)
+- R (version 4.4.2)
+- ENMeval (version 2.0.5)
+- ENMwrap (version 1.0.1)
 
 
 ## Study background
