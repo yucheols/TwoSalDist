@@ -30,6 +30,11 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - R (version 4.4.2)
 - ENMeval (version 2.0.5)
 - ENMwrap (version 1.0.1)
+- dplyr
+- terra
+- rgdal
+- ggplot2
+
 
 
 ## Study background
