@@ -53,7 +53,7 @@ bio1_plot <- gplot(clim.dev[[1]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
@@ -70,7 +70,7 @@ bio4_plot <- gplot(clim.dev[[2]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   #xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
@@ -88,7 +88,7 @@ bio12_plot <- gplot(clim.dev[[3]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
@@ -105,7 +105,7 @@ bio13_plot <- gplot(clim.dev[[4]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
@@ -122,7 +122,7 @@ bio14_plot <- gplot(clim.dev[[5]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
@@ -139,7 +139,7 @@ bio15_plot <- gplot(clim.dev[[6]]) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation') +
+                       name = 'Difference') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
   theme(strip.text = element_text(size = 14),
@@ -190,7 +190,7 @@ gplot(scale_clim) +
   facet_wrap(~ variable) +
   scale_fill_gradientn(colors = rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation',
+                       name = 'Difference',
                        breaks = c(0.1, 0.9),
                        labels = c('Low: 0.1', 'High: 0.9')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
@@ -206,3 +206,4 @@ gplot(scale_clim) +
 
 # export
 ggsave('plots/Clim deviation/clim_layers_deviation_scaled.png', width = 30, height = 15, dpi = 800, units = 'cm')
+

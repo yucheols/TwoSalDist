@@ -121,7 +121,7 @@ gplot(o.cur.dev) +
   facet_wrap(~ variable, nrow = 1, ncol = 2) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation',
+                       name = 'Difference',
                        breaks = c(0.1, 0.8),
                        labels = c('Low', 'High')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
@@ -148,7 +148,7 @@ gplot(k.cur.dev) +
   facet_wrap(~ variable, nrow = 1, ncol = 2) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation',
+                       name = 'Difference',
                        breaks = c(0.1, 0.9),
                        labels = c('Low', 'High')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
@@ -172,7 +172,7 @@ gplot(o.hind.dev) +
   facet_wrap(~ variable, ncol = 5, nrow = 1) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation',
+                       name = 'Difference',
                        breaks = c(0.1, 0.5),
                        labels = c('Low', 'High')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
@@ -196,7 +196,7 @@ gplot(k.hind.dev) +
   facet_wrap(~ variable, ncol = 5, nrow = 1) +
   scale_fill_gradientn(colors =  rev(as.vector(ocean.thermal(1000))),
                        na.value = NA,
-                       name = 'Deviation',
+                       name = 'Difference',
                        breaks = c(0.1, 0.9),
                        labels = c('Low', 'High')) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
