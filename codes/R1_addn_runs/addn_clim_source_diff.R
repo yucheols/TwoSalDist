@@ -9,6 +9,8 @@ gc()
 library(dplyr)
 library(raster)
 library(ggplot2)
+library(ggpubr)
+
 
 ### function for boxplot data formatting 
 boxdata <- function(sp.name, envs, pts) {
@@ -84,6 +86,10 @@ comb.dat$var <- dplyr::recode_factor(comb.dat$var,
 
 comb.dat$Species <- dplyr::recode_factor(comb.dat$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
 
+### some additional adjustment for plotting
+
+
+
 ### plot
 comb.dat %>%
   ggplot(aes(x = Species, y = val, fill = source, color = source)) +
@@ -101,7 +107,13 @@ comb.dat %>%
         legend.title = element_blank(),
         legend.text = element_text(size = 16),
         legend.key.size = unit(9, 'mm'),
-        legend.position = 'top')
+        legend.position = 'top') +
+  stat_compare_means(method = 'wilcox.test',
+                     label = 'p.signif',
+                     tip.length = 0.01,
+                     show.legend = F,
+                     size = 7,
+                     vjust = 0.5)
 
 ## save
 ggsave('plots/compare_clim_source_revised.png', width = 30, height = 25, dpi = 800, units = 'cm')        
