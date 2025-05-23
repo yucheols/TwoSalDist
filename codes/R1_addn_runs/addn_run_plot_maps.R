@@ -13,6 +13,10 @@ library(ggplot2)
 # load korea polygon
 kor <- readOGR('data/polygons/kor_mer.shp')
 
+#####  plot O.koreanus CHELSA current maps
+o.cur.ch <- rast('tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/preds/bg1_10000.tif')
+
+
 
 #####  plot O.koreanus CHELSA hindcast maps
 # load prediction rasters
