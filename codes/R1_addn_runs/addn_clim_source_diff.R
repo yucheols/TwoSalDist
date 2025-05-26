@@ -86,26 +86,22 @@ comb.dat$var <- dplyr::recode_factor(comb.dat$var,
 
 comb.dat$Species <- dplyr::recode_factor(comb.dat$Species, 'O.koreanus' = 'O. koreanus', 'K.koreana' = 'K. koreana')
 
-### some additional adjustment for plotting
-
-
-
 ### plot
 comb.dat %>%
   ggplot(aes(x = Species, y = val, fill = source, color = source)) +
-  geom_boxplot(linewidth = 1.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
-  geom_point(position = position_jitterdodge(0.4), alpha = 0.4) +
+  geom_boxplot(linewidth = 2.0, alpha = 0.4, outlier.shape = NA, width = 0.6, position = position_dodge(0.8)) +
+  geom_point(position = position_jitterdodge(0.4), alpha = 0.4, size = 2.0) +
   facet_wrap(~ var, scale = 'free', nrow = 2, ncol = 3) +
   xlab('Species') + ylab('Value') +
   theme_bw() +
-  theme(axis.title = element_text(size = 16, face = 'bold'),
+  theme(axis.title = element_text(size = 28, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 20)),
         axis.title.y = element_text(margin = margin(r = 20)),
-        axis.text = element_text(size = 14),
+        axis.text = element_text(size = 21),
         axis.text.x = element_text(face = 'italic'),
-        strip.text = element_text(size = 16),
+        strip.text = element_text(size = 24),
         legend.title = element_blank(),
-        legend.text = element_text(size = 16),
+        legend.text = element_text(size = 24),
         legend.key.size = unit(9, 'mm'),
         legend.position = 'top') +
   stat_compare_means(method = 'wilcox.test',
@@ -116,6 +112,6 @@ comb.dat %>%
                      vjust = 0.5)
 
 ## save
-ggsave('plots/compare_clim_source_revised.png', width = 30, height = 25, dpi = 800, units = 'cm')        
+ggsave('plots/compare_clim_source_revised.png', width = 35, height = 40, dpi = 800, units = 'cm')        
 
 

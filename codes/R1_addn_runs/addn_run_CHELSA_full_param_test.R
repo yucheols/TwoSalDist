@@ -48,8 +48,14 @@ o_chelsa_full_opt <- test_multibg(taxon.name = 'O.koreanus',
 # look at optimal param combinations
 print(o_chelsa_full_opt$metrics)
 
+# look at variable contribution
+print(o_chelsa_full_opt$contrib)
+
 # export metrics
 write.csv(o_chelsa_full_opt$metrics, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_full/metrics/O.koreanus_chelsa_addn_full_metrics.csv')
+
+# export contribution
+write.csv(o_chelsa_full_opt$contrib, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_full/contrib/O.koreanus_chelsa_addn_full_contrib.csv')
 
 # look at predictions
 print(o_chelsa_full_opt$preds)
@@ -74,8 +80,14 @@ k_chelsa_full_opt <- test_multibg(taxon.name = 'K.koreana',
 # look at optimal param combinations
 print(k_chelsa_full_opt$metrics)
 
+# look at variable contribution
+print(k_chelsa_full_opt$contrib)
+
 # export metrics
 write.csv(k_chelsa_full_opt$metrics, 'tuning_experiments/preds_addn/K.koreana/CHELSA_full/metrics/K.koreana_chelsa_addn_full_metrics.csv')
+
+# export contribution
+write.csv(k_chelsa_full_opt$contrib, 'tuning_experiments/preds_addn/K.koreana/CHELSA_full/contrib/K.koreana_chelsa_addn_full_contrib.csv')
 
 # look at predictions
 print(k_chelsa_full_opt$preds)

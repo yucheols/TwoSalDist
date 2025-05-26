@@ -21,15 +21,7 @@ head(o.occs)
 head(k.occs)
 
 ## load bg
-# set1
-bg1_5000 <- read.csv('data/bg/CHELSA/set1/bg1_5000.csv') %>% dplyr::select('long', 'lat')
 bg1_10000 <- read.csv('data/bg/CHELSA/set1/bg1_10000.csv') %>% dplyr::select('long', 'lat')
-bg1_15000 <- read.csv('data/bg/CHELSA/set1/bg1_15000.csv') %>% dplyr::select('long', 'lat')
-
-# set2
-bg2_5000 <- read.csv('data/bg/CHELSA/set2/bg2_5000.csv') %>% dplyr::select('long', 'lat')
-bg2_10000 <- read.csv('data/bg/CHELSA/set2/bg2_10000.csv') %>% dplyr::select('long', 'lat')
-bg2_15000 <- read.csv('data/bg/CHELSA/set2/bg2_15000.csv') %>% dplyr::select('long', 'lat')
 
 ## load envs
 envs <- rast(list.files(path = 'data/masked/CHELSA', pattern = '.bil', full.names = T))
@@ -46,8 +38,7 @@ plot(envs[[1]])
 o_chelsa_clim_opt <- test_multibg(taxon.name = 'O.koreanus',
                                   occs = o.occs,
                                   envs = envs,
-                                  bg.list = list(bg1_5000, bg1_10000, bg1_15000, 
-                                                 bg2_5000, bg2_10000, bg2_15000),
+                                  bg.list = list(bg1_10000),
                                   tune.args = list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
                                                    rm = seq(0.5,5, by = 0.5)),
                                   partitions = 'checkerboard',
@@ -57,20 +48,22 @@ o_chelsa_clim_opt <- test_multibg(taxon.name = 'O.koreanus',
 # look at optimal param combinations
 print(o_chelsa_clim_opt$metrics)
 
+# look at variable contribution
+print(o_chelsa_clim_opt$contrib)
+
 # export metrics
 write.csv(o_chelsa_clim_opt$metrics, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/metrics/O.koreanus_chelsa_addn_clim_only_metrics.csv')
 
+# export contribution
+write.csv(o_chelsa_clim_opt$contrib, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/contrib/O.koreanus_chelsa_addn_clim_only_contrib.csv')
+
 # look at predictions
 print(o_chelsa_clim_opt$preds)
-names(o_chelsa_clim_opt$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+names(o_chelsa_clim_opt$preds) = c('bg1_10000')
 plot(o_chelsa_clim_opt$preds)
 
 # export predictions
-for (i in 1:nlayers(o_chelsa_clim_opt$preds)) {
-  writeRaster(o_chelsa_clim_opt$preds[[i]],
-              paste0('tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/preds/', names(o_chelsa_clim_opt$preds)[i], '.tif'),
-              overwrite = T)
-}
+writeRaster(o_chelsa_clim_opt$preds, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/preds/bg1_10000.tif', overwrite = T)
 
 
 ### test models for K. koreana
@@ -78,8 +71,7 @@ for (i in 1:nlayers(o_chelsa_clim_opt$preds)) {
 k_chelsa_clim_opt <- test_multibg(taxon.name = 'K.koreana',
                                   occs = k.occs,
                                   envs = envs,
-                                  bg.list = list(bg1_5000, bg1_10000, bg1_15000,
-                                                 bg2_5000, bg2_10000, bg2_15000),
+                                  bg.list = list(bg1_10000),
                                   tune.args = list(fc = c('L', 'Q', 'H', 'P', 'LQ', 'LP', 'QH', 'QP', 'HP', 'LQH', 'LQP', 'LQHP', 'LQHPT'), 
                                                    rm = seq(0.5,5, by = 0.5)),
                                   partitions = 'checkerboard',
@@ -89,20 +81,23 @@ k_chelsa_clim_opt <- test_multibg(taxon.name = 'K.koreana',
 # look at optimal param combinations
 print(k_chelsa_clim_opt$metrics)
 
+# look at variable contribution
+print(k_chelsa_clim_opt$contrib)
+
 # export metrics
 write.csv(k_chelsa_clim_opt$metrics, 'tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/metrics/K.koreana_chelsa_addn_clim_only_metrics.csv')
 
+# export contribution
+write.csv(k_chelsa_clim_opt$contrib, 'tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/contrib/K.koreana_chelsa_addn_clim_only_contrib.csv')
+
 # look at predictions
 print(k_chelsa_clim_opt$preds)
-names(k_chelsa_clim_opt$preds) = c('bg1_5000', 'bg1_10000', 'bg1_15000', 'bg2_5000', 'bg2_10000', 'bg2_15000')
+names(k_chelsa_clim_opt$preds) = c('bg1_10000')
 plot(k_chelsa_clim_opt$preds)
 
 # export predictions
-for (i in 1:nlayers(k_chelsa_clim_opt$preds)) {
-  writeRaster(k_chelsa_clim_opt$preds[[i]],
-              paste0('tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/preds/', names(k_chelsa_clim_opt$preds)[i], '.tif'),
-              overwrite = T)
-}
+writeRaster(k_chelsa_clim_opt$preds, 'tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/preds/bg1_10000.tif', overwrite = T)
+
 
 
 #####  Part 3 ::: model hindcasting  ---------------------------------------------------------------------------------------------
@@ -135,7 +130,7 @@ plot(mh[[1]])
 
 
 ### O.koreanus hindcast
-o_hind_chelsa <- model_predictr(model = o_chelsa_clim_opt$models[[2]],
+o_hind_chelsa <- model_predictr(model = o_chelsa_clim_opt$models[[1]],
                                 preds.list = list(mpwp, mis, lig, lgm, mh),
                                 pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'),
                                 method = 'single2multi')
@@ -150,7 +145,7 @@ for (i in 1:nlayers(o_hind_chelsa)) {
 
 
 ### K.koreana hindcast
-k_hind_chelsa <- model_predictr(model = k_chelsa_clim_opt$models[[2]],
+k_hind_chelsa <- model_predictr(model = k_chelsa_clim_opt$models[[1]],
                                 preds.list = list(mpwp, mis, lig, lgm, mh),
                                 pred.names = c('mPWP', 'MIS19', 'LIG', 'LGM', 'MH'),
                                 method = 'single2multi')

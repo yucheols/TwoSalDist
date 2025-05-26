@@ -38,7 +38,7 @@ o.clim.ch.bin <- bin_maker(preds = raster::raster(o.clim.ch), th = o.clim.ch.th[
 plot(o.clim.ch.bin)
 
 # export
-writeRaster(o.clim.ch.bin, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/bin/O.koreanus_addn_clim_only_bin.tif', overwrite = T)
+writeRaster(o.clim.ch.bin, 'tuning_experiments/preds_addn/O.koreanus/bin_both/O.koreanus_addn_clim_only_bin.tif', overwrite = T)
 
 
 ### K.koreana
@@ -55,7 +55,7 @@ k.clim.ch.bin <- bin_maker(preds = raster::raster(k.clim.ch), th = k.clim.ch.th[
 plot(k.clim.ch.bin)
 
 # export
-writeRaster(k.clim.ch.bin, 'tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/bin/K.koreana_addn_clim_only_bin.tif', overwrite = T)
+writeRaster(k.clim.ch.bin, 'tuning_experiments/preds_addn/K.koreana/bin_both/K.koreana_addn_clim_only_bin.tif', overwrite = T)
 
 
 
@@ -75,7 +75,7 @@ o.full.ch.bin <- bin_maker(preds = raster::raster(o.full.ch), th = o.full.ch.th[
 plot(o.full.ch.bin)
 
 # export
-writeRaster(o.full.ch.bin, 'tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/bin/O.koreanus_addn_full_bin.tif', overwrite = T)
+writeRaster(o.full.ch.bin, 'tuning_experiments/preds_addn/O.koreanus/bin_both/O.koreanus_addn_full_bin.tif', overwrite = T)
 
 
 ### K.koreana
@@ -92,4 +92,4 @@ k.full.ch.bin <- bin_maker(preds = raster::raster(k.full.ch), th = k.full.ch.th[
 plot(k.full.ch.bin)
 
 # export
-writeRaster(k.full.ch.bin, 'tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/bin/K.koreana_addn_full_bin.tif', overwrite = T)
+writeRaster(k.full.ch.bin, 'tuning_experiments/preds_addn/K.koreana/bin_both/K.koreana_addn_full_bin.tif', overwrite = T)
