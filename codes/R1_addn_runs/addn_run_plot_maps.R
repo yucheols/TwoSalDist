@@ -21,18 +21,10 @@ kor <- readOGR('data/polygons/kor_mer.shp')
 # continuous clim only
 o.clim.ch <- rast('tuning_experiments/preds_addn/O.koreanus/CHELSA_clim_only/preds/bg1_10000.tif')
 plot(o.clim.ch)
-names(o.clim.ch) = 'CHELSA'
-
-# continuous full
-o.full.ch <- rast('tuning_experiments/preds_addn/O.koreanus/CHELSA_full/preds/bg1_10000.tif')
-plot(o.full.ch)
-names(o.full.ch) = 'CHELSA full'
-
-# stack continuous
-o.cont.ch <- c(o.clim.ch, o.full.ch)
+names(o.clim.ch) = 'Continuous'
 
 # plot
-o.cont.ch.plot <- gplot(o.cont.ch) +
+o.cont.ch.plot <- gplot(o.clim.ch) +
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -56,18 +48,10 @@ o.cont.ch.plot <- gplot(o.cont.ch) +
 # binary clim only
 o.clim.ch.bin <- rast('tuning_experiments/preds_addn/O.koreanus/bin_both/O.koreanus_addn_clim_only_bin.tif')
 plot(o.clim.ch.bin)
-names(o.clim.ch.bin) = 'CHELSA'
-
-# binary full
-o.full.ch.bin <- rast('tuning_experiments/preds_addn/O.koreanus/bin_both/O.koreanus_addn_full_bin.tif')
-plot(o.full.ch.bin)
-names(o.full.ch.bin) = 'CHELSA full'
-
-# stack binary
-o.bin.ch <- c(o.clim.ch.bin, o.full.ch.bin)
+names(o.clim.ch.bin) = 'Binary'
 
 # plot
-o.bin.ch.plot <- gplot(o.bin.ch) +
+o.bin.ch.plot <- gplot(o.clim.ch.bin) +
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -86,9 +70,8 @@ o.bin.ch.plot <- gplot(o.bin.ch) +
 ### arrange plots
 (o.cont.ch.plot | o.bin.ch.plot)
 
-
 ### export
-ggsave('plots/CHELSA tuning/O.koreanus_CHELSA_tune.png', width = 30, height = 10, dpi = 800, units = 'cm')
+ggsave('plots/CHELSA tuning/O.koreanus_CHELSA_tune.png', width = 20, height = 10, dpi = 800, units = 'cm')
 
 
 
@@ -98,18 +81,10 @@ ggsave('plots/CHELSA tuning/O.koreanus_CHELSA_tune.png', width = 30, height = 10
 # continuous clim only
 k.clim.ch <- rast('tuning_experiments/preds_addn/K.koreana/CHELSA_clim_only/preds/bg1_10000.tif')
 plot(k.clim.ch)
-names(k.clim.ch) = 'CHELSA'
-
-# continuous full
-k.full.ch <- rast('tuning_experiments/preds_addn/K.koreana/CHELSA_full/preds/bg1_10000.tif')
-plot(k.full.ch)
-names(k.full.ch) = 'CHELSA full'
-
-# stack continuous
-k.cont.ch <- c(k.clim.ch, k.full.ch)
+names(k.clim.ch) = 'Continuous'
 
 # plot
-k.cont.ch.plot <- gplot(k.cont.ch) +
+k.cont.ch.plot <- gplot(k.clim.ch) +
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -134,18 +109,10 @@ k.cont.ch.plot <- gplot(k.cont.ch) +
 # binary clim only
 k.clim.ch.bin <- rast('tuning_experiments/preds_addn/K.koreana/bin_both/K.koreana_addn_clim_only_bin.tif')
 plot(k.clim.ch.bin)
-names(k.clim.ch.bin) = 'CHELSA'
-
-# binary full
-k.full.ch.bin <- rast('tuning_experiments/preds_addn/K.koreana/bin_both/K.koreana_addn_full_bin.tif')
-plot(k.full.ch.bin)
-names(k.full.ch.bin) = 'CHELSA full'
-
-# stack binary
-k.bin.ch <- c(k.clim.ch.bin, k.full.ch.bin)
+names(k.clim.ch.bin) = 'Binary'
 
 # plot
-k.bin.ch.plot <- gplot(k.bin.ch) +
+k.bin.ch.plot <- gplot(k.clim.ch.bin) +
   geom_tile(aes(fill = value)) +
   coord_equal() +
   facet_wrap(~ variable) +
@@ -165,7 +132,7 @@ k.bin.ch.plot <- gplot(k.bin.ch) +
 (k.cont.ch.plot | k.bin.ch.plot)
 
 ### export
-ggsave('plots/CHELSA tuning/K.koreana_CHELSA_tune.png', width = 30, height = 10, dpi = 800, units = 'cm')
+ggsave('plots/CHELSA tuning/K.koreana_CHELSA_tune.png', width = 20, height = 10, dpi = 800, units = 'cm')
 
 
 #####  plot O.koreanus CHELSA hindcast maps
