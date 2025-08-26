@@ -30,15 +30,15 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - R (version 4.4.2)
 - ENMeval (version 2.0.5)
 - ENMwrap (version 1.0.1)
-- dplyr
-- terra
-- rgdal
-- ggplot2
+- dplyr (version 1.1.4)
+- terra (version 1.8.21)
+- rgdal (version 1.6.7)
+- ggplot2 (version 3.5.1)
 
 
 
 ## Study background
-![Fig 1](https://github.com/yucheols/TwoSalDist/assets/85914125/c9a05ac0-8705-447b-87ed-d23caa248889)
+![Fig 1](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Review round 2/Figure revision/Figure 1_revised.png)
 
 - The Korean Clawed Salamander (*Onychodactylus koreanus*) and Korean Crevice Salamander (*Karsenia koreana*) are endemic to the Korean Peninsula.
 - *O. koreanus* is in the family Hynobiidae and *K. koreana* is in the family Plethodontidae (it is the only Asian representative of this family).
@@ -63,4 +63,9 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 ## Niche analyses
 ![Niche analyses](https://github.com/user-attachments/assets/475537ef-6ea4-4ce9-b734-f16a641b1c48)
+
+## Citation
+```
+Y Shin, A Borzée, D Park. 2025. Climatic data sources and limitations of ecological niche models impact the estimations of historical ranges and niche overlaps in distantly related Korean salamanders. BMC Ecology and Evolution. In press.
+```
 
