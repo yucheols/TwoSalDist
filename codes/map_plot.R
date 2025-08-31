@@ -180,8 +180,9 @@ names(o.hinds.comb)
 # plot
 gplot(o.hinds.comb) +
   geom_tile(aes(fill = value)) +
-  coord_equal() +
+  coord_equal(expand = F) +
   facet_wrap(~ variable, nrow = 2, ncol = 5) +
+  scale_x_continuous(breaks = c(122, 128, 134)) +
   scale_fill_gradientn(colors =  c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
                        na.value = NA,
                        name = 'Suitability',
@@ -190,13 +191,13 @@ gplot(o.hinds.comb) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
+  theme(strip.text = element_text(size = 17),
+        legend.title = element_text(size = 17, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 15)),
         axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+        axis.text = element_text(size = 15))
 
 # save
 ggsave('plots/hindcast/hindcast_O_koreanus.png', width = 40, height = 15, dpi = 800, units = 'cm')
@@ -228,8 +229,9 @@ names(k.hinds.comb)
 # plot
 gplot(k.hinds.comb) +
   geom_tile(aes(fill = value)) +
-  coord_equal() +
+  coord_equal(expand = F) +
   facet_wrap(~ variable, nrow = 2, ncol = 5) +
+  scale_x_continuous(breaks = c(122, 128, 134)) +
   scale_fill_gradientn(colors =  c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
                        na.value = NA,
                        name = 'Suitability',
@@ -238,13 +240,13 @@ gplot(k.hinds.comb) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
+  theme(strip.text = element_text(size = 17),
+        legend.title = element_text(size = 17, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 15)),
         axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+        axis.text = element_text(size = 15))
 
 # save
 ggsave('plots/hindcast/hindcast_K_koreana.png', width = 40, height = 15, dpi = 800, units = 'cm')
@@ -426,8 +428,9 @@ sort(c(-637.1579, -787.470, -822.3456, -721.7958, -693.1871, -499.6604, -621.396
 # plot
 gplot(mess.both) +
   geom_tile(aes(fill = value)) +
-  coord_equal() +
+  coord_equal(expand = F) +
   facet_wrap(~ variable, nrow = 2, ncol = 5) +
+  scale_x_continuous(breaks = c(122, 128, 134)) +
   scale_fill_gradientn(colors = as.vector(pals::coolwarm(1000)),
                        breaks = c(-660, -1800),
                        labels = c('Low', 'High'),
@@ -437,13 +440,13 @@ gplot(mess.both) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = poly, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
+  theme(strip.text = element_text(size = 17),
+        legend.title = element_text(size = 17, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 15)),
         axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+        axis.text = element_text(size = 15))
 
 ggsave('plots/hindcast/MESS_both.png', width = 40, height = 15, dpi = 800, units = 'cm')
 
