@@ -144,8 +144,9 @@ print(o.hinds)
 # plot
 gplot(o.hinds) + 
   geom_tile(aes(fill = value)) +
-  coord_equal() +
+  coord_equal(expand = F) +
   facet_wrap(~ variable, nrow = 1, ncol = 5) +
+  scale_x_continuous(breaks = c(122, 128, 134)) +
   scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
                        na.value = NA,
                        name = 'Suitability',
@@ -154,13 +155,13 @@ gplot(o.hinds) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
+  theme(strip.text = element_text(size = 17),
+        legend.title = element_text(size = 17, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 15)),
         axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+        axis.text = element_text(size = 15))
 
 # export
 ggsave('plots/CHELSA tuning/O.koreanus_hindcast_CHELSA_tune.png', width = 40, height = 7, dpi = 800, units = 'cm')
@@ -175,8 +176,9 @@ print(k.hinds)
 # plot
 gplot(k.hinds) +
   geom_tile(aes(fill = value)) +
-  coord_equal() +
+  coord_equal(expand = F) +
   facet_wrap(~ variable, nrow = 1, ncol = 5) +
+  scale_x_continuous(breaks = c(122, 128, 134)) +
   scale_fill_gradientn(colors = c('#2b83ba', '#abdda4', '#ffffbf', '#fdae61', '#4f05d7'),
                        na.value = NA,
                        name = 'Suitability',
@@ -185,13 +187,13 @@ gplot(k.hinds) +
   xlab('Longitude (°)') + ylab('Latitude (°)') +
   geom_polygon(data = kor, aes(x = long, y = lat, group = group), color = 'black', linewidth = 0.5, linetype = 'solid', fill = NA) +
   theme_bw() +
-  theme(strip.text = element_text(size = 14),
-        legend.title = element_text(size = 14, face = 'bold', margin = margin(b = 10)),
-        legend.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = 'bold'),
+  theme(strip.text = element_text(size = 17),
+        legend.title = element_text(size = 17, face = 'bold', margin = margin(b = 10)),
+        legend.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = 'bold'),
         axis.title.x = element_text(margin = margin(t = 15)),
         axis.title.y = element_text(margin = margin(r = 15)),
-        axis.text = element_text(size = 12))
+        axis.text = element_text(size = 15))
 
 # export
 ggsave('plots/CHELSA tuning/K.koreana_hindcast_CHELSA_tune.png', width = 40, height = 7, dpi = 800, units = 'cm')
