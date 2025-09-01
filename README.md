@@ -71,7 +71,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 
 ## Hindcasting ENMs
-![mapping](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Proof/Fig_3_revised.png)
+![mapping](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Proof/Fig_3_revised_compressed.png)
 - ENMs hindcasted to five different time periods of Plio-Pleistocene
 
 ![MESS](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Proof/Supplementary_Revised/Figure_S2_revised.png)
