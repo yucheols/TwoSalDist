@@ -38,7 +38,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 
 ## Study background
-![Fig 1](![Figure_1_compressed](https://github.com/user-attachments/assets/74ca0052-7ef8-49df-a91f-62df9a5ab8a8)
+![Figure_1_compressed](https://github.com/user-attachments/assets/74ca0052-7ef8-49df-a91f-62df9a5ab8a8)
 
 - The Korean Clawed Salamander (*Onychodactylus koreanus*) and Korean Crevice Salamander (*Karsenia koreana*) are endemic to the Korean Peninsula.
 - *O. koreanus* is in the family Hynobiidae and *K. koreana* is in the family Plethodontidae (it is the only Asian representative of this family).
@@ -47,8 +47,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - As these two species are both lungless, their ranges are closely tied to very speecific envieonmental conditions, and their current ranges likely have been shaped by the Pleistocene climatic fluctuations.
 
 ## Occurrence dataset
-- O. koreanus: Occurrence points retrieved from a previous study (Shin et al., 2021. Ecology and Evolution 11: 14669-14688), which were compiled from survey records, GBIF, museum records, literature etc.
-- K. koreana: Occurrence points compiled from a previous study (Jeon et al., 2021. Scientific Reports 11: 9193), survey records, GBIF, etc.
+- *O. koreanus*: Occurrence points retrieved from a previous study (Shin et al., 2021. Ecology and Evolution 11: 14669-14688), which were compiled from survey records, GBIF, museum records, literature etc.
+- *K. koreana*: Occurrence points compiled from a previous study (Jeon et al., 2021. Scientific Reports 11: 9193), survey records, GBIF, etc.
 - Occurrence points for both species were spatially thinned to have only one point in every 1km spatial resolution raster pixel.
 
 ## Environmental dataset
@@ -58,8 +58,13 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - PaleoClim data for Plio-Pleistocene climates
 
 ## Background dataset
+- Two levels of spatial bias correction
+- Three different sample sizes (*n*=5000, *n*=10000, *n*=15000)
 
-## Model tuning experiments
+## Model tuning experiments and model evaluation
+- Model parameter tuning with ENMeval
+- Model cross-validation using the hierarchical spatial checkerboard method
+- Model evaluation using statistical metrics (e.g. AUC, CBI, omission rate) and testing against null niche models
 
 ## Current habitat suitability
 ![current](https://github.com/yucheols/TwoSalDist/assets/85914125/edf19032-9a3d-46d1-b9cc-84d67219a6e2)
