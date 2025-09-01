@@ -78,6 +78,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 ## Niche analyses
 ![Niche analyses](https://github.com/user-attachments/assets/475537ef-6ea4-4ce9-b734-f16a641b1c48)
+- Niche identity test and background similarity test conducted in environmental space
+- Used Niche Overlap Test (NOT) and Niche Divergence Test (NDT) framework of Brown and Carnaval (2019) [Frontiers of Biogeography 11: e44158]
 
 ## Citation
 ```
