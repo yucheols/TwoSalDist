@@ -73,7 +73,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ![mapping](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Proof/Fig_3_revised_compressed.png)
 - ENMs hindcasted to five different time periods of Plio-Pleistocene
 
-![MESS](F:/Projects_completed/TwoSalDist/MS/Submission_BMC_Ecology_and_Evolution/Proof/Supplementary_Revised/Figure_S2_revised.png)
+![MESS](<img width="12598" height="4724" alt="Figure_S2_revised" src="https://github.com/user-attachments/assets/7edf0651-89f2-476b-971c-1bf2bf0a438c" />)
 - Extrapolation risk assessed with Multivariate Environmental Similarity Surface (MESS)
 
 ## Niche analyses
