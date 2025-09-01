@@ -47,8 +47,8 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - As these two species are both lungless, their ranges are closely tied to very speecific envieonmental conditions, and their current ranges likely have been shaped by the Pleistocene climatic fluctuations.
 
 ## Occurrence dataset
-- *O. koreanus*: Occurrence points retrieved from a previous study (Shin et al., 2021. Ecology and Evolution 11: 14669-14688), which were compiled from survey records, GBIF, museum records, literature etc.
-- *K. koreana*: Occurrence points compiled from a previous study (Jeon et al., 2021. Scientific Reports 11: 9193), survey records, GBIF, etc.
+- *O. koreanus*: Occurrence points retrieved from a previous study (Shin Y et al. 2021. Ecology and Evolution 11: 14669-14688), which were compiled from survey records, GBIF, museum records, literature etc.
+- *K. koreana*: Occurrence points compiled from a previous study (Jeon JY et al. 2021. Scientific Reports 11: 9193), survey records, GBIF, etc.
 - Occurrence points for both species were spatially thinned to have only one point in every 1km spatial resolution raster pixel.
 
 ## Environmental dataset
@@ -79,7 +79,7 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 ## Niche analyses
 ![Niche analyses](https://github.com/user-attachments/assets/475537ef-6ea4-4ce9-b734-f16a641b1c48)
 - Niche identity test and background similarity test conducted in environmental space
-- Used Niche Overlap Test (NOT) and Niche Divergence Test (NDT) framework of Brown and Carnaval (2019) [Frontiers of Biogeography 11: e44158]
+- Used Niche Overlap Test (NOT) and Niche Divergence Test (NDT) framework (Brown JL, Carnaval AC. 2019. Frontiers of Biogeography 11: e44158)
 
 ## Citation
 ```
