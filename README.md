@@ -47,8 +47,15 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 - As these two species are both lungless, their ranges are closely tied to very speecific envieonmental conditions, and their current ranges likely have been shaped by the Pleistocene climatic fluctuations.
 
 ## Occurrence dataset
+- O. koreanus: Occurrence points retrieved from a previous study (Shin et al., 2021. Ecology and Evolution 11: 14669-14688), which were compiled from survey records, GBIF, museum records, literature etc.
+- K. koreana: Occurrence points compiled from a previous study (Jeon et al., 2021. Scientific Reports 11: 9193), survey records, GBIF, etc.
+- Occurrence points for both species were spatially thinned to have only one point in every 1km spatial resolution raster pixel.
 
 ## Environmental dataset
+- WorldClim bioclimatic variables
+- CHELSA bioclimatic variables
+- EarthEnv global consensus forest cover layers, with further processing in ArcGIS Pro v2.6.0
+- PaleoClim data for Plio-Pleistocene climates
 
 ## Background dataset
 
