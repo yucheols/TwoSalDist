@@ -83,6 +83,6 @@ Ecological niche modeling and associated analyses for the two species of Korean 
 
 ## Citation
 ```
-Y Shin, A Borzée, D Park. 2025. Climatic data sources and limitations of ecological niche models impact the estimations of historical ranges and niche overlaps in distantly related Korean salamanders. BMC Ecology and Evolution. In press.
+Y Shin, A Borzée, D Park. 2025. Climatic data sources and limitations of ecological niche models impact the estimations of historical ranges and niche overlaps in distantly related Korean salamanders. BMC Ecology and Evolution 25: 105.
 ```
 
